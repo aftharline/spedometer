@@ -142,6 +142,38 @@
             padding:16px 16px 12px;
             gap:10px;
             min-height:calc(100dvh - 140px);
+            position:relative;
+            overflow:hidden;
+            background:
+                radial-gradient(circle at 50% 35%,rgba(0,212,255,.12),transparent 34%),
+                linear-gradient(180deg,rgba(200,255,0,.04),transparent 22%),
+                var(--bg);
+        }
+        #view-dashboard::before{
+            content:'';
+            position:absolute;
+            inset:-40%;
+            pointer-events:none;
+            background:conic-gradient(from 120deg,transparent,rgba(200,255,0,.08),transparent 28%,rgba(0,212,255,.07),transparent 48%);
+            animation:hudSweep 8s linear infinite;
+            opacity:.55;
+        }
+        #ride-3d-layer{
+            position:absolute;
+            inset:0;
+            pointer-events:none;
+            z-index:0;
+            opacity:1;
+            mix-blend-mode:screen;
+        }
+        #ride-3d-canvas{
+            width:100%;
+            height:100%;
+            display:block;
+        }
+        #dash-status,#geofence-alert,#instrument-cluster,#dash-bottom{
+            position:relative;
+            z-index:2;
         }
         #instrument-cluster{
             display:flex;
@@ -157,6 +189,8 @@
             align-items:center;
             gap:6px;
             width:100%;
+            position:relative;
+            isolation:isolate;
         }
         /* G-force and Lean panels hidden in portrait */
         #panel-gforce,#panel-lean{display:none}
@@ -211,6 +245,55 @@
         .inst-panel-speed{border-top:2px solid var(--neon)}
         .inst-panel-gforce{border-top:2px solid var(--alert)}
         .inst-panel-lean{border-top:2px solid var(--cyber)}
+        #panel-speed,#panel-gforce,#panel-lean{
+            backdrop-filter:blur(10px);
+            background:linear-gradient(180deg,rgba(8,8,16,.62),rgba(8,8,16,.38));
+            box-shadow:inset 0 0 24px rgba(0,212,255,.04),0 0 28px rgba(0,0,0,.28);
+        }
+        #panel-speed::after,#panel-gforce::after,#panel-lean::after{
+            content:'';
+            position:absolute;
+            inset:0;
+            pointer-events:none;
+            background:linear-gradient(120deg,transparent 0 42%,rgba(255,255,255,.08) 48%,transparent 56% 100%);
+            transform:translateX(-120%);
+            animation:panelScan 4.6s ease-in-out infinite;
+            opacity:.45;
+            z-index:-1;
+        }
+        #speedo-container{
+            position:relative;
+        }
+        #speedo-container::before{
+            content:'';
+            position:absolute;
+            width:min(74vw,270px);
+            aspect-ratio:1;
+            border-radius:50%;
+            background:repeating-conic-gradient(from 0deg,rgba(200,255,0,.13) 0 4deg,transparent 4deg 11deg);
+            mask:radial-gradient(circle,transparent 0 57%,#000 58% 64%,transparent 65%);
+            animation:spinCW 18s linear infinite;
+            opacity:.45;
+        }
+        .sensor-chip{
+            display:inline-flex;
+            align-items:center;
+            gap:5px;
+            padding:3px 7px;
+            background:rgba(0,212,255,.06);
+            border:1px solid rgba(0,212,255,.22);
+            color:var(--cyber);
+            font-family:'Share Tech Mono',monospace;
+            font-size:9px;
+            line-height:1;
+            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+        }
+        @keyframes hudSweep{to{transform:rotate(360deg)}}
+        @keyframes panelScan{
+            0%,48%{transform:translateX(-120%)}
+            68%{transform:translateX(120%)}
+            100%{transform:translateX(120%)}
+        }
 
         /* Bottom dash bar */
         #dash-bottom{
@@ -245,6 +328,7 @@
         [data-theme="light"] #speedo-svg{filter:drop-shadow(0 0 16px rgba(77,140,0,.2))}
         [data-theme="light"] .gauge-needle{box-shadow:0 0 4px var(--neon)}
         [data-theme="light"] .gauge-needle::after{box-shadow:0 0 6px var(--neon)}
+        [data-theme="light"] #view-dashboard{background:radial-gradient(circle at 50% 35%,rgba(0,119,170,.12),transparent 34%),linear-gradient(180deg,rgba(77,140,0,.05),transparent 22%),var(--bg)}
 
         /* ══════════════════════════════════════════════════
            LANDSCAPE — FULL SCREEN + 3-PANEL CLUSTER
@@ -304,7 +388,7 @@
                 padding:8px !important;
                 position:relative;
                 overflow:hidden;
-                background:var(--s1);
+                background:linear-gradient(180deg,rgba(8,8,16,.58),rgba(8,8,16,.35));
                 border:1px solid var(--border2);
             }
 
@@ -339,7 +423,7 @@
                 gap:6px !important;
                 flex-shrink:0 !important;
             }
-            #ls-stats{flex:1 !important;display:grid !important;grid-template-columns:repeat(3,1fr) !important;gap:4px !important}
+            #ls-stats{flex:1 !important;display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:4px !important}
             #ls-sos{flex:none !important;white-space:nowrap;padding:7px 16px !important;font-size:10px !important;letter-spacing:2px !important}
 
             /* Compact stat cells */
@@ -434,6 +518,9 @@
              Landscape: 3 equal columns → Speed | G-Force | Lean
         ════════════════════════════════════════════════ -->
         <section id="view-dashboard" class="hidden flex flex-col fade-in">
+            <div id="ride-3d-layer" aria-hidden="true">
+                <canvas id="ride-3d-canvas"></canvas>
+            </div>
 
             <!-- GPS status bar (always visible) -->
             <div id="dash-status" class="flex justify-between items-center flex-none">
@@ -442,6 +529,7 @@
                     <span class="f-bar text-xs tracking-widest uppercase" id="gps-status" style="color:var(--muted2)">MENCARI GPS…</span>
                 </div>
                 <div class="flex items-center gap-3">
+                    <span class="sensor-chip" id="sensor-chip"><i class="fa-solid fa-satellite-dish text-[8px]"></i>IDLE</span>
                     <span class="f-mono text-[9px]" id="gps-acc" style="color:var(--muted)">ACC: --</span>
                     <button onclick="resetMaxSpeed()" class="f-exo font-bold text-[9px] px-2 py-1 tracking-widest uppercase" style="background:var(--s2);border:1px solid var(--border);color:var(--muted2)">RESET MAX</button>
                 </div>
@@ -563,7 +651,7 @@
 
             <!-- ── BOTTOM: STATS + SOS ──────────────────── -->
             <div id="dash-bottom">
-                <div id="ls-stats" class="grid grid-cols-3 gap-2">
+                <div id="ls-stats" class="grid grid-cols-4 gap-2">
                     <div class="text-center clip-sm" style="background:var(--s1);border:1px solid var(--border);padding:6px 4px">
                         <div class="f-mono stat-num cyber-text" style="font-size:13px" id="val-lat">—</div>
                         <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:7px">LAT</div>
@@ -575,6 +663,10 @@
                     <div class="text-center clip-sm" style="background:var(--s1);border:1px solid var(--border);padding:6px 4px">
                         <div class="f-mono stat-num" style="color:var(--warn);font-size:13px" id="val-maxspd">0</div>
                         <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:7px">MAX KM/H</div>
+                    </div>
+                    <div class="text-center clip-sm" style="background:var(--s1);border:1px solid var(--border);padding:6px 4px">
+                        <div class="f-mono stat-num neon-text" style="font-size:13px" id="val-heading">—</div>
+                        <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:7px">HDG</div>
                     </div>
                 </div>
                 <button id="ls-sos" onclick="triggerSOS()"
@@ -871,6 +963,7 @@ function setSpeedoArc(kmh){
         document.getElementById('sg-max').textContent=`MAX ${Math.round(maxSpeed)} KM/H`;
         document.getElementById('val-maxspd').textContent=Math.round(maxSpeed);
     }
+    updateRideState({speed:c,maxSpeed});
 }
 function resetMaxSpeed(){maxSpeed=0;setSpeedoArc(0);showToast('Max speed direset','muted');}
 
@@ -1160,6 +1253,7 @@ const toggleTheme=()=>{
 
 /* ── STATE ────────────────────────────────────────────── */
 let currentVehicleId=null,geoWatchId=null,currentLat=null,currentLng=null,wakeLock=null;
+const rideState={speed:0,maxSpeed:0,lean:0,g:1,gx:0,gy:0,heading:0,gpsAcc:null,sensor:'IDLE'};
 (function(){const t=new Date().toISOString().split('T')[0];
     document.getElementById('s_date').value=t;
     document.getElementById('f_date').value=t;})();
@@ -1194,6 +1288,24 @@ const showToast=(msg,type='neon')=>{
     el.textContent=msg;
     if(toastTimer)clearTimeout(toastTimer);
     toastTimer=setTimeout(()=>{el.style.transform='translateX(-50%) translateY(-60px)';el.style.opacity='0';},2800);
+};
+
+const updateRideState=patch=>{
+    Object.assign(rideState,patch);
+    window.dispatchEvent(new CustomEvent('ride3d:update',{detail:{...rideState}}));
+};
+
+const updateSensorChip=(label,type='idle')=>{
+    const chip=document.getElementById('sensor-chip');
+    if(!chip)return;
+    const colors={
+        idle:'background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.22);color:var(--cyber);',
+        good:'background:rgba(200,255,0,.08);border:1px solid rgba(200,255,0,.28);color:var(--neon);',
+        warn:'background:rgba(255,136,0,.1);border:1px solid rgba(255,136,0,.32);color:var(--warn);',
+        alert:'background:rgba(255,34,68,.1);border:1px solid rgba(255,34,68,.34);color:var(--alert);'
+    };
+    chip.setAttribute('style',colors[type]||colors.idle);
+    chip.innerHTML=`<i class="fa-solid fa-satellite-dish text-[8px]"></i>${escapeHTML(label)}`;
 };
 
 const openModal=id=>{document.getElementById('modal-overlay').classList.remove('hidden');document.getElementById(id).classList.remove('hidden');};
@@ -1409,30 +1521,92 @@ const confirmClearChecklist=()=>showConfirm('Reset Checklist','Semua item akan d
 
 /* ── GPS ──────────────────────────────────────────────── */
 const setGpsDots=(cls)=>{['gps-dot','gps-dot-2','gps-dot-3'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='dot '+cls;});};
+let gpsFilteredSpeed=0,lastGpsPoint=null,lastAcceptedGpsAt=0,lastHeading=null;
+
+const toRad=deg=>deg*Math.PI/180;
+const toDeg=rad=>rad*180/Math.PI;
+const haversineMeters=(a,b)=>{
+    const R=6371000,dLat=toRad(b.lat-a.lat),dLng=toRad(b.lng-a.lng);
+    const s1=Math.sin(dLat/2),s2=Math.sin(dLng/2);
+    const h=s1*s1+Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*s2*s2;
+    return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+};
+const bearingDeg=(a,b)=>{
+    const y=Math.sin(toRad(b.lng-a.lng))*Math.cos(toRad(b.lat));
+    const x=Math.cos(toRad(a.lat))*Math.sin(toRad(b.lat))-Math.sin(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.cos(toRad(b.lng-a.lng));
+    return (toDeg(Math.atan2(y,x))+360)%360;
+};
+const smooth=(prev,next,alpha)=>prev+(next-prev)*alpha;
+const setHeadingDisplay=heading=>{
+    const el=document.getElementById('val-heading');
+    if(el)el.textContent=Number.isFinite(heading)?Math.round(heading)+'°':'—';
+};
+
+const processGpsPosition=pos=>{
+    const c=pos.coords,now=pos.timestamp||Date.now();
+    const acc=c.accuracy||999;
+    const point={lat:c.latitude,lng:c.longitude,t:now,acc};
+    const quality=acc<=20?'good':acc<=55?'warn':'alert';
+    const ageOk=now-lastAcceptedGpsAt>350;
+
+    currentLat=point.lat;
+    currentLng=point.lng;
+    document.getElementById('val-lat').textContent=currentLat.toFixed(4);
+    document.getElementById('val-lng').textContent=currentLng.toFixed(4);
+    const accTxt=`ACC:${Math.round(acc)}m`;
+    document.getElementById('gps-acc').textContent=accTxt;
+    const gps2=document.getElementById('gps-acc-2');if(gps2)gps2.textContent=accTxt;
+
+    let rawSpeed=Number.isFinite(c.speed)&&c.speed>=0?c.speed*3.6:null;
+    if(lastGpsPoint&&ageOk){
+        const dt=Math.max((now-lastGpsPoint.t)/1000,0.2);
+        const dist=haversineMeters(lastGpsPoint,point);
+        const plausible=dist<=Math.max(120,dt*85);
+        if(plausible&&dist>Math.max(2,acc*.18)){
+            const estSpeed=(dist/dt)*3.6;
+            rawSpeed=rawSpeed===null?estSpeed:(rawSpeed*.72+estSpeed*.28);
+            lastHeading=bearingDeg(lastGpsPoint,point);
+        }
+    }
+    if(Number.isFinite(c.heading)&&c.heading>=0&&rawSpeed!==null&&rawSpeed>4){
+        lastHeading=c.heading;
+    }
+    if(rawSpeed===null)rawSpeed=0;
+    if(acc>70&&rawSpeed<8)rawSpeed=0;
+    const alpha=acc<=15?.38:acc<=40?.24:.12;
+    gpsFilteredSpeed=smooth(gpsFilteredSpeed,rawSpeed,alpha);
+    if(gpsFilteredSpeed<1.2)gpsFilteredSpeed=0;
+    lastGpsPoint=point;
+    lastAcceptedGpsAt=now;
+
+    setSpeedoArc(gpsFilteredSpeed);
+    setHeadingDisplay(lastHeading);
+    updateRideState({speed:gpsFilteredSpeed,heading:lastHeading||0,gpsAcc:acc,sensor:quality.toUpperCase()});
+    updateSensorChip(acc<=20?'GPS LOCK':acc<=55?'GPS FAIR':'GPS LOW',quality);
+
+    const d=Math.hypot(currentLat-(-6.89),currentLng-112.04);
+    document.getElementById('geofence-alert').classList.toggle('hidden',d>=0.05);
+};
 
 const startSpeedometer=async()=>{
     if(!('geolocation' in navigator))return showToast('GPS tidak didukung.','alert');
     try{wakeLock=await navigator.wakeLock.request('screen');}catch(_){}
     maxSpeed=0;
+    gpsFilteredSpeed=0;
+    lastGpsPoint=null;
+    lastAcceptedGpsAt=0;
     geoWatchId=navigator.geolocation.watchPosition(pos=>{
         setGpsDots('dot-on');
         document.getElementById('gps-status').textContent='GPS AKTIF';
-        currentLat=pos.coords.latitude; currentLng=pos.coords.longitude;
-        document.getElementById('val-lat').textContent=currentLat.toFixed(4);
-        document.getElementById('val-lng').textContent=currentLng.toFixed(4);
-        const acc=`ACC:${Math.round(pos.coords.accuracy||0)}m`;
-        document.getElementById('gps-acc').textContent=acc;
-        const gps2=document.getElementById('gps-acc-2');if(gps2)gps2.textContent=acc;
-        setSpeedoArc(pos.coords.speed?pos.coords.speed*3.6:0);
-        const d=Math.hypot(currentLat-(-6.89),currentLng-112.04);
-        document.getElementById('geofence-alert').classList.toggle('hidden',d>=0.05);
-    },()=>{setGpsDots('dot-err');document.getElementById('gps-status').textContent='GPS ERROR';},
-    {enableHighAccuracy:true});
+        processGpsPosition(pos);
+    },()=>{setGpsDots('dot-err');document.getElementById('gps-status').textContent='GPS ERROR';updateSensorChip('GPS ERR','alert');},
+    {enableHighAccuracy:true,maximumAge:800,timeout:12000});
 };
 const stopSpeedometer=()=>{
     if(geoWatchId!==null){navigator.geolocation.clearWatch(geoWatchId);geoWatchId=null;}
     if(wakeLock){wakeLock.release().catch(()=>{});wakeLock=null;}
     setGpsDots('dot-off');
+    updateSensorChip(telActive?'IMU':'IDLE',telActive?'good':'idle');
 };
 const triggerSOS=()=>{
     if(currentLat) window.open(`sms:?body=${encodeURIComponent(`[DARURAT] Butuh bantuan! Lokasi: https://maps.google.com/?q=${currentLat},${currentLng}`)}`,'_blank');
@@ -1460,12 +1634,18 @@ const updateAudioBtns=active=>{
 
 /* ── TELEMETRY & CRASH ────────────────────────────────── */
 let telActive=false,crashTimer=null,crashCount=10,leanBaseline=null,lastOrientAt=0;
+let fusedLean=0,filteredG=1,filteredGx=0,filteredGy=0,lastCrashPeakAt=0;
 
 const clampLean=angle=>Math.max(-90,Math.min(90,angle));
-const applyLeanAngle=rawAngle=>{
+const applyLeanAngle=(rawAngle,source='IMU')=>{
     if(!Number.isFinite(rawAngle))return;
     if(leanBaseline===null) leanBaseline=rawAngle;
-    updateLeanGauge(clampLean(rawAngle-leanBaseline));
+    const target=clampLean(rawAngle-leanBaseline);
+    const delta=Math.abs(target-fusedLean);
+    const alpha=delta>18?.34:.18;
+    fusedLean=smooth(fusedLean,target,alpha);
+    updateLeanGauge(fusedLean);
+    updateRideState({lean:fusedLean,sensor:source});
 };
 
 const leanFromAcceleration=acc=>{
@@ -1476,23 +1656,28 @@ const leanFromAcceleration=acc=>{
 
 const handleMotion=e=>{
     const acc=e.accelerationIncludingGravity;if(!acc)return;
-    const G=Math.sqrt(acc.x*acc.x+acc.y*acc.y+acc.z*acc.z)/9.81;
-    const gx=(acc.x||0)/9.81, gy=(acc.y||0)/9.81;
+    const rawG=Math.sqrt(acc.x*acc.x+acc.y*acc.y+acc.z*acc.z)/9.81;
+    const rawGx=(acc.x||0)/9.81, rawGy=(acc.y||0)/9.81;
+    filteredG=smooth(filteredG,rawG,rawG>filteredG?.32:.18);
+    filteredGx=smooth(filteredGx,rawGx,.22);
+    filteredGy=smooth(filteredGy,rawGy,.22);
     // Labs display
-    const labsG=document.getElementById('gforce-val');if(labsG)labsG.textContent=G.toFixed(1);
+    const labsG=document.getElementById('gforce-val');if(labsG)labsG.textContent=filteredG.toFixed(1);
     // Dashboard 2D meter
-    updateGForceMeter(G,gx,gy);
+    updateGForceMeter(filteredG,filteredGx,filteredGy);
+    updateRideState({g:filteredG,gx:filteredGx,gy:filteredGy});
     if(Date.now()-lastOrientAt>500){
         const motionLean=leanFromAcceleration(acc);
-        if(motionLean!==null) applyLeanAngle(motionLean);
+        if(motionLean!==null) applyLeanAngle(motionLean,'MOTION');
     }
-    if(G>4.0&&!crashTimer)triggerAutoCrash();
+    if(rawG>3.6&&filteredG>2.8)lastCrashPeakAt=Date.now();
+    if(filteredG>4.0&&Date.now()-lastCrashPeakAt<500&&!crashTimer)triggerAutoCrash();
 };
 
 const handleOrient=e=>{
     if(e.gamma===null||e.gamma===undefined)return;
     lastOrientAt=Date.now();
-    applyLeanAngle(Math.round(e.gamma));
+    applyLeanAngle(e.gamma,'ORIENT');
 };
 
 const requestSensorPermissions=async()=>{
@@ -1512,11 +1697,16 @@ const startTelemetry=()=>{
     telActive=true;
     leanBaseline=null;
     lastOrientAt=0;
+    fusedLean=0;
+    filteredG=1;
+    filteredGx=0;
+    filteredGy=0;
     updateTelemetryBtns(true);
     const strip=document.getElementById('portrait-tele');
     if(strip) strip.style.display='grid';
     window.addEventListener('devicemotion',handleMotion);
     window.addEventListener('deviceorientation',handleOrient);
+    updateSensorChip('IMU ARM','good');
     showToast('Telemetri aktif — posisi ini dikalibrasi','cyber');
 };
 
@@ -1529,8 +1719,14 @@ const stopTelemetry=()=>{
     const strip=document.getElementById('portrait-tele');
     if(strip) strip.style.display='none';
     leanBaseline=null;
+    fusedLean=0;
+    filteredG=1;
+    filteredGx=0;
+    filteredGy=0;
     updateGForceMeter(1,0,0);
     updateLeanGauge(0);
+    updateRideState({lean:0,g:1,gx:0,gy:0,sensor:'IDLE'});
+    updateSensorChip(geoWatchId!==null?'GPS':'IDLE',geoWatchId!==null?'good':'idle');
 };
 
 const toggleTelemetry=async()=>{
@@ -1568,7 +1764,7 @@ const processAIOdometer=async e=>{
 };
 
 /* ── ACOUSTIC RPM ─────────────────────────────────────── */
-let audioCtx=null,analyser=null,animReq=null,audioStream=null;
+let audioCtx=null,analyser=null,animReq=null,audioStream=null,rpmFiltered=0;
 const toggleAudioRPM=async()=>{
     if(audioCtx){stopAudioRPM();return;}
     try{
@@ -1576,14 +1772,27 @@ const toggleAudioRPM=async()=>{
         audioCtx=new(window.AudioContext||window.webkitAudioContext)();
         analyser=audioCtx.createAnalyser();
         audioCtx.createMediaStreamSource(audioStream).connect(analyser);
-        analyser.fftSize=256;
+        analyser.fftSize=2048;
+        analyser.smoothingTimeConstant=.72;
         const buf=new Uint8Array(analyser.frequencyBinCount);
+        const hzPerBin=audioCtx.sampleRate/analyser.fftSize;
+        rpmFiltered=0;
         updateAudioBtns(true);
         const draw=()=>{
             animReq=requestAnimationFrame(draw);
             analyser.getByteFrequencyData(buf);
-            const pct=(Math.max(...buf)/255)*100;
-            const rpm=pct>8?Math.round(1000+pct*80):0;
+            let peak=0,peakIdx=0;
+            const start=Math.max(1,Math.floor(35/hzPerBin));
+            const end=Math.min(buf.length-1,Math.ceil(450/hzPerBin));
+            for(let i=start;i<=end;i++){
+                const weighted=buf[i]*(i/start);
+                if(weighted>peak){peak=weighted;peakIdx=i;}
+            }
+            const pct=(peak/255)*100;
+            const peakHz=peakIdx*hzPerBin;
+            const rawRpm=pct>10?Math.min(14000,Math.max(0,peakHz*120)):0;
+            rpmFiltered=rawRpm?smooth(rpmFiltered,rawRpm,.2):smooth(rpmFiltered,0,.08);
+            const rpm=Math.round(rpmFiltered/10)*10;
             ['audio-visual','audio-visual-ls'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';});
             ['rpm-val','rpm-val-ls'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=rpm;});
         };
@@ -1595,6 +1804,7 @@ const stopAudioRPM=()=>{
     if(animReq)cancelAnimationFrame(animReq);
     if(audioStream){audioStream.getTracks().forEach(t=>t.stop());audioStream=null;}
     audioCtx.close();audioCtx=null;analyser=null;animReq=null;
+    rpmFiltered=0;
     updateAudioBtns(false);
     ['audio-visual','audio-visual-ls'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width='0%';});
     ['rpm-val','rpm-val-ls'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='0';});
@@ -1648,6 +1858,142 @@ window.recoverDB=()=>{
     r.onsuccess=()=>{showToast('DB dihapus. Reload…','neon');setTimeout(()=>location.reload(),2000);};
     r.onerror=()=>showToast('Gagal hapus DB. Coba manual.','alert');
 };
+</script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js';
+
+const canvas3d=document.getElementById('ride-3d-canvas');
+if(canvas3d){
+    const scene=new THREE.Scene();
+    const camera=new THREE.PerspectiveCamera(58,1,.1,120);
+    camera.position.set(0,4.2,9.5);
+    camera.lookAt(0,0,0);
+
+    const renderer=new THREE.WebGLRenderer({canvas:canvas3d,alpha:true,antialias:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+
+    scene.add(new THREE.AmbientLight(0x88aaff,.42));
+    const key=new THREE.DirectionalLight(0xc8ff00,2.6);
+    key.position.set(-3,6,5);
+    scene.add(key);
+    const rim=new THREE.PointLight(0x00d4ff,4.5,28);
+    rim.position.set(4,2.2,2);
+    scene.add(rim);
+
+    const hud=new THREE.Group();
+    scene.add(hud);
+
+    const road=new THREE.Group();
+    hud.add(road);
+    const lineMat=new THREE.LineBasicMaterial({color:0x00d4ff,transparent:true,opacity:.28});
+    const centerMat=new THREE.LineBasicMaterial({color:0xc8ff00,transparent:true,opacity:.55});
+    for(let i=-5;i<=5;i++){
+        const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i,-.55,-32),new THREE.Vector3(i,-.55,8)]);
+        road.add(new THREE.Line(g,i===0?centerMat:lineMat));
+    }
+    for(let z=-32;z<=8;z+=2){
+        const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-5,-.55,z),new THREE.Vector3(5,-.55,z)]);
+        road.add(new THREE.Line(g,lineMat));
+    }
+
+    const bike=new THREE.Group();
+    hud.add(bike);
+    const neonMat=new THREE.MeshStandardMaterial({color:0xc8ff00,emissive:0xc8ff00,emissiveIntensity:1.8,metalness:.65,roughness:.22});
+    const cyMat=new THREE.MeshStandardMaterial({color:0x00d4ff,emissive:0x00d4ff,emissiveIntensity:2.2,metalness:.45,roughness:.28});
+    const darkMat=new THREE.MeshStandardMaterial({color:0x050509,metalness:.8,roughness:.3});
+    const body=new THREE.Mesh(new THREE.BoxGeometry(2.4,.24,.82),neonMat);
+    body.position.y=.35;
+    bike.add(body);
+    const cockpit=new THREE.Mesh(new THREE.BoxGeometry(.75,.34,.55),cyMat);
+    cockpit.position.set(.12,.62,-.08);
+    bike.add(cockpit);
+    const wheelGeo=new THREE.TorusGeometry(.46,.045,10,42);
+    const fw=new THREE.Mesh(wheelGeo,darkMat);
+    fw.position.set(1.05,.08,0);
+    fw.rotation.y=Math.PI/2;
+    bike.add(fw);
+    const rw=fw.clone();
+    rw.position.x=-1.05;
+    bike.add(rw);
+    bike.scale.set(1.45,1.45,1.45);
+    bike.position.z=-1.4;
+
+    const points=[];
+    for(let i=0;i<160;i++){
+        points.push((Math.random()-.5)*10,Math.random()*5-1.2,Math.random()*-36+8);
+    }
+    const particleGeo=new THREE.BufferGeometry();
+    particleGeo.setAttribute('position',new THREE.Float32BufferAttribute(points,3));
+    const particleMat=new THREE.PointsMaterial({color:0xc8ff00,size:.028,transparent:true,opacity:.6});
+    const particles=new THREE.Points(particleGeo,particleMat);
+    scene.add(particles);
+
+    let state={speed:0,lean:0,g:1,gx:0,gy:0,heading:0};
+    window.addEventListener('ride3d:update',e=>{state={...state,...e.detail};});
+
+    const resize=()=>{
+        const rect=canvas3d.getBoundingClientRect();
+        const w=Math.floor(rect.width),h=Math.floor(rect.height);
+        if(w<10||h<10)return;
+        camera.aspect=w/h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w,h,false);
+        diagnosticsDone=false;
+    };
+    window.ride3dResize=resize;
+    new ResizeObserver(resize).observe(canvas3d);
+    resize();
+
+    const clock=new THREE.Clock();
+    let diagnosticsDone=false;
+    const markRenderDiagnostics=()=>{
+        if(diagnosticsDone)return;
+        const gl=renderer.getContext();
+        const w=gl.drawingBufferWidth,h=gl.drawingBufferHeight;
+        if(w<10||h<10)return;
+        const px=new Uint8Array(36);
+        const pts=[[.2,.2],[.5,.2],[.8,.2],[.2,.5],[.5,.5],[.8,.5],[.2,.8],[.5,.8],[.8,.8]];
+        let nonblank=0;
+        pts.forEach(([x,y],i)=>{
+            gl.readPixels(Math.floor(w*x),Math.floor(h*y),1,1,gl.RGBA,gl.UNSIGNED_BYTE,px,i*4);
+            const o=i*4;
+            if(px[o]||px[o+1]||px[o+2]||px[o+3])nonblank++;
+        });
+        canvas3d.dataset.rendered=String(nonblank);
+        canvas3d.dataset.buffer=`${w}x${h}`;
+        diagnosticsDone=nonblank>0;
+    };
+
+    const animate=()=>{
+        const dt=clock.getDelta();
+        const t=clock.elapsedTime;
+        resize();
+        const leanRad=THREE.MathUtils.degToRad(state.lean||0);
+        const speedFactor=Math.min(1,(state.speed||0)/120);
+        bike.rotation.z=THREE.MathUtils.lerp(bike.rotation.z,-leanRad,.09);
+        bike.rotation.y=THREE.MathUtils.lerp(bike.rotation.y,(state.gx||0)*.22,.07);
+        bike.position.y=.35+Math.sin(t*3.2)*.025+(state.g-1)*.08;
+        fw.rotation.z-=dt*(6+speedFactor*28);
+        rw.rotation.z-=dt*(6+speedFactor*28);
+        road.position.z=((t*(2+speedFactor*20))%2);
+        road.rotation.z=THREE.MathUtils.lerp(road.rotation.z,leanRad*.16,.06);
+        hud.rotation.y=THREE.MathUtils.lerp(hud.rotation.y,THREE.MathUtils.degToRad((state.heading||0)%360)*.018,.02);
+        camera.position.x=THREE.MathUtils.lerp(camera.position.x,(state.gx||0)*.45,.05);
+        camera.position.y=THREE.MathUtils.lerp(camera.position.y,4.2+(state.g-1)*.18,.05);
+        camera.lookAt(0,.12,-2);
+
+        const pos=particles.geometry.attributes.position;
+        for(let i=2;i<pos.array.length;i+=3){
+            pos.array[i]+=dt*(2+speedFactor*18);
+            if(pos.array[i]>8)pos.array[i]=-36;
+        }
+        pos.needsUpdate=true;
+        renderer.render(scene,camera);
+        markRenderDiagnostics();
+        requestAnimationFrame(animate);
+    };
+    animate();
+}
 </script>
 </body>
 </html>
