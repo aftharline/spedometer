@@ -16,7 +16,7 @@ const STATIC_ASSETS = [
     './',
     './index.html',
     './manifest.json',
-    './assets/icon.svg',
+    './assets/icon.jpg',
 ];
 
 // CDN assets cached separately (failures won't break install)
