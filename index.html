@@ -451,6 +451,183 @@
             #ls-stats .stat-num{font-size:12px !important}
             #ls-stats .stat-lbl{font-size:6px !important}
         }
+
+        /* ══════════════════════════════════════════════════
+           FORCE PORTRAIT LOCK
+           body.force-portrait menimpa landscape media query.
+           Spesifisitas (body.class + selector) > media query selector.
+        ══════════════════════════════════════════════════ */
+        body.force-portrait #app{
+            max-width:28rem !important;flex-direction:column !important;
+        }
+        body.force-portrait .app-header{display:flex !important}
+        body.force-portrait .nav-bar{
+            width:100% !important;height:auto !important;
+            flex-direction:row !important;flex:none !important;
+            border-top:1px solid var(--border) !important;border-right:none !important;
+            order:0 !important;
+            padding-top:0 !important;
+            padding-bottom:env(safe-area-inset-bottom) !important;
+        }
+        body.force-portrait .nav-bar::before{
+            top:0 !important;bottom:auto !important;
+            left:0 !important;right:0 !important;
+            width:100% !important;height:1px !important;
+            background:linear-gradient(90deg,transparent,var(--neon),transparent) !important;
+            opacity:.25 !important;
+        }
+        body.force-portrait .nav-btn{
+            flex:1 !important;width:auto !important;
+            flex-direction:column !important;
+            padding:8px 4px 6px !important;
+        }
+        body.force-portrait .nav-label{display:flex !important}
+        body.force-portrait .nav-btn::after{
+            top:0 !important;bottom:auto !important;
+            left:20% !important;right:20% !important;
+            width:auto !important;height:2px !important;
+            transform:scaleX(0) !important;
+            transition:transform .25s cubic-bezier(.34,1.56,.64,1) !important;
+        }
+        body.force-portrait .nav-btn.is-active::after,
+        body.force-portrait .nav-btn.is-active-cy::after{transform:scaleX(1) !important}
+        body.force-portrait #main-content{
+            flex:1 !important;overflow-y:auto !important;
+            overflow-x:hidden !important;height:auto !important;
+        }
+        body.force-portrait #view-dashboard{
+            padding:16px 16px 12px !important;
+            gap:10px !important;
+            height:auto !important;
+            min-height:calc(100dvh - 140px) !important;
+            overflow:hidden !important;
+        }
+        body.force-portrait #instrument-cluster{
+            flex-direction:column !important;
+            align-items:center !important;
+            justify-content:center !important;
+            flex:unset !important;
+            gap:unset !important;
+        }
+        body.force-portrait #panel-gforce,
+        body.force-portrait #panel-lean{display:none !important}
+        body.force-portrait #panel-speed{
+            flex:unset !important;display:flex !important;
+            flex-direction:column !important;padding:0 !important;
+            gap:6px !important;min-width:unset !important;
+            background:transparent !important;border:none !important;
+            clip-path:unset !important;
+        }
+        body.force-portrait #speedo-container{
+            flex:unset !important;min-height:unset !important;width:auto !important;
+        }
+        body.force-portrait .portrait-only{display:grid !important}
+        body.force-portrait #dash-bottom{
+            flex-direction:column !important;gap:6px !important;
+        }
+        body.force-portrait #ls-stats{
+            flex:unset !important;display:grid !important;
+            grid-template-columns:repeat(4,1fr) !important;gap:8px !important;
+        }
+        body.force-portrait #ls-sos{
+            flex:unset !important;white-space:unset !important;
+            padding:12px !important;font-size:13px !important;letter-spacing:3px !important;
+        }
+        body.force-portrait #ls-stats > div{padding:6px 4px !important}
+        body.force-portrait #ls-stats .stat-num{font-size:13px !important}
+        body.force-portrait #ls-stats .stat-lbl{font-size:7px !important}
+
+        /* ══════════════════════════════════════════════════
+           FORCE LANDSCAPE LOCK
+           body.force-landscape memaksa layout landscape
+           meskipun perangkat dalam orientasi portrait.
+        ══════════════════════════════════════════════════ */
+        body.force-landscape #app{max-width:100% !important;flex-direction:row !important}
+        body.force-landscape .app-header{display:none !important}
+        body.force-landscape .nav-bar{
+            width:54px !important;height:100dvh !important;
+            flex-direction:column !important;flex:none !important;
+            border-top:none !important;border-right:1px solid var(--border) !important;
+            order:-1 !important;
+            padding-top:max(6px,env(safe-area-inset-top)) !important;
+            padding-bottom:max(6px,env(safe-area-inset-bottom)) !important;
+        }
+        body.force-landscape .nav-bar::before{
+            top:0 !important;bottom:0 !important;
+            left:auto !important;right:0 !important;
+            width:1px !important;height:100% !important;
+            background:linear-gradient(180deg,transparent,var(--neon),transparent) !important;
+            opacity:.2 !important;
+        }
+        body.force-landscape .nav-btn{
+            flex:1 !important;width:100% !important;
+            flex-direction:column !important;
+            padding:6px 0 !important;
+        }
+        body.force-landscape .nav-label{display:none !important}
+        body.force-landscape .nav-btn::after{
+            top:20% !important;bottom:20% !important;
+            left:0 !important;right:auto !important;
+            width:2px !important;height:auto !important;
+            transform:scaleY(0) !important;
+            transition:transform .25s cubic-bezier(.34,1.56,.64,1) !important;
+        }
+        body.force-landscape .nav-btn.is-active::after,
+        body.force-landscape .nav-btn.is-active-cy::after{transform:scaleY(1) !important}
+        body.force-landscape #main-content{
+            flex:1 !important;overflow-y:auto !important;
+            overflow-x:hidden !important;height:100dvh !important;
+        }
+        body.force-landscape #view-dashboard{
+            padding:6px 8px !important;gap:5px !important;
+            height:100dvh !important;min-height:unset !important;overflow:hidden !important;
+        }
+        body.force-landscape #instrument-cluster{
+            flex-direction:row !important;
+            align-items:stretch !important;justify-content:stretch !important;
+            flex:1 !important;gap:6px !important;min-height:0 !important;
+        }
+        body.force-landscape #panel-speed,
+        body.force-landscape #panel-gforce,
+        body.force-landscape #panel-lean{
+            flex:1 !important;display:flex !important;
+            flex-direction:column !important;gap:5px !important;
+            min-width:0 !important;padding:8px !important;
+            position:relative !important;overflow:hidden !important;
+            background:linear-gradient(180deg,rgba(8,8,16,.58),rgba(8,8,16,.35)) !important;
+            border:1px solid var(--border2) !important;
+        }
+        body.force-landscape #panel-speed{
+            clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%) !important;
+        }
+        body.force-landscape #panel-lean{
+            clip-path:polygon(10px 0,100% 0,100% 100%,0 100%,0 10px) !important;
+        }
+        body.force-landscape #speedo-container{
+            flex:1 !important;min-height:0 !important;width:100% !important;
+            display:flex !important;align-items:center !important;
+            justify-content:center !important;overflow:hidden !important;
+        }
+        body.force-landscape #speedo-container #speedo-svg{
+            max-width:100% !important;max-height:100% !important;
+            width:auto !important;height:auto !important;
+        }
+        body.force-landscape .portrait-only{display:none !important}
+        body.force-landscape #dash-bottom{
+            flex-direction:row !important;align-items:center !important;
+            gap:6px !important;flex-shrink:0 !important;
+        }
+        body.force-landscape #ls-stats{
+            flex:1 !important;display:grid !important;
+            grid-template-columns:repeat(4,1fr) !important;gap:4px !important;
+        }
+        body.force-landscape #ls-sos{
+            flex:none !important;white-space:nowrap !important;
+            padding:7px 16px !important;font-size:10px !important;letter-spacing:2px !important;
+        }
+        body.force-landscape #ls-stats > div{padding:4px !important}
+        body.force-landscape #ls-stats .stat-num{font-size:12px !important}
+        body.force-landscape #ls-stats .stat-lbl{font-size:6px !important}
     </style>
 </head>
 
@@ -1672,23 +1849,19 @@ const cycleRotLock=()=>{
     const labels={auto:'AUTO',portrait:'PORT',landscape:'LAND'};
     ico.className=`fa-solid ${icons[mode]} text-[9px]`;
     lbl.textContent=labels[mode];
-    // Try Web API screen.orientation.lock()
-    if(screen.orientation&&screen.orientation.lock){
-        if(mode==='auto'){
-            screen.orientation.unlock();
-        } else {
-            screen.orientation.lock(mode==='portrait'?'portrait':'landscape').catch(()=>{});
-        }
-    }
-    // Fallback: toggle body class for CSS-driven layout
+    // Apply CSS-class-based layout lock (works on all browsers/contexts)
     document.body.classList.remove('force-portrait','force-landscape');
-    if(mode==='portrait') document.body.classList.add('force-portrait');
+    if(mode==='portrait')  document.body.classList.add('force-portrait');
     if(mode==='landscape') document.body.classList.add('force-landscape');
-    // Reset lean baseline when switching orientation
+    // Reset lean baseline — sensor axis changes with orientation
     leanBaseline=null;
     fusedLean=0;
     updateLeanGauge(0);
-    const modeLabels={auto:'Auto rotation',portrait:'Portrait terkunci',landscape:'Landscape terkunci'};
+    const modeLabels={
+        auto:'Auto — layout mengikuti layar',
+        portrait:'Portrait terkunci 📱',
+        landscape:'Landscape terkunci 📱'
+    };
     showToast(modeLabels[mode],'muted');
 };
 
