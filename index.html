@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APEX GARASI PRO</title>
+    <title>AFTHRIDE</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#c8ff00">
     <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
@@ -134,6 +134,26 @@
         .alert-text{color:var(--alert)}
         section.hidden{display:none !important}
         #main-content{scrollbar-width:thin;scrollbar-color:var(--neon) transparent}
+
+        /* ── ROTATION LOCK BUTTON ────────────────────────── */
+        #btn-rot-lock{
+            display:inline-flex;align-items:center;gap:4px;
+            padding:3px 7px;
+            font-family:'Exo 2',sans-serif;font-size:8px;font-weight:700;
+            letter-spacing:1.5px;text-transform:uppercase;
+            cursor:pointer;transition:all .18s;position:relative;
+            clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+        }
+        #btn-rot-lock[data-mode="auto"]{
+            background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.22);color:var(--cyber);
+        }
+        #btn-rot-lock[data-mode="portrait"]{
+            background:rgba(200,255,0,.08);border:1px solid rgba(200,255,0,.32);color:var(--neon);
+        }
+        #btn-rot-lock[data-mode="landscape"]{
+            background:rgba(255,136,0,.08);border:1px solid rgba(255,136,0,.32);color:var(--warn);
+        }
+        #btn-rot-lock:active{transform:scale(.93);opacity:.8}
 
         /* ══════════════════════════════════════════════════
            INSTRUMENT CLUSTER — PORTRAIT DEFAULT
@@ -443,11 +463,11 @@
         <div class="header-stripe"></div>
         <div class="pl-4">
             <div class="flex items-center gap-2">
-                <h1 class="f-exo font-black text-xl tracking-[4px] uppercase">GARASI<span class="neon-text">PRO</span></h1>
+                <h1 class="f-exo font-black text-xl tracking-[4px] uppercase">AFTH<span class="neon-text">RIDE</span></h1>
                 <span class="f-exo font-bold text-[8px] tracking-widest px-2 py-0.5 uppercase"
-                      style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.35);color:var(--cyber)">APEX</span>
+                      style="background:rgba(200,255,0,.1);border:1px solid rgba(200,255,0,.25);color:var(--neon)">APP</span>
             </div>
-            <p class="f-bar text-[10px] tracking-[3px] uppercase mt-0.5" style="color:var(--muted2)" id="header-subtitle">Super App Otomotif</p>
+            <p class="f-bar text-[10px] tracking-[3px] uppercase mt-0.5" style="color:var(--muted2)" id="header-subtitle">Super App Riding</p>
         </div>
         <div class="flex items-center gap-2">
             <span class="dot dot-off" id="gps-dot"></span>
@@ -528,9 +548,13 @@
                     <span class="dot dot-off" id="gps-dot-2"></span>
                     <span class="f-bar text-xs tracking-widest uppercase" id="gps-status" style="color:var(--muted2)">MENCARI GPS…</span>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 flex-wrap justify-end">
                     <span class="sensor-chip" id="sensor-chip"><i class="fa-solid fa-satellite-dish text-[8px]"></i>IDLE</span>
                     <span class="f-mono text-[9px]" id="gps-acc" style="color:var(--muted)">ACC: --</span>
+                    <button id="btn-rot-lock" data-mode="auto" onclick="cycleRotLock()" title="Rotation Lock">
+                        <i id="rot-lock-icon" class="fa-solid fa-rotate text-[9px]"></i>
+                        <span id="rot-lock-label">AUTO</span>
+                    </button>
                     <button onclick="resetMaxSpeed()" class="f-exo font-bold text-[9px] px-2 py-1 tracking-widest uppercase" style="background:var(--s2);border:1px solid var(--border);color:var(--muted2)">RESET MAX</button>
                 </div>
             </div>
@@ -1386,8 +1410,8 @@ const switchView=view=>{
     const nb=document.getElementById('nav-'+nk);
     if(nb) nb.classList.add(view==='labs'?'is-active-cy':'is-active');
     document.getElementById('view-'+view).classList.remove('hidden');
-    const titles={garage:'Super App Otomotif',details:'Detail Kendaraan',dashboard:'Live GPS Ride',labs:'Pro Labs — Beta',checklist:'Touring Gear Check'};
-    document.getElementById('header-subtitle').textContent=titles[view]||'Garasi Digital Pro';
+    const titles={garage:'Super App Riding',details:'Detail Kendaraan',dashboard:'Live GPS Ride',labs:'Pro Labs — Beta',checklist:'Touring Gear Check'};
+    document.getElementById('header-subtitle').textContent=titles[view]||'AFTHRIDE';
     if(view==='dashboard') startSpeedometer(); else stopSpeedometer();
     if(view!=='labs'){stopTelemetry();stopAudioRPM();}
     if(view==='garage')    loadVehicles();
@@ -1632,40 +1656,115 @@ const updateAudioBtns=active=>{
     });
 };
 
+/* ── ROTATION LOCK ────────────────────────────────────── */
+const ROT_MODES=['auto','portrait','landscape'];
+let rotLockIdx=0;
+
+const cycleRotLock=()=>{
+    rotLockIdx=(rotLockIdx+1)%ROT_MODES.length;
+    const mode=ROT_MODES[rotLockIdx];
+    const btn=document.getElementById('btn-rot-lock');
+    const ico=document.getElementById('rot-lock-icon');
+    const lbl=document.getElementById('rot-lock-label');
+    if(!btn)return;
+    btn.dataset.mode=mode;
+    const icons={auto:'fa-rotate',portrait:'fa-mobile-screen',landscape:'fa-mobile-screen-button'};
+    const labels={auto:'AUTO',portrait:'PORT',landscape:'LAND'};
+    ico.className=`fa-solid ${icons[mode]} text-[9px]`;
+    lbl.textContent=labels[mode];
+    // Try Web API screen.orientation.lock()
+    if(screen.orientation&&screen.orientation.lock){
+        if(mode==='auto'){
+            screen.orientation.unlock();
+        } else {
+            screen.orientation.lock(mode==='portrait'?'portrait':'landscape').catch(()=>{});
+        }
+    }
+    // Fallback: toggle body class for CSS-driven layout
+    document.body.classList.remove('force-portrait','force-landscape');
+    if(mode==='portrait') document.body.classList.add('force-portrait');
+    if(mode==='landscape') document.body.classList.add('force-landscape');
+    // Reset lean baseline when switching orientation
+    leanBaseline=null;
+    fusedLean=0;
+    updateLeanGauge(0);
+    const modeLabels={auto:'Auto rotation',portrait:'Portrait terkunci',landscape:'Landscape terkunci'};
+    showToast(modeLabels[mode],'muted');
+};
+
+// Helper: get current effective orientation angle (0=portrait, 90/270=landscape)
+const getOrientAngle=()=>{
+    const mode=ROT_MODES[rotLockIdx];
+    if(mode==='portrait') return 0;
+    if(mode==='landscape') return 90;
+    return (screen.orientation&&screen.orientation.angle!=null)
+        ? screen.orientation.angle
+        : (window.innerWidth>window.innerHeight?90:0);
+};
+
 /* ── TELEMETRY & CRASH ────────────────────────────────── */
 let telActive=false,crashTimer=null,crashCount=10,leanBaseline=null,lastOrientAt=0;
 let fusedLean=0,filteredG=1,filteredGx=0,filteredGy=0,lastCrashPeakAt=0;
+
+// Rolling median buffer for G-force spike rejection
+const G_BUF_SIZE=5;
+let gBuffer=Array(G_BUF_SIZE).fill(1.0),gBufIdx=0;
+const medianG=rawG=>{
+    gBuffer[gBufIdx%G_BUF_SIZE]=rawG;
+    gBufIdx++;
+    const sorted=[...gBuffer].sort((a,b)=>a-b);
+    return sorted[Math.floor(G_BUF_SIZE/2)];
+};
 
 const clampLean=angle=>Math.max(-90,Math.min(90,angle));
 const applyLeanAngle=(rawAngle,source='IMU')=>{
     if(!Number.isFinite(rawAngle))return;
     if(leanBaseline===null) leanBaseline=rawAngle;
     const target=clampLean(rawAngle-leanBaseline);
-    const delta=Math.abs(target-fusedLean);
-    const alpha=delta>18?.34:.18;
-    fusedLean=smooth(fusedLean,target,alpha);
+    // Snap to 0 if nearly vertical (reduces drift noise)
+    const snapped=Math.abs(target)<1.5?0:target;
+    const delta=Math.abs(snapped-fusedLean);
+    // Faster response to large changes, smoother for small changes
+    const alpha=delta>20?.30:delta>10?.20:.12;
+    fusedLean=smooth(fusedLean,snapped,alpha);
     updateLeanGauge(fusedLean);
     updateRideState({lean:fusedLean,sensor:source});
 };
 
+// Orientation-aware lean calculation from accelerometer
 const leanFromAcceleration=acc=>{
-    const x=acc.x||0,z=acc.z||0;
-    if(Math.abs(x)+Math.abs(z)<0.2)return null;
-    return Math.atan2(x,z)*180/Math.PI;
+    const x=acc.x||0,y=acc.y||0,z=acc.z||0;
+    const orientAngle=getOrientAngle();
+    // Portrait (0°/180°): device held vertically, lean = left/right tilt
+    // → roll = atan2(x, z)
+    if(orientAngle===0||orientAngle===180){
+        if(Math.abs(x)+Math.abs(z)<0.25)return null;
+        return Math.atan2(x,z)*180/Math.PI;
+    }
+    // Landscape (90°/270°): device rotated, gravity shifts to Y axis
+    // → roll = atan2(y, z); negate for 270° if needed
+    const sign=(orientAngle===270)?-1:1;
+    if(Math.abs(y)+Math.abs(z)<0.25)return null;
+    return sign*Math.atan2(y,z)*180/Math.PI;
 };
 
 const handleMotion=e=>{
     const acc=e.accelerationIncludingGravity;if(!acc)return;
-    const rawG=Math.sqrt(acc.x*acc.x+acc.y*acc.y+acc.z*acc.z)/9.81;
+    const rawG=Math.sqrt((acc.x||0)**2+(acc.y||0)**2+(acc.z||0)**2)/9.81;
+    const medG=medianG(rawG);
+    // Deadband: near resting G (1.0), snap to avoid jitter
+    const targetG=Math.abs(medG-1.0)<0.05?1.0:medG;
+    // Faster rise (spikes), slower fall (smooth decay)
+    filteredG=smooth(filteredG,targetG,targetG>filteredG?.28:.16);
     const rawGx=(acc.x||0)/9.81, rawGy=(acc.y||0)/9.81;
-    filteredG=smooth(filteredG,rawG,rawG>filteredG?.32:.18);
-    filteredGx=smooth(filteredGx,rawGx,.22);
-    filteredGy=smooth(filteredGy,rawGy,.22);
+    filteredGx=smooth(filteredGx,rawGx,.20);
+    filteredGy=smooth(filteredGy,rawGy,.20);
     // Labs display
     const labsG=document.getElementById('gforce-val');if(labsG)labsG.textContent=filteredG.toFixed(1);
     // Dashboard 2D meter
     updateGForceMeter(filteredG,filteredGx,filteredGy);
     updateRideState({g:filteredG,gx:filteredGx,gy:filteredGy});
+    // Only use motion for lean if orientation data is stale (>500ms)
     if(Date.now()-lastOrientAt>500){
         const motionLean=leanFromAcceleration(acc);
         if(motionLean!==null) applyLeanAngle(motionLean,'MOTION');
@@ -1675,9 +1774,26 @@ const handleMotion=e=>{
 };
 
 const handleOrient=e=>{
-    if(e.gamma===null||e.gamma===undefined)return;
+    const orientAngle=getOrientAngle();
+    // Portrait: gamma = left/right tilt (lean angle)
+    // Landscape: beta = front/back, gamma shifts — use beta for lean in landscape
+    let leanRaw;
+    if(orientAngle===0||orientAngle===180){
+        // Portrait: gamma is roll (left/right lean)
+        if(e.gamma===null||e.gamma===undefined)return;
+        leanRaw=e.gamma;
+    } else {
+        // Landscape: beta is now the roll axis
+        if(e.beta===null||e.beta===undefined)return;
+        // beta range is -180..180, lean range is -90..90
+        // normalize: when landscape-right (90°), beta 0=level
+        const sign=(orientAngle===270)?-1:1;
+        leanRaw=sign*e.beta;
+    }
+    // Extra validity check: ensure the tilt data is plausible
+    if(!Number.isFinite(leanRaw))return;
     lastOrientAt=Date.now();
-    applyLeanAngle(e.gamma,'ORIENT');
+    applyLeanAngle(leanRaw,'ORIENT');
 };
 
 const requestSensorPermissions=async()=>{
