@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>APEX GARASI PRO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800;900&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>(function(){const t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+    <style>
+        /* ── TOKENS ─────────────────────────────────────── */
+        :root {
+            --neon:   #c8ff00; --cyber: #00d4ff;
+            --alert:  #ff2244; --warn:  #ff8800;
+            --bg:     #020204; --s1:    #080810;
+            --s2:     #0e0e18; --s3:    #151520;
+            --border: #1c1c28; --border2:#252535;
+            --text:   #e8e8f0; --muted: #44445a; --muted2:#666680;
+        }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{background:var(--bg);color:var(--text);font-family:'Barlow Condensed',sans-serif;
+             user-select:none;-webkit-tap-highlight-color:transparent;overflow:hidden;height:100dvh;width:100vw}
+        ::-webkit-scrollbar{width:2px} ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:var(--neon);opacity:.3}
+
+        /* ── TYPOGRAPHY ──────────────────────────────────── */
+        .f-exo{font-family:'Exo 2',sans-serif}
+        .f-mono{font-family:'Share Tech Mono',monospace}
+        .f-bar{font-family:'Barlow Condensed',sans-serif}
+
+        /* ── HEX BG ──────────────────────────────────────── */
+        .hex-bg{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 4L56 18v28L30 60 4 46V18z' fill='none' stroke='%231c1c28' stroke-width='0.8'/%3E%3C/svg%3E");background-size:60px 104px}
+
+        /* ── SCANLINES ───────────────────────────────────── */
+        .scanlines::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(0,0,0,.18) 3px,rgba(0,0,0,.18) 4px);pointer-events:none;border-radius:inherit;z-index:1}
+
+        /* ── CARBON ──────────────────────────────────────── */
+        .carbon{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 1px,transparent 1px,transparent 7px),repeating-linear-gradient(-45deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 1px,transparent 1px,transparent 7px)}
+
+        /* ── CLIP PATHS ─────────────────────────────────── */
+        .clip-sm {clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
+        .clip-md {clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
+        .clip-lg {clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+        .clip-tr {clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%)}
+        .clip-tl {clip-path:polygon(12px 0,100% 0,100% 100%,0 100%,0 12px)}
+
+        /* ── HEADER ──────────────────────────────────────── */
+        .app-header{background:linear-gradient(180deg,rgba(8,8,16,.98),rgba(8,8,16,.92));border-bottom:1px solid var(--border);position:relative}
+        .app-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon) 40%,var(--cyber) 60%,transparent);opacity:.5}
+        .header-stripe{position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--neon),var(--cyber))}
+
+        /* ── NAV ─────────────────────────────────────────── */
+        .nav-bar{background:rgba(8,8,16,.98);border-top:1px solid var(--border);position:relative}
+        .nav-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:.25}
+        .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px 6px;gap:3px;color:var(--muted);background:none;border:none;cursor:pointer;position:relative;transition:color .2s}
+        .nav-btn::after{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--neon);transform:scaleX(0);transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+        .nav-btn.is-active{color:var(--neon)} .nav-btn.is-active::after{transform:scaleX(1)}
+        .nav-btn.is-active-cy{color:var(--cyber)} .nav-btn.is-active-cy::after{background:var(--cyber);transform:scaleX(1)}
+        .nav-icon{font-size:17px}
+        .nav-label{font-size:8px;font-family:'Exo 2',sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+
+        /* ── BUTTONS ─────────────────────────────────────── */
+        .btn-neon{background:rgba(200,255,0,.08);border:1px solid rgba(200,255,0,.35);color:var(--neon);font-family:'Exo 2',sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .18s}
+        .btn-neon:active{background:rgba(200,255,0,.2);transform:scale(.96)}
+        .btn-fill{background:var(--neon);color:#020204;font-family:'Exo 2',sans-serif;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .18s}
+        .btn-fill:active{opacity:.85;transform:scale(.96)}
+
+        /* ── INPUTS ──────────────────────────────────────── */
+        .inp{background:var(--s2);border:1px solid var(--border2);color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:15px;padding:11px 14px;width:100%;outline:none;transition:border-color .18s}
+        .inp:focus{border-color:var(--neon)} .inp::placeholder{color:var(--muted)}
+        .inp[type="date"]{color-scheme:dark}
+        label.inp-label{font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);display:block;margin-bottom:5px}
+
+        /* ── CARDS / LOGS ────────────────────────────────── */
+        .vehicle-card{background:var(--s1);border:1px solid var(--border);position:relative;overflow:hidden;cursor:pointer;transition:border-color .18s,background .18s}
+        .vehicle-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--neon),var(--cyber));opacity:0;transition:opacity .18s}
+        .vehicle-card:active{border-color:rgba(200,255,0,.4);background:var(--s2)} .vehicle-card:active::before{opacity:1}
+        .log-item{background:var(--s1);border:1px solid var(--border)}
+
+        /* ── STATUS DOTS ─────────────────────────────────── */
+        .dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+        .dot-on{background:var(--neon);box-shadow:0 0 6px var(--neon);animation:blink 2s ease-in-out infinite}
+        .dot-off{background:var(--muted)}
+        .dot-err{background:var(--alert);box-shadow:0 0 6px var(--alert);animation:blink .8s ease-in-out infinite}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+
+        /* ── CLASSIC GAUGE (Labs only) ───────────────────── */
+        .gauge-wrap{width:170px;height:85px;border-top-left-radius:85px;border-top-right-radius:85px;border:2px solid var(--border2);border-bottom:0;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 100%,rgba(200,255,0,.05),transparent 60%),var(--s2)}
+        .gauge-needle{width:2px;height:74px;background:linear-gradient(to top,var(--neon) 60%,transparent);position:absolute;bottom:0;left:50%;transform-origin:bottom center;transform:translateX(-50%) rotate(0deg);transition:transform .07s linear;box-shadow:0 0 6px var(--neon)}
+        .gauge-needle::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon)}
+        .gauge-center{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:1px;height:12px;background:rgba(255,255,255,.1)}
+
+        /* ── AUDIO BAR ───────────────────────────────────── */
+        .audio-bar{width:100%;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+        .audio-fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--cyber),var(--alert));width:0%;transition:width .04s}
+
+        /* ── SPEEDOMETER SVG ─────────────────────────────── */
+        #speedo-svg{filter:drop-shadow(0 0 24px rgba(200,255,0,.2))}
+
+        /* ── OBD TERMINAL ────────────────────────────────── */
+        .obd-term{background:#020c02;border:1px solid rgba(0,212,255,.25);font-family:'Share Tech Mono',monospace;font-size:11px;color:#00d4ff;line-height:1.7;padding:12px 14px;white-space:pre-line}
+
+        /* ── MODAL SHEET ─────────────────────────────────── */
+        .modal-sheet{background:var(--s1);border-top:1px solid var(--border2);position:relative}
+        .modal-sheet::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:.4}
+
+        /* ── ANIMATIONS ──────────────────────────────────── */
+        @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes spinCW{to{transform:rotate(360deg)}}
+        @keyframes spinCCW{to{transform:rotate(-360deg)}}
+        @keyframes pulseAlert{0%{box-shadow:0 0 0 0 rgba(255,34,68,.7)}70%{box-shadow:0 0 0 24px rgba(255,34,68,0)}100%{box-shadow:0 0 0 0 rgba(255,34,68,0)}}
+        .slide-up{animation:slideUp .3s cubic-bezier(.25,.46,.45,.94) forwards}
+        .fade-in{animation:fadeIn .3s ease forwards}
+        .spin-cw{animation:spinCW 1.4s linear infinite}
+        .spin-ccw{animation:spinCCW 1s linear infinite}
+        .btn-sos,.crash-modal-wrap{animation:pulseAlert 1.5s infinite}
+
+        /* ── CHECKLIST ───────────────────────────────────── */
+        .check-item{background:var(--s1);border:1px solid var(--border);transition:border-color .18s}
+        .check-item.is-done{border-color:rgba(200,255,0,.15)}
+
+        /* ── MISC ────────────────────────────────────────── */
+        .neon-text{color:var(--neon);text-shadow:0 0 14px rgba(200,255,0,.4)}
+        .cyber-text{color:var(--cyber);text-shadow:0 0 14px rgba(0,212,255,.4)}
+        .alert-text{color:var(--alert)}
+        section.hidden{display:none !important}
+        #main-content{scrollbar-width:thin;scrollbar-color:var(--neon) transparent}
+
+        /* ══════════════════════════════════════════════════
+           INSTRUMENT CLUSTER — PORTRAIT DEFAULT
+        ══════════════════════════════════════════════════ */
+        #view-dashboard{
+            padding:16px 16px 12px;
+            gap:10px;
+            min-height:calc(100dvh - 140px);
+        }
+        #instrument-cluster{
+            display:flex;
+            flex-direction:column;
+            flex:1;
+            min-height:0;
+            align-items:center;
+            justify-content:center;
+        }
+        #panel-speed{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:6px;
+            width:100%;
+        }
+        /* G-force and Lean panels hidden in portrait */
+        #panel-gforce,#panel-lean{display:none}
+
+        /* Portrait tele strip */
+        #portrait-tele{
+            display:none; /* toggled by JS when telemetry active */
+            width:100%;
+        }
+
+        /* Speedo container in portrait just wraps the SVG naturally */
+        #speedo-container{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        /* SVG wrap (for lean + gforce panels) */
+        .svg-wrap{
+            flex:1;
+            min-height:0;
+            width:100%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            overflow:hidden;
+        }
+        .svg-wrap svg{
+            max-width:100%;
+            max-height:100%;
+            width:auto;
+            height:auto;
+        }
+
+        /* Instrument panel header */
+        .inst-hdr{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-shrink:0;
+            width:100%;
+        }
+        .inst-title{
+            font-family:'Exo 2',sans-serif;
+            font-size:9px;
+            font-weight:700;
+            letter-spacing:3px;
+            text-transform:uppercase;
+        }
+
+        /* Panel accent lines (top) */
+        .inst-panel-speed{border-top:2px solid var(--neon)}
+        .inst-panel-gforce{border-top:2px solid var(--alert)}
+        .inst-panel-lean{border-top:2px solid var(--cyber)}
+
+        /* Bottom dash bar */
+        #dash-bottom{
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+            flex-shrink:0;
+            width:100%;
+        }
+
+        /* ══════════════════════════════════════════════════
+           LIGHT MODE
+        ══════════════════════════════════════════════════ */
+        [data-theme="light"]{
+            --neon:#4d8c00; --cyber:#0077aa;
+            --alert:#cc1133; --warn:#cc5500;
+            --bg:#ebebf2; --s1:#f4f4fa;
+            --s2:#e2e2ec; --s3:#d4d4e0;
+            --border:#c8c8d8; --border2:#b8b8cc;
+            --text:#181828; --muted:#8888a0; --muted2:#606078;
+            color-scheme:light;
+        }
+        [data-theme="light"] body{color-scheme:light}
+        [data-theme="light"] .inp[type="date"]{color-scheme:light}
+        [data-theme="light"] .hex-bg{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 4L56 18v28L30 60 4 46V18z' fill='none' stroke='%23c0c0d4' stroke-width='0.8'/%3E%3C/svg%3E")}
+        [data-theme="light"] .obd-term{background:#f0f8f2;border-color:rgba(0,100,150,.3)}
+        [data-theme="light"] .app-header{background:linear-gradient(180deg,rgba(235,235,242,.98),rgba(230,230,240,.95))}
+        [data-theme="light"] .nav-bar{background:rgba(235,235,242,.98)}
+        [data-theme="light"] .neon-text{text-shadow:0 0 10px rgba(77,140,0,.25)}
+        [data-theme="light"] .cyber-text{text-shadow:0 0 10px rgba(0,119,170,.25)}
+        [data-theme="light"] .carbon{background-image:repeating-linear-gradient(45deg,rgba(0,0,0,.025) 0,rgba(0,0,0,.025) 1px,transparent 1px,transparent 7px),repeating-linear-gradient(-45deg,rgba(0,0,0,.025) 0,rgba(0,0,0,.025) 1px,transparent 1px,transparent 7px)}
+        [data-theme="light"] #speedo-svg{filter:drop-shadow(0 0 16px rgba(77,140,0,.2))}
+        [data-theme="light"] .gauge-needle{box-shadow:0 0 4px var(--neon)}
+        [data-theme="light"] .gauge-needle::after{box-shadow:0 0 6px var(--neon)}
+
+        /* ══════════════════════════════════════════════════
+           LANDSCAPE — FULL SCREEN + 3-PANEL CLUSTER
+        ══════════════════════════════════════════════════ */
+        @media (orientation:landscape){
+
+            /* App goes full-width, row layout */
+            #app{max-width:100% !important;flex-direction:row !important}
+
+            /* Hide portrait header */
+            .app-header{display:none !important}
+
+            /* Side nav */
+            .nav-bar{
+                width:54px !important;height:100dvh !important;
+                flex-direction:column !important;flex:none !important;
+                border-top:none !important;border-right:1px solid var(--border) !important;
+                order:-1;
+                padding-top:max(6px,env(safe-area-inset-top)) !important;
+                padding-bottom:max(6px,env(safe-area-inset-bottom)) !important;
+            }
+            .nav-bar::before{top:0;bottom:0;left:auto;right:0;width:1px;height:100%;background:linear-gradient(180deg,transparent,var(--neon),transparent);opacity:.2}
+            .nav-btn{flex:1 !important;width:100% !important;padding:6px 0 !important}
+            .nav-label{display:none !important}
+            .nav-btn::after{top:20% !important;bottom:20% !important;left:0 !important;right:auto !important;width:2px !important;height:auto !important;transform:scaleY(0) !important;transition:transform .25s cubic-bezier(.34,1.56,.64,1) !important}
+            .nav-btn.is-active::after,.nav-btn.is-active-cy::after{transform:scaleY(1) !important}
+
+            /* Main fills rest */
+            #main-content{flex:1 !important;overflow-y:auto !important;overflow-x:hidden !important;height:100dvh !important}
+
+            /* ── DASHBOARD in landscape ── */
+            #view-dashboard{
+                padding:6px 8px 6px 8px !important;
+                gap:5px !important;
+                height:100dvh !important;
+                min-height:unset !important;
+                overflow:hidden !important;
+            }
+
+            /* Cluster becomes a 3-column row */
+            #instrument-cluster{
+                flex-direction:row !important;
+                align-items:stretch !important;
+                justify-content:stretch !important;
+                flex:1 !important;
+                gap:6px !important;
+                min-height:0 !important;
+            }
+
+            /* All 3 panels visible, equal flex */
+            #panel-speed,#panel-gforce,#panel-lean{
+                flex:1 !important;
+                display:flex !important;
+                flex-direction:column !important;
+                gap:5px !important;
+                min-width:0 !important;
+                padding:8px !important;
+                position:relative;
+                overflow:hidden;
+                background:var(--s1);
+                border:1px solid var(--border2);
+            }
+
+            /* Per-panel accent corners */
+            #panel-speed {clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%)}
+            #panel-lean  {clip-path:polygon(10px 0,100% 0,100% 100%,0 100%,0 10px)}
+
+            /* Speedo scales to fill panel */
+            #speedo-container{
+                flex:1 !important;
+                min-height:0 !important;
+                width:100% !important;
+                display:flex !important;
+                align-items:center !important;
+                justify-content:center !important;
+                overflow:hidden !important;
+            }
+            #speedo-container #speedo-svg{
+                max-width:100% !important;
+                max-height:100% !important;
+                width:auto !important;
+                height:auto !important;
+            }
+
+            /* Hide portrait-only elements */
+            .portrait-only{display:none !important}
+
+            /* Bottom bar goes horizontal */
+            #dash-bottom{
+                flex-direction:row !important;
+                align-items:center !important;
+                gap:6px !important;
+                flex-shrink:0 !important;
+            }
+            #ls-stats{flex:1 !important;display:grid !important;grid-template-columns:repeat(3,1fr) !important;gap:4px !important}
+            #ls-sos{flex:none !important;white-space:nowrap;padding:7px 16px !important;font-size:10px !important;letter-spacing:2px !important}
+
+            /* Compact stat cells */
+            #ls-stats > div{padding:4px !important}
+            #ls-stats .stat-num{font-size:12px !important}
+            #ls-stats .stat-lbl{font-size:6px !important}
+        }
+    </style>
+</head>
+
+<body class="flex justify-center items-stretch">
+<div id="app" class="w-full max-w-md h-dvh flex flex-col relative hex-bg overflow-hidden">
+
+    <!-- ── HEADER ───────────────────────────────────────── -->
+    <header class="app-header flex-none px-5 flex justify-between items-center"
+            style="padding-top:max(28px,env(safe-area-inset-top));padding-bottom:12px">
+        <div class="header-stripe"></div>
+        <div class="pl-4">
+            <div class="flex items-center gap-2">
+                <h1 class="f-exo font-black text-xl tracking-[4px] uppercase">GARASI<span class="neon-text">PRO</span></h1>
+                <span class="f-exo font-bold text-[8px] tracking-widest px-2 py-0.5 uppercase"
+                      style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.35);color:var(--cyber)">APEX</span>
+            </div>
+            <p class="f-bar text-[10px] tracking-[3px] uppercase mt-0.5" style="color:var(--muted2)" id="header-subtitle">Super App Otomotif</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="dot dot-off" id="gps-dot"></span>
+            <button id="btn-theme" onclick="toggleTheme()" class="w-9 h-9 flex items-center justify-center clip-sm active:scale-90" style="background:var(--s2);border:1px solid var(--border2)">
+                <i class="fa-solid fa-sun text-xs neon-text"></i>
+            </button>
+            <button id="btn-settings" class="w-9 h-9 flex items-center justify-center clip-sm active:scale-90" style="background:var(--s2);border:1px solid var(--border2)">
+                <i class="fa-solid fa-sliders text-xs neon-text"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ── MAIN ─────────────────────────────────────────── -->
+    <main class="flex-1 overflow-y-auto" id="main-content">
+
+        <!-- ═══ GARAGE ════════════════════════════════════ -->
+        <section id="view-garage" class="p-5 space-y-4 fade-in">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="f-exo font-bold text-lg uppercase tracking-[3px]">Kendaraan</h2>
+                    <p class="f-bar text-[10px] tracking-[3px] uppercase mt-0.5" style="color:var(--muted2)">My Garage</p>
+                </div>
+                <button onclick="openModal('modal-add-vehicle')" class="btn-fill clip-sm px-4 py-2 text-xs flex items-center gap-1.5">
+                    <i class="fa-solid fa-plus text-[10px]"></i>TAMBAH
+                </button>
+            </div>
+            <div id="vehicle-list" class="space-y-3 pb-4"></div>
+        </section>
+
+        <!-- ═══ VEHICLE DETAIL ════════════════════════════ -->
+        <section id="view-details" class="hidden p-5 space-y-4 fade-in">
+            <button onclick="switchView('garage')" class="flex items-center gap-2 f-bar text-xs tracking-widest uppercase" style="color:var(--muted2)">
+                <i class="fa-solid fa-chevron-left text-[10px]"></i>Kembali ke Garasi
+            </button>
+            <div class="vehicle-card clip-tr p-4 flex items-center gap-4">
+                <div id="detail-icon" class="w-12 h-12 flex items-center justify-center text-xl flex-shrink-0 clip-sm" style="background:rgba(200,255,0,.07);border:1px solid rgba(200,255,0,.18)"></div>
+                <div class="flex-1 min-w-0">
+                    <h2 id="detail-name" class="f-exo font-black text-base uppercase tracking-wider leading-none">—</h2>
+                    <p id="detail-brand" class="f-bar text-xs tracking-widest uppercase mt-1" style="color:var(--muted2)">—</p>
+                </div>
+                <button onclick="exportDataCSV()" class="w-9 h-9 flex items-center justify-center clip-sm flex-shrink-0 active:scale-90" style="background:var(--s2);border:1px solid var(--border2)">
+                    <i class="fa-solid fa-file-csv text-xs" style="color:var(--muted2)"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="openModal('modal-add-service')" class="clip-tr p-4 flex flex-col items-center gap-2 active:scale-95" style="background:var(--s1);border:1px solid var(--border2)">
+                    <i class="fa-solid fa-wrench text-lg" style="color:var(--cyber)"></i>
+                    <span class="f-exo font-bold text-xs tracking-widest uppercase">SERVIS</span>
+                </button>
+                <button onclick="triggerAiScanner()" class="clip-tr p-4 flex flex-col items-center gap-2 active:scale-95 relative" style="background:var(--s1);border:1px solid var(--border2)">
+                    <span class="f-exo font-black text-[8px] tracking-widest px-2 py-0.5 absolute top-0 right-0" style="background:var(--neon);color:#020204">AI</span>
+                    <i class="fa-solid fa-gas-pump text-lg neon-text"></i>
+                    <span class="f-exo font-bold text-xs tracking-widest uppercase">BENSIN</span>
+                    <input type="file" id="ai-cam-input" accept="image/*" capture="environment" class="hidden" onchange="processAIOdometer(event)">
+                </button>
+            </div>
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="f-exo font-bold text-xs tracking-[3px] uppercase">Riwayat</h3>
+                    <span class="f-mono text-[9px]" style="color:var(--muted)">LOG HISTORY</span>
+                </div>
+                <div id="logs-list" class="space-y-2 pb-6"></div>
+            </div>
+        </section>
+
+        <!-- ═══ DASHBOARD — INSTRUMENT CLUSTER ════════════
+             Portrait : single column (speed only + compact strip)
+             Landscape: 3 equal columns → Speed | G-Force | Lean
+        ════════════════════════════════════════════════ -->
+        <section id="view-dashboard" class="hidden flex flex-col fade-in">
+
+            <!-- GPS status bar (always visible) -->
+            <div id="dash-status" class="flex justify-between items-center flex-none">
+                <div class="flex items-center gap-2">
+                    <span class="dot dot-off" id="gps-dot-2"></span>
+                    <span class="f-bar text-xs tracking-widest uppercase" id="gps-status" style="color:var(--muted2)">MENCARI GPS…</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="f-mono text-[9px]" id="gps-acc" style="color:var(--muted)">ACC: --</span>
+                    <button onclick="resetMaxSpeed()" class="f-exo font-bold text-[9px] px-2 py-1 tracking-widest uppercase" style="background:var(--s2);border:1px solid var(--border);color:var(--muted2)">RESET MAX</button>
+                </div>
+            </div>
+
+            <!-- Geofence alert -->
+            <div id="geofence-alert" class="hidden flex-none p-2 text-center f-exo font-bold text-[10px] tracking-widest uppercase" style="background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.3);color:var(--cyber)">
+                <i class="fa-solid fa-building-columns mr-1"></i>ZONA SAMSAT TERDETEKSI — CEK PAJAK!
+            </div>
+
+            <!-- ╔══════════════════════════════════════════╗
+                 ║  INSTRUMENT CLUSTER                      ║
+                 ╚══════════════════════════════════════════╝ -->
+            <div id="instrument-cluster">
+
+                <!-- ── PANEL 1: SPEED ───────────────────── -->
+                <div id="panel-speed" class="inst-panel-speed">
+                    <div class="inst-hdr">
+                        <span class="inst-title" style="color:var(--neon)">
+                            <i class="fa-solid fa-gauge-high mr-1" style="font-size:8px"></i>SPEED
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <span class="dot dot-off" id="gps-dot-3"></span>
+                            <span class="f-mono text-[9px]" id="gps-acc-2" style="color:var(--muted)">GPS</span>
+                        </div>
+                    </div>
+
+                    <div id="speedo-container">
+                        <svg id="speedo-svg" width="264" height="264" viewBox="0 0 264 264">
+                            <defs>
+                                <linearGradient id="sgFill" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#00d4ff"/>
+                                    <stop offset="50%" stop-color="#c8ff00"/>
+                                    <stop offset="100%" stop-color="#ff2244"/>
+                                </linearGradient>
+                                <filter id="sgGlow">
+                                    <feGaussianBlur stdDeviation="3" result="b"/>
+                                    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                </filter>
+                            </defs>
+                            <circle cx="132" cy="132" r="126" fill="none" stroke="var(--border)"  stroke-width=".5"/>
+                            <circle cx="132" cy="132" r="118" fill="none" stroke="var(--border2)" stroke-width=".5"/>
+                            <path id="sg-track" fill="none" stroke="var(--s3)"       stroke-width="14" stroke-linecap="round"/>
+                            <path id="sg-fill"  fill="none" stroke="url(#sgFill)"    stroke-width="14" stroke-linecap="round" opacity="0"/>
+                            <g id="sg-ticks"></g>
+                            <circle cx="132" cy="132" r="100" fill="var(--s1)"/>
+                            <circle cx="132" cy="132" r="99"  fill="none" stroke="var(--border)" stroke-width=".5"/>
+                            <text id="sg-value" x="132" y="125" text-anchor="middle" font-family="Share Tech Mono" font-size="60" fill="var(--neon)" filter="url(#sgGlow)">0</text>
+                            <text x="132" y="146" text-anchor="middle" font-family="Exo 2" font-size="10" fill="var(--muted2)" font-weight="700" letter-spacing="5">KM/H</text>
+                            <text id="sg-max" x="132" y="166" text-anchor="middle" font-family="Share Tech Mono" font-size="9" fill="var(--muted)">MAX 0 KM/H</text>
+                        </svg>
+                    </div>
+
+                    <!-- Portrait-only compact telemetry strip (shown by JS when active) -->
+                    <div id="portrait-tele" class="portrait-only grid grid-cols-2 gap-2 w-full">
+                        <div class="flex items-center justify-center gap-2 clip-sm" style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);padding:6px 8px">
+                            <i class="fa-solid fa-motorcycle text-xs" style="color:var(--cyber)"></i>
+                            <span class="f-mono text-lg cyber-text" id="lean-val-p">0</span>
+                            <span class="f-bar text-[9px] uppercase" style="color:var(--muted)">° LEAN</span>
+                        </div>
+                        <div class="flex items-center justify-center gap-2 clip-sm" style="background:rgba(255,34,68,.06);border:1px solid rgba(255,34,68,.2);padding:6px 8px">
+                            <i class="fa-solid fa-circle-notch text-xs alert-text"></i>
+                            <span class="f-mono text-lg alert-text" id="gforce-val-p">1.0</span>
+                            <span class="f-bar text-[9px] uppercase" style="color:var(--muted)">G-FORCE</span>
+                        </div>
+                    </div>
+                </div><!-- /#panel-speed -->
+
+                <!-- ── PANEL 2: G-FORCE (landscape center) ─ -->
+                <div id="panel-gforce" class="inst-panel-gforce">
+                    <div class="inst-hdr">
+                        <span class="inst-title" style="color:var(--alert)">
+                            <i class="fa-solid fa-circle-notch mr-1" style="font-size:8px"></i>G-FORCE
+                        </span>
+                        <button id="btn-telemetry-ls" onclick="toggleTelemetry()"
+                                class="f-exo font-bold text-[9px] px-2.5 py-1 tracking-widest uppercase clip-sm"
+                                style="background:var(--s2);border:1px solid var(--border2);color:var(--muted2)">START</button>
+                    </div>
+
+                    <!-- G-force 2D SVG (built by JS) -->
+                    <div class="svg-wrap">
+                        <svg id="gf-svg" viewBox="0 0 220 220" preserveAspectRatio="xMidYMid meet"></svg>
+                    </div>
+
+                    <!-- RPM audio strip -->
+                    <div class="flex-none" style="padding:0 2px">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="f-exo font-bold text-[8px] tracking-[2px] uppercase" style="color:var(--muted)">
+                                <i class="fa-solid fa-wave-square mr-1" style="color:var(--cyber);font-size:7px"></i>ACOUSTIC RPM
+                            </span>
+                            <button id="btn-audio-ls" onclick="toggleAudioRPM()"
+                                    class="f-exo font-bold text-[8px] px-2 py-0.5 tracking-widest uppercase clip-sm"
+                                    style="background:var(--s2);border:1px solid var(--border2);color:var(--muted2)">MIC</button>
+                        </div>
+                        <div class="audio-bar mb-1"><div id="audio-visual-ls" class="audio-fill"></div></div>
+                        <div class="flex items-baseline justify-center gap-1">
+                            <span class="f-mono text-base cyber-text" id="rpm-val-ls">0</span>
+                            <span class="f-bar text-[8px] uppercase" style="color:var(--muted)">RPM</span>
+                        </div>
+                    </div>
+                </div><!-- /#panel-gforce -->
+
+                <!-- ── PANEL 3: LEAN ANGLE (landscape right) -->
+                <div id="panel-lean" class="inst-panel-lean">
+                    <div class="inst-hdr">
+                        <span class="inst-title" style="color:var(--cyber)">
+                            <i class="fa-solid fa-motorcycle mr-1" style="font-size:8px"></i>LEAN ANGLE
+                        </span>
+                        <span class="f-mono text-[9px]" id="lean-dir-hdr" style="color:var(--muted)">CENTER</span>
+                    </div>
+
+                    <!-- Lean SVG gauge (built by JS) -->
+                    <div class="svg-wrap">
+                        <svg id="lean-svg" viewBox="0 0 220 220" preserveAspectRatio="xMidYMid meet"></svg>
+                    </div>
+                </div><!-- /#panel-lean -->
+
+            </div><!-- /#instrument-cluster -->
+
+            <!-- ── BOTTOM: STATS + SOS ──────────────────── -->
+            <div id="dash-bottom">
+                <div id="ls-stats" class="grid grid-cols-3 gap-2">
+                    <div class="text-center clip-sm" style="background:var(--s1);border:1px solid var(--border);padding:6px 4px">
+                        <div class="f-mono stat-num cyber-text" style="font-size:13px" id="val-lat">—</div>
+                        <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:7px">LAT</div>
+                    </div>
+                    <div class="text-center clip-sm" style="background:var(--s1);border:1px solid var(--border);padding:6px 4px">
+                        <div class="f-mono stat-num cyber-text" style="font-size:13px" id="val-lng">—</div>
+                        <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:7px">LNG</div>
+                    </div>
+                    <div class="text-center clip-sm" style="background:var(--s1);border:1px solid var(--border);padding:6px 4px">
+                        <div class="f-mono stat-num" style="color:var(--warn);font-size:13px" id="val-maxspd">0</div>
+                        <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:7px">MAX KM/H</div>
+                    </div>
+                </div>
+                <button id="ls-sos" onclick="triggerSOS()"
+                        class="btn-sos w-full flex items-center justify-center gap-2 f-exo font-black tracking-[3px] uppercase clip-md"
+                        style="background:var(--alert);color:#fff;padding:12px;font-size:13px">
+                    <i class="fa-solid fa-triangle-exclamation"></i>DARURAT SOS
+                </button>
+            </div>
+
+        </section><!-- /#view-dashboard -->
+
+        <!-- ═══ LABS ═══════════════════════════════════════ -->
+        <section id="view-labs" class="hidden p-5 space-y-4 fade-in">
+            <div class="flex items-center gap-3 mb-1">
+                <div class="w-9 h-9 flex items-center justify-center clip-sm" style="background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25)">
+                    <i class="fa-solid fa-flask text-sm cyber-text"></i>
+                </div>
+                <div>
+                    <h2 class="f-exo font-bold text-base uppercase tracking-[3px]">Pro Labs</h2>
+                    <p class="f-bar text-[10px] tracking-[3px] uppercase" style="color:var(--muted2)">BETA SENSORS</p>
+                </div>
+            </div>
+
+            <div class="carbon p-4 space-y-4 clip-tr" style="background:var(--s1);border:1px solid var(--border2)">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-motorcycle neon-text text-sm"></i>
+                        <h3 class="f-exo font-bold text-xs tracking-[3px] uppercase">Telemetri & Crash</h3>
+                    </div>
+                    <button id="btn-telemetry" onclick="toggleTelemetry()"
+                            class="f-exo font-bold text-[10px] px-3 py-1.5 tracking-widest uppercase clip-sm"
+                            style="background:var(--s2);border:1px solid var(--border2);color:var(--muted2)">START</button>
+                </div>
+                <div class="flex justify-around items-end gap-4">
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="gauge-wrap scanlines relative">
+                            <div class="gauge-needle" id="lean-needle"></div>
+                            <div class="gauge-center"></div>
+                        </div>
+                        <div class="flex items-baseline gap-1">
+                            <span class="f-mono text-2xl neon-text" id="lean-val">0</span>
+                            <span class="f-bar text-[10px] tracking-widest uppercase" style="color:var(--muted)">° LEAN</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="relative w-20 h-20 flex items-center justify-center scanlines clip-md" style="background:rgba(255,34,68,.05);border:2px solid rgba(255,34,68,.3)">
+                            <span class="f-mono text-2xl font-bold alert-text" id="gforce-val">1.0</span>
+                        </div>
+                        <span class="f-bar text-[10px] tracking-widest uppercase" style="color:var(--muted)">G-FORCE</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 space-y-3 clip-tr" style="background:var(--s1);border:1px solid var(--border2)">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-wave-square cyber-text text-sm"></i>
+                        <h3 class="f-exo font-bold text-xs tracking-[3px] uppercase">Acoustic RPM</h3>
+                    </div>
+                    <button id="btn-audio" onclick="toggleAudioRPM()"
+                            class="f-exo font-bold text-[10px] px-3 py-1.5 tracking-widest uppercase clip-sm"
+                            style="background:var(--s2);border:1px solid var(--border2);color:var(--muted2)">MIC ON</button>
+                </div>
+                <p class="f-bar text-[10px] tracking-widest uppercase" style="color:var(--muted)">Dekatkan ke knalpot · Estimasi RPM via audio</p>
+                <div class="audio-bar"><div id="audio-visual" class="audio-fill"></div></div>
+                <div class="flex items-baseline justify-center gap-2 pt-1">
+                    <span class="f-mono text-4xl cyber-text" id="rpm-val">0</span>
+                    <span class="f-bar text-sm tracking-widest uppercase" style="color:var(--muted)">RPM</span>
+                </div>
+            </div>
+
+            <div class="p-4 space-y-3 clip-tr" style="background:var(--s1);border:1px solid var(--border2)">
+                <div class="flex items-center gap-2 mb-0.5">
+                    <i class="fa-brands fa-bluetooth" style="color:#5b9fff"></i>
+                    <h3 class="f-exo font-bold text-xs tracking-[3px] uppercase">OBD2 Scanner</h3>
+                </div>
+                <p class="f-bar text-[10px] tracking-widest uppercase" style="color:var(--muted)">Koneksi Bluetooth ke ELM327</p>
+                <button onclick="connectOBD2()" class="w-full py-3 f-exo font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2 clip-sm active:scale-95" style="background:rgba(91,159,255,.08);border:1px solid rgba(91,159,255,.3);color:#5b9fff">
+                    <i class="fa-solid fa-link text-[10px]"></i>SCAN PERANGKAT ECU
+                </button>
+                <div id="obd-data" class="hidden obd-term"></div>
+            </div>
+        </section>
+
+        <!-- ═══ CHECKLIST ══════════════════════════════════ -->
+        <section id="view-checklist" class="hidden p-5 space-y-4 fade-in">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="f-exo font-bold text-base uppercase tracking-[3px]">Checklist</h2>
+                    <p class="f-bar text-[10px] tracking-[3px] uppercase mt-0.5" style="color:var(--muted2)">TOURING GEAR</p>
+                </div>
+                <button onclick="confirmClearChecklist()" class="f-exo font-bold text-[10px] px-3 py-1.5 tracking-widest uppercase clip-sm" style="background:rgba(255,34,68,.08);border:1px solid rgba(255,34,68,.3);color:var(--alert)">RESET</button>
+            </div>
+            <div class="flex gap-2">
+                <input type="text" id="c_item" placeholder="Tambah barang bawaan..." class="inp clip-sm flex-1 text-sm" autocomplete="off">
+                <button onclick="addCheckItem()" class="btn-fill clip-sm px-4 flex-shrink-0" style="padding-top:11px;padding-bottom:11px"><i class="fa-solid fa-plus text-xs"></i></button>
+            </div>
+            <div id="checklist-items" class="space-y-2 pb-6"></div>
+        </section>
+
+    </main>
+
+    <!-- ── NAV ──────────────────────────────────────────── -->
+    <nav class="nav-bar flex-none flex" style="padding-bottom:env(safe-area-inset-bottom)">
+        <button onclick="switchView('garage')"    id="nav-garage"    class="nav-btn is-active"><i class="nav-icon fa-solid fa-warehouse"></i><span class="nav-label">Garasi</span></button>
+        <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn"><i class="nav-icon fa-solid fa-gauge-high"></i><span class="nav-label">Ride</span></button>
+        <button onclick="switchView('labs')"      id="nav-labs"      class="nav-btn relative">
+            <span class="absolute top-2 right-3 w-1.5 h-1.5 rounded-full" style="background:var(--alert);box-shadow:0 0 5px var(--alert)"></span>
+            <i class="nav-icon fa-solid fa-flask"></i><span class="nav-label">Labs</span>
+        </button>
+        <button onclick="switchView('checklist')" id="nav-checklist" class="nav-btn"><i class="nav-icon fa-solid fa-list-check"></i><span class="nav-label">Gear</span></button>
+    </nav>
+
+    <!-- ── OVERLAYS ─────────────────────────────────────── -->
+    <div id="modal-overlay" class="hidden absolute inset-0 z-40" style="background:rgba(0,0,0,.82);backdrop-filter:blur(4px)" onclick="overlayTap(event)"></div>
+
+    <div id="loading-overlay" class="hidden absolute inset-0 z-[60] flex flex-col items-center justify-center gap-6" style="background:rgba(2,2,4,.96)">
+        <div class="relative w-20 h-20">
+            <div class="absolute inset-0 rounded-full spin-cw"  style="border:2px solid transparent;border-top-color:var(--neon);border-right-color:var(--neon)"></div>
+            <div class="absolute inset-3 rounded-full spin-ccw" style="border:2px solid transparent;border-bottom-color:var(--cyber)"></div>
+            <div class="absolute inset-0 flex items-center justify-center"><i class="fa-solid fa-eye text-xl neon-text"></i></div>
+        </div>
+        <div class="text-center">
+            <p class="f-mono text-sm tracking-widest uppercase cyber-text">AI SCANNING ODOMETER…</p>
+            <p class="f-bar text-xs tracking-widest uppercase mt-1" style="color:var(--muted)">Harap tunggu</p>
+        </div>
+    </div>
+
+    <div id="custom-confirm" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10/12 max-w-sm z-[65] clip-lg" style="background:var(--s1);border:1px solid var(--border2)">
+        <div class="p-6">
+            <div class="w-10 h-10 flex items-center justify-center mb-4 clip-sm" style="background:rgba(255,34,68,.1);border:1px solid rgba(255,34,68,.3)">
+                <i class="fa-solid fa-triangle-exclamation text-xs alert-text"></i>
+            </div>
+            <h3 id="cc-title" class="f-exo font-black text-lg uppercase tracking-wider mb-2">Konfirmasi</h3>
+            <p  id="cc-msg"   class="f-bar text-sm mb-6" style="color:var(--muted2)">Pesan detail.</p>
+            <div class="flex gap-3">
+                <button id="cc-no"  class="flex-1 py-3 f-exo font-bold text-xs tracking-widest uppercase clip-sm" style="background:var(--s2);border:1px solid var(--border2)">BATAL</button>
+                <button id="cc-yes" class="flex-1 py-3 f-exo font-bold text-xs tracking-widest uppercase clip-sm alert-text" style="background:rgba(255,34,68,.2);border:1px solid rgba(255,34,68,.4)">HAPUS</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="crash-modal" class="hidden absolute inset-0 z-[70] flex flex-col items-center justify-center text-center p-6 crash-modal-wrap" style="background:var(--alert)">
+        <i class="fa-solid fa-car-burst text-7xl mb-6" style="color:rgba(0,0,0,.35)"></i>
+        <div class="f-exo font-black text-4xl uppercase tracking-[4px] text-black mb-2">CRASH!</div>
+        <div class="f-exo font-bold text-sm uppercase tracking-widest" style="color:rgba(0,0,0,.6);margin-bottom:2rem">SOS otomatis dalam…</div>
+        <span id="crash-count" class="f-mono font-bold text-9xl text-black" style="margin-bottom:3rem">10</span>
+        <button onclick="cancelCrash()" class="w-full py-5 f-exo font-black text-lg tracking-[3px] uppercase clip-md" style="background:black;color:white">✓ SAYA AMAN — BATAL</button>
+    </div>
+
+    <!-- ── MODALS ────────────────────────────────────────── -->
+    <div id="modal-add-vehicle" class="hidden absolute bottom-0 left-0 right-0 z-50 slide-up clip-tl modal-sheet">
+        <div class="p-6" style="padding-top:28px">
+            <div class="flex justify-between items-start mb-6">
+                <div><h3 class="f-exo font-black text-lg uppercase tracking-[3px]">Tambah Kendaraan</h3><p class="f-bar text-[10px] tracking-widest uppercase mt-1" style="color:var(--muted2)">NEW VEHICLE</p></div>
+                <button onclick="closeModal('modal-add-vehicle')" class="w-8 h-8 flex items-center justify-center clip-sm" style="background:var(--s2);border:1px solid var(--border2)"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+            <form id="form-vehicle" class="space-y-4">
+                <div>
+                    <label class="inp-label">Jenis Kendaraan</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label id="lbl-motor" class="flex items-center justify-center gap-2 p-3 cursor-pointer clip-sm" style="background:var(--s2);border:1px solid rgba(200,255,0,.4)">
+                            <input type="radio" name="v_type" value="motor" class="hidden" checked onchange="updateTypeUI()">
+                            <i class="fa-solid fa-motorcycle neon-text"></i><span class="f-exo font-bold text-xs tracking-widest uppercase neon-text">MOTOR</span>
+                        </label>
+                        <label id="lbl-mobil" class="flex items-center justify-center gap-2 p-3 cursor-pointer clip-sm" style="background:var(--s2);border:1px solid var(--border2)">
+                            <input type="radio" name="v_type" value="mobil" class="hidden" onchange="updateTypeUI()">
+                            <i class="fa-solid fa-car" style="color:var(--muted2)"></i><span class="f-exo font-bold text-xs tracking-widest uppercase" style="color:var(--muted2)">MOBIL</span>
+                        </label>
+                    </div>
+                </div>
+                <div><label class="inp-label">Nama Kendaraan</label><input type="text" id="v_name" required placeholder="cth: Scoopy 125" class="inp clip-sm" autocomplete="off"></div>
+                <div><label class="inp-label">Merk / Brand</label><input type="text" id="v_brand" required placeholder="cth: Honda" class="inp clip-sm" autocomplete="off"></div>
+                <button type="submit" class="btn-fill clip-sm w-full py-4 text-xs tracking-[3px]">SIMPAN KENDARAAN</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-add-service" class="hidden absolute bottom-0 left-0 right-0 z-50 slide-up clip-tl modal-sheet">
+        <div class="p-6" style="padding-top:28px">
+            <div class="flex justify-between items-start mb-5">
+                <div><h3 class="f-exo font-black text-lg uppercase tracking-[3px]">Catat Servis</h3><p class="f-bar text-[10px] tracking-widest uppercase mt-1" style="color:var(--muted2)">SERVICE LOG</p></div>
+                <button onclick="closeModal('modal-add-service')" class="w-8 h-8 flex items-center justify-center clip-sm" style="background:var(--s2);border:1px solid var(--border2)"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+            <form id="form-service" class="space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="inp-label">Tanggal</label><input type="date" id="s_date" required class="inp clip-sm text-sm"></div>
+                    <div><label class="inp-label">Odometer (KM)</label><input type="number" id="s_odo" required placeholder="KM" class="inp clip-sm text-sm"></div>
+                </div>
+                <div><label class="inp-label">Part / Keterangan</label><input type="text" id="s_parts" required placeholder="Ganti Oli, Busi, Ban..." class="inp clip-sm text-sm" autocomplete="off"></div>
+                <div><label class="inp-label">Biaya (Rp)</label><input type="number" id="s_cost" placeholder="0" class="inp clip-sm text-sm"></div>
+                <button type="submit" class="btn-fill clip-sm w-full py-4 text-xs tracking-[3px] mt-1">SIMPAN SERVIS</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-add-fuel" class="hidden absolute bottom-0 left-0 right-0 z-50 slide-up clip-tl modal-sheet">
+        <div class="p-6" style="padding-top:28px">
+            <div class="flex justify-between items-start mb-5">
+                <div><h3 class="f-exo font-black text-lg uppercase tracking-[3px]">Catat Bensin</h3><p class="f-bar text-[10px] tracking-widest uppercase mt-1" style="color:var(--muted2)">FUEL LOG</p></div>
+                <button onclick="closeModal('modal-add-fuel')" class="w-8 h-8 flex items-center justify-center clip-sm" style="background:var(--s2);border:1px solid var(--border2)"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+            <form id="form-fuel" class="space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="inp-label">Tanggal</label><input type="date" id="f_date" required class="inp clip-sm text-sm"></div>
+                    <div><label class="inp-label">Odometer (KM)</label><input type="number" id="f_odo" required placeholder="KM" class="inp clip-sm text-sm"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="inp-label">Liter</label><input type="number" step="0.01" id="f_liter" required placeholder="0.00" class="inp clip-sm text-sm"></div>
+                    <div><label class="inp-label">Biaya (Rp)</label><input type="number" id="f_cost" required placeholder="0" class="inp clip-sm text-sm"></div>
+                </div>
+                <button type="submit" class="btn-fill clip-sm w-full py-4 text-xs tracking-[3px] mt-1">SIMPAN BENSIN</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast" class="absolute top-20 left-1/2 z-[80] pointer-events-none whitespace-nowrap f-exo font-bold text-xs tracking-[2px] uppercase px-4 py-2.5 clip-sm"
+         style="background:var(--neon);color:#020204;transform:translateX(-50%) translateY(-60px);opacity:0;transition:transform .3s,opacity .3s"></div>
+
+</div><!-- /#app -->
+
+<!-- ══════════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ── SVG HELPERS ──────────────────────────────────────── */
+const svgNS = 'http://www.w3.org/2000/svg';
+const svgE = (tag, attrs = {}, txt) => {
+    const el = document.createElementNS(svgNS, tag);
+    Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k, String(v)));
+    if (txt !== undefined) el.textContent = txt;
+    return el;
+};
+
+/* ── POLAR / ARC MATH ─────────────────────────────────── */
+function polarXY(cx,cy,r,deg){
+    const rad=(deg-90)*Math.PI/180;
+    return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};
+}
+function arcPath(cx,cy,r,startDeg,endDeg){
+    const s=polarXY(cx,cy,r,endDeg);
+    const e=polarXY(cx,cy,r,startDeg);
+    const large=(endDeg-startDeg)<=180?0:1;
+    return`M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 0 ${e.x} ${e.y}`;
+}
+
+/* ════════════════════════════════════════════════════════
+   SPEEDOMETER
+════════════════════════════════════════════════════════ */
+const SG={CX:132,CY:132,R:106,START:135,SWEEP:270,MAX:200};
+let maxSpeed=0;
+
+function buildSpeedoSVG(){
+    const track=document.getElementById('sg-track');
+    const ticks=document.getElementById('sg-ticks');
+    track.setAttribute('d',arcPath(SG.CX,SG.CY,SG.R,SG.START,SG.START+SG.SWEEP));
+    for(let i=0;i<=20;i++){
+        const ang=SG.START+(SG.SWEEP/20)*i;
+        const major=i%4===0;
+        const rIn=SG.R+9,rOut=SG.R+(major?22:15);
+        const p1=polarXY(SG.CX,SG.CY,rIn,ang);
+        const p2=polarXY(SG.CX,SG.CY,rOut,ang);
+        const ln=document.createElementNS(svgNS,'line');
+        ln.setAttribute('x1',p1.x);ln.setAttribute('y1',p1.y);
+        ln.setAttribute('x2',p2.x);ln.setAttribute('y2',p2.y);
+        ln.setAttribute('stroke',major?'var(--border2)':'var(--border)');
+        ln.setAttribute('stroke-width',major?'1.5':'0.8');
+        ticks.appendChild(ln);
+        if(major){
+            const spd=Math.round((SG.MAX/20)*i);
+            const tp=polarXY(SG.CX,SG.CY,rOut+10,ang);
+            const tx=document.createElementNS(svgNS,'text');
+            tx.setAttribute('x',tp.x);tx.setAttribute('y',tp.y);
+            tx.setAttribute('text-anchor','middle');tx.setAttribute('dominant-baseline','middle');
+            tx.setAttribute('font-family','Share Tech Mono');tx.setAttribute('font-size','8');
+            tx.setAttribute('fill','var(--muted)');tx.textContent=spd;
+            ticks.appendChild(tx);
+        }
+    }
+    setSpeedoArc(0);
+}
+
+function setSpeedoArc(kmh){
+    const c=Math.min(Math.max(kmh,0),SG.MAX);
+    const sw=SG.SWEEP*(c/SG.MAX);
+    const fill=document.getElementById('sg-fill');
+    if(sw>0.5){fill.setAttribute('d',arcPath(SG.CX,SG.CY,SG.R,SG.START,SG.START+sw));fill.style.opacity='1';}
+    else fill.style.opacity='0';
+    document.getElementById('sg-value').textContent=Math.round(c);
+    if(c>maxSpeed){
+        maxSpeed=c;
+        document.getElementById('sg-max').textContent=`MAX ${Math.round(maxSpeed)} KM/H`;
+        document.getElementById('val-maxspd').textContent=Math.round(maxSpeed);
+    }
+}
+function resetMaxSpeed(){maxSpeed=0;setSpeedoArc(0);showToast('Max speed direset','muted');}
+
+/* ════════════════════════════════════════════════════════
+   G-FORCE 2D METER SVG
+   Center = 110,110  |  R_rings = 80  |  R_arc = 96
+════════════════════════════════════════════════════════ */
+const GF={CX:110,CY:110,R:80,RARC:96};
+
+function buildGForceSVG(){
+    const svg=document.getElementById('gf-svg');
+    if(!svg)return;
+    svg.innerHTML='';
+
+    // Defs: glow filter + radial bg gradient
+    const defs=svgE('defs');
+    defs.innerHTML=`
+      <filter id="gfGlow"><feGaussianBlur stdDeviation="3" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <radialGradient id="gfBg" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="rgba(255,34,68,0.08)"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>`;
+    svg.appendChild(defs);
+
+    // Outer decorative rings
+    svg.appendChild(svgE('circle',{cx:110,cy:110,r:108,fill:'none',stroke:'var(--border)', 'stroke-width':'.5'}));
+    svg.appendChild(svgE('circle',{cx:110,cy:110,r:100,fill:'none',stroke:'var(--border2)','stroke-width':'.5'}));
+
+    // Outer G-arc track (total G magnitude display)
+    const arcTrack=svgE('path',{
+        fill:'none',stroke:'var(--s3)','stroke-width':'8','stroke-linecap':'round',opacity:'.5'
+    });
+    arcTrack.setAttribute('d',arcPath(GF.CX,GF.CY,GF.RARC,135,405));
+    svg.appendChild(arcTrack);
+
+    // Dynamic outer arc fill
+    const arcFill=svgE('path',{
+        id:'gf-arc',fill:'none',stroke:'var(--alert)',
+        'stroke-width':'8','stroke-linecap':'round',opacity:'0',filter:'url(#gfGlow)'
+    });
+    svg.appendChild(arcFill);
+
+    // Radial background fill inside rings
+    svg.appendChild(svgE('circle',{cx:110,cy:110,r:GF.R,fill:'url(#gfBg)'}));
+
+    // Concentric G-rings with labels
+    [
+        {r:GF.R*0.25,lbl:'0.5G'},
+        {r:GF.R*0.50,lbl:'1G'},
+        {r:GF.R*0.75,lbl:'1.5G'},
+        {r:GF.R,     lbl:'2G'},
+    ].forEach(({r,lbl})=>{
+        svg.appendChild(svgE('circle',{cx:110,cy:110,r,fill:'none',stroke:'var(--border2)','stroke-width':'0.7','stroke-dasharray':'2 5'}));
+        const lp=polarXY(110,110,r,20);
+        svg.appendChild(svgE('text',{'x':lp.x,'y':lp.y,'text-anchor':'middle','dominant-baseline':'middle',
+            'font-family':'Share Tech Mono','font-size':'6.5','fill':'var(--muted)'},lbl));
+    });
+
+    // Crosshair lines
+    svg.appendChild(svgE('line',{x1:22,y1:110,x2:198,y2:110,stroke:'var(--border2)','stroke-width':'.5'}));
+    svg.appendChild(svgE('line',{x1:110,y1:22,x2:110,y2:198,stroke:'var(--border2)','stroke-width':'.5'}));
+
+    // Cardinal direction labels
+    [['F',110,18],['B',110,206],['L',18,113],['R',202,113]].forEach(([t,x,y])=>{
+        svg.appendChild(svgE('text',{x,y,'text-anchor':'middle','dominant-baseline':'middle',
+            'font-family':'Exo 2','font-size':'7','font-weight':'700','fill':'var(--muted)'},t));
+    });
+
+    // Dot glow halo
+    svg.appendChild(svgE('circle',{id:'gf-ring',cx:110,cy:110,r:16,
+        fill:'none',stroke:'var(--muted)','stroke-width':'1',opacity:'0'}));
+
+    // Main G-force dot
+    svg.appendChild(svgE('circle',{id:'gf-dot',cx:110,cy:110,r:9,
+        fill:'var(--muted)',stroke:'none',filter:'url(#gfGlow)'}));
+
+    // G value (center, behind dot but still readable)
+    svg.appendChild(svgE('text',{id:'gf-sv',x:110,y:104,
+        'text-anchor':'middle','font-family':'Share Tech Mono',
+        'font-size':'24','fill':'var(--alert)',filter:'url(#gfGlow)'},'1.0'));
+    svg.appendChild(svgE('text',{x:110,y:122,
+        'text-anchor':'middle','font-family':'Exo 2','font-size':'7',
+        'fill':'var(--muted2)','font-weight':'700','letter-spacing':'2'},'G-FORCE'));
+}
+
+function updateGForceMeter(G,gx,gy){
+    const MAX=2, CX=GF.CX, CY=GF.CY, R=GF.R, RARC=GF.RARC;
+
+    // Dot XY (gx = lateral, gy = longitudinal)
+    let dx=CX+(gx/MAX)*R, dy=CY-(gy/MAX)*R;
+    const dist=Math.hypot(dx-CX,dy-CY);
+    if(dist>R){dx=CX+(dx-CX)*R/dist; dy=CY+(dy-CY)*R/dist;}
+
+    const dot =document.getElementById('gf-dot');
+    const ring=document.getElementById('gf-ring');
+    const sv  =document.getElementById('gf-sv');
+    const arc =document.getElementById('gf-arc');
+
+    const color = G<0.4?'var(--muted)':G<1.0?'var(--neon)':G<1.5?'var(--warn)':'var(--alert)';
+
+    if(dot){ dot.setAttribute('cx',dx.toFixed(1)); dot.setAttribute('cy',dy.toFixed(1));
+             dot.setAttribute('fill',color); }
+    if(ring){ ring.setAttribute('cx',dx.toFixed(1)); ring.setAttribute('cy',dy.toFixed(1));
+              ring.setAttribute('stroke',color);
+              ring.setAttribute('opacity',Math.min(.7,G*.45).toFixed(2)); }
+    if(sv){   sv.textContent=G.toFixed(1); sv.setAttribute('fill',color); }
+
+    // Outer arc: total G magnitude (0–2G maps to 0–270°)
+    if(arc){
+        const g=Math.min(G,MAX);
+        if(g>0.05){
+            const sw=(g/MAX)*270;
+            arc.setAttribute('d',arcPath(CX,CY,RARC,135,135+sw));
+            arc.setAttribute('stroke',color);
+            arc.style.opacity='1';
+        } else { arc.style.opacity='0'; }
+    }
+
+    // Sync all G displays
+    ['gforce-val','gforce-val-p'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el) el.textContent=G.toFixed(1);
+    });
+}
+
+/* ════════════════════════════════════════════════════════
+   LEAN ANGLE GAUGE SVG
+   Center 110,110  |  Arc same geometry as speedometer
+   0° lean = 270° (bottom)  |  ±90° = 270°±120°
+════════════════════════════════════════════════════════ */
+const LS={CX:110,CY:110,R:90,START:150,SWEEP:240};
+// LS center angle: 150 + 120 = 270°
+
+function buildLeanSVG(){
+    const svg=document.getElementById('lean-svg');
+    if(!svg)return;
+    svg.innerHTML='';
+
+    // Defs
+    const defs=svgE('defs');
+    defs.innerHTML=`
+      <filter id="lsGlow"><feGaussianBlur stdDeviation="2.5" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+    svg.appendChild(defs);
+
+    // Outer rings
+    svg.appendChild(svgE('circle',{cx:110,cy:110,r:108,fill:'none',stroke:'var(--border)', 'stroke-width':'.5'}));
+    svg.appendChild(svgE('circle',{cx:110,cy:110,r:100,fill:'none',stroke:'var(--border2)','stroke-width':'.5'}));
+
+    // Color zone arcs (painted low opacity underneath)
+    // Zone mapping: lean ±deg → gauge angle = 270 + (lean/90)*120
+    // ±90° lean → gauge 150° and 390°(=30°)
+    // ±60° lean → gauge 190° and 350°
+    // ±40° lean → gauge 216° and 324°
+    const addZone=(s,e,col,op=0.28)=>{
+        const p=svgE('path',{fill:'none',stroke:col,'stroke-width':'14','stroke-linecap':'round',opacity:String(op)});
+        p.setAttribute('d',arcPath(LS.CX,LS.CY,LS.R,s,e));
+        svg.appendChild(p);
+    };
+    addZone(150,216,'#ff2244',0.32);  // left danger (>60°)
+    addZone(324,390,'#ff2244',0.32);  // right danger
+    addZone(216,240,'#ff8800',0.28);  // left warn (40–60°)
+    addZone(300,324,'#ff8800',0.28);  // right warn
+    addZone(240,300,'#c8ff00',0.22);  // safe center (±40°)
+
+    // Full dim track overlay (unifies zone texture)
+    const track=svgE('path',{fill:'none',stroke:'var(--s3)','stroke-width':'14','stroke-linecap':'round',opacity:'.35'});
+    track.setAttribute('d',arcPath(LS.CX,LS.CY,LS.R,LS.START,LS.START+LS.SWEEP));
+    svg.appendChild(track);
+
+    // Dynamic fill arc (grows from center as lean increases)
+    const fill=svgE('path',{id:'ls-fill',fill:'none',stroke:'var(--cyber)',
+        'stroke-width':'14','stroke-linecap':'round',opacity:'0',filter:'url(#lsGlow)'});
+    svg.appendChild(fill);
+
+    // Tick marks at every 15° lean (−90 to +90)
+    for(let lean=-90;lean<=90;lean+=15){
+        const major=lean%45===0;
+        const gaugeAng=270+(lean/90)*120;
+        const rIn =LS.R+(major?15:8);
+        const rOut=LS.R+(major?26:17);
+        const p1=polarXY(LS.CX,LS.CY,rIn, gaugeAng);
+        const p2=polarXY(LS.CX,LS.CY,rOut,gaugeAng);
+        svg.appendChild(svgE('line',{x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,
+            stroke:major?'var(--border2)':'var(--border)',
+            'stroke-width':major?'1.5':'0.8'}));
+        if(major){
+            const lbl=lean===0?'0':Math.abs(lean).toString();
+            const col=Math.abs(lean)>=60?'var(--alert)':Math.abs(lean)>=40?'var(--warn)':'var(--muted)';
+            const tp=polarXY(LS.CX,LS.CY,rOut+10,gaugeAng);
+            svg.appendChild(svgE('text',{x:tp.x,y:tp.y,'text-anchor':'middle','dominant-baseline':'middle',
+                'font-family':'Share Tech Mono','font-size':'7.5','fill':col},lbl));
+        }
+    }
+
+    // Inner circle fill (creates halo effect)
+    svg.appendChild(svgE('circle',{cx:110,cy:110,r:72,fill:'var(--s1)'}));
+    svg.appendChild(svgE('circle',{cx:110,cy:110,r:71,fill:'none',stroke:'var(--border)','stroke-width':'.5'}));
+
+    // Needle line
+    const nTip0=polarXY(LS.CX,LS.CY,LS.R,270);
+    svg.appendChild(svgE('line',{id:'ls-needle',
+        x1:LS.CX,y1:LS.CY,x2:nTip0.x,y2:nTip0.y,
+        stroke:'var(--cyber)','stroke-width':'2.5','stroke-linecap':'round',filter:'url(#lsGlow)'}));
+
+    // Center pivot dot
+    svg.appendChild(svgE('circle',{cx:110,cy:110,r:7,fill:'var(--cyber)',
+        stroke:'var(--s1)','stroke-width':'2.5',filter:'url(#lsGlow)'}));
+
+    // Angle value (center)
+    svg.appendChild(svgE('text',{id:'ls-sv',x:110,y:104,
+        'text-anchor':'middle','font-family':'Share Tech Mono',
+        'font-size':'34','fill':'var(--cyber)',filter:'url(#lsGlow)'},'0'));
+
+    // Degree symbol + label
+    svg.appendChild(svgE('text',{x:110,y:122,
+        'text-anchor':'middle','font-family':'Exo 2','font-size':'8',
+        'fill':'var(--muted2)','font-weight':'700','letter-spacing':'2'},'DEGREES'));
+
+    // Direction label
+    svg.appendChild(svgE('text',{id:'ls-dir',x:110,y:138,
+        'text-anchor':'middle','font-family':'Share Tech Mono',
+        'font-size':'8','fill':'var(--muted)'},'CENTER'));
+
+    // L/R axis labels at extremes of arc
+    const lp=polarXY(LS.CX,LS.CY,LS.R+30,LS.START);
+    const rp=polarXY(LS.CX,LS.CY,LS.R+30,LS.START+LS.SWEEP);
+    svg.appendChild(svgE('text',{x:lp.x,y:lp.y,'text-anchor':'middle','dominant-baseline':'middle',
+        'font-family':'Exo 2','font-size':'8','font-weight':'700','fill':'var(--alert)'},'L'));
+    svg.appendChild(svgE('text',{x:rp.x,y:rp.y,'text-anchor':'middle','dominant-baseline':'middle',
+        'font-family':'Exo 2','font-size':'8','font-weight':'700','fill':'var(--alert)'},'R'));
+}
+
+function updateLeanGauge(angle){
+    const CX=LS.CX,CY=LS.CY,R=LS.R;
+    const CENTER=270; // 0° lean
+    const needleDeg=CENTER+(angle/90)*120;
+    const tip=polarXY(CX,CY,R,needleDeg);
+    const absA=Math.abs(angle);
+
+    // Needle
+    const needle=document.getElementById('ls-needle');
+    if(needle){needle.setAttribute('x2',tip.x.toFixed(2));needle.setAttribute('y2',tip.y.toFixed(2));}
+
+    // Fill arc from center to needle
+    const fillEl=document.getElementById('ls-fill');
+    if(fillEl){
+        if(absA>0.5){
+            const s=angle>=0?CENTER:needleDeg;
+            const e=angle>=0?needleDeg:CENTER;
+            fillEl.setAttribute('d',arcPath(CX,CY,R,s,e));
+            const col=absA<40?'var(--cyber)':absA<60?'var(--warn)':'var(--alert)';
+            fillEl.setAttribute('stroke',col);
+            fillEl.style.opacity='1';
+        } else { fillEl.style.opacity='0'; }
+    }
+
+    // SVG center texts
+    const sv=document.getElementById('ls-sv');
+    if(sv) sv.textContent=Math.round(absA);
+    const dir=document.getElementById('ls-dir');
+    if(dir) dir.textContent=absA<3?'CENTER':angle>0?'→ RIGHT':'LEFT ←';
+
+    // HTML header direction label
+    const hdr=document.getElementById('lean-dir-hdr');
+    if(hdr) hdr.textContent=absA<3?'—':angle>0?'R →':'← L';
+
+    // Sync Labs + portrait strip
+    ['lean-val','lean-val-p'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=Math.round(absA);});
+}
+
+/* ── THEME ────────────────────────────────────────────── */
+const applyTheme=t=>{
+    document.documentElement.setAttribute('data-theme',t);
+    localStorage.setItem('theme',t);
+    const btn=document.getElementById('btn-theme');
+    if(btn) btn.innerHTML=t==='light'
+        ?'<i class="fa-solid fa-moon text-xs" style="color:var(--cyber)"></i>'
+        :'<i class="fa-solid fa-sun text-xs neon-text"></i>';
+};
+const toggleTheme=()=>{
+    applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+};
+
+/* ── STATE ────────────────────────────────────────────── */
+let currentVehicleId=null,geoWatchId=null,currentLat=null,currentLng=null,wakeLock=null;
+(function(){const t=new Date().toISOString().split('T')[0];
+    document.getElementById('s_date').value=t;
+    document.getElementById('f_date').value=t;})();
+
+/* ── UI HELPERS ───────────────────────────────────────── */
+let confirmCb=null;
+const showConfirm=(title,msg,yesLbl,cb)=>{
+    document.getElementById('cc-title').textContent=title;
+    document.getElementById('cc-msg').textContent=msg;
+    document.getElementById('cc-yes').textContent=yesLbl;
+    document.getElementById('modal-overlay').classList.remove('hidden');
+    document.getElementById('custom-confirm').classList.remove('hidden');
+    confirmCb=cb;
+};
+document.getElementById('cc-no').onclick =()=>closeAllModals();
+document.getElementById('cc-yes').onclick=()=>{closeAllModals();if(confirmCb)confirmCb();};
+
+let toastTimer=null;
+const showToast=(msg,type='neon')=>{
+    const el=document.getElementById('toast');
+    const s={neon:'background:var(--neon);color:#020204;',cyber:'background:var(--cyber);color:#020204;',
+             alert:'background:var(--alert);color:#fff;',warn:'background:var(--warn);color:#020204;',
+             muted:'background:var(--s2);color:var(--text);border:1px solid var(--border2);'};
+    el.setAttribute('style',(s[type]||s.neon)+
+        'position:absolute;top:76px;left:50%;transform:translateX(-50%) translateY(0);opacity:1;'+
+        'transition:transform .3s,opacity .3s;z-index:80;pointer-events:none;white-space:nowrap;'+
+        'font-family:"Exo 2",sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;'+
+        'text-transform:uppercase;padding:9px 16px;'+
+        'clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));');
+    el.textContent=msg;
+    if(toastTimer)clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>{el.style.transform='translateX(-50%) translateY(-60px)';el.style.opacity='0';},2800);
+};
+
+const openModal=id=>{document.getElementById('modal-overlay').classList.remove('hidden');document.getElementById(id).classList.remove('hidden');};
+const closeModal=id=>{document.getElementById('modal-overlay').classList.add('hidden');document.getElementById(id).classList.add('hidden');};
+const closeAllModals=()=>{
+    document.querySelectorAll('[id^="modal-"]').forEach(el=>el.classList.add('hidden'));
+    document.getElementById('custom-confirm').classList.add('hidden');
+    document.getElementById('modal-overlay').classList.add('hidden');
+};
+const overlayTap=e=>{if(e.target.id==='modal-overlay')closeAllModals();};
+
+const updateTypeUI=()=>{
+    const isMo=document.querySelector('input[name="v_type"]:checked').value==='motor';
+    const aS='background:var(--s2);border:1px solid rgba(200,255,0,.4);';
+    const iS='background:var(--s2);border:1px solid var(--border2);';
+    ['motor','mobil'].forEach(t=>{
+        const lbl=document.getElementById('lbl-'+t);
+        const isA=t==='motor'?isMo:!isMo;
+        lbl.setAttribute('style',isA?aS:iS);
+        lbl.querySelector('i').className='fa-solid fa-'+(t==='motor'?'motorcycle':'car')+' '+(isA?'neon-text':'');
+        lbl.querySelector('i').style.color=isA?'':'var(--muted2)';
+        lbl.querySelector('span').className='f-exo font-bold text-xs tracking-widest uppercase '+(isA?'neon-text':'');
+        lbl.querySelector('span').style.color=isA?'':'var(--muted2)';
+    });
+};
+
+/* ── DATABASE ─────────────────────────────────────────── */
+const DB_NAME='GarasiProDB',DB_VERSION=4;
+let db;
+
+const initDB=()=>new Promise((res,rej)=>{
+    const req=indexedDB.open(DB_NAME,DB_VERSION);
+    req.onupgradeneeded=e=>{
+        const database=e.target.result,tx=e.target.transaction;
+        if(!database.objectStoreNames.contains('vehicles')) database.createObjectStore('vehicles',{keyPath:'id'});
+        if(!database.objectStoreNames.contains('logs')){
+            const ls=database.createObjectStore('logs',{keyPath:'id',autoIncrement:true});
+            ls.createIndex('vehicleId','vehicleId',{unique:false});
+        } else {
+            const ls=tx.objectStore('logs');
+            if(!ls.indexNames.contains('vehicleId')) ls.createIndex('vehicleId','vehicleId',{unique:false});
+        }
+        if(!database.objectStoreNames.contains('checklists')) database.createObjectStore('checklists',{keyPath:'id',autoIncrement:true});
+    };
+    req.onsuccess=e=>{db=e.target.result;res(db);};
+    req.onerror=e=>rej(e.target.error);
+    req.onblocked=()=>rej(new Error('Database diblokir. Tutup tab lain lalu reload.'));
+});
+
+const dbAction=(store,action,data=null,indexName=null,indexValue=null)=>new Promise((res,rej)=>{
+    const ro=['get','getAll','getIndex'].includes(action);
+    const tx=db.transaction([store],ro?'readonly':'readwrite');
+    const obj=tx.objectStore(store);
+    let req;
+    if(action==='add'||action==='put') req=obj[action](data);
+    else if(action==='get')            req=obj.get(data);
+    else if(action==='getAll')         req=obj.getAll();
+    else if(action==='delete')         req=obj.delete(data);
+    else if(action==='clear')          req=obj.clear();
+    else if(action==='getIndex')       req=obj.index(indexName).getAll(IDBKeyRange.only(indexValue));
+    else return rej(new Error('Unknown action'));
+    req.onsuccess=()=>res(req.result);
+    req.onerror=e=>rej(e.target.error);
+});
+
+/* ── VIEW NAVIGATION ──────────────────────────────────── */
+const ALL_VIEWS=['garage','details','dashboard','labs','checklist'];
+
+const switchView=view=>{
+    ALL_VIEWS.forEach(v=>document.getElementById('view-'+v).classList.add('hidden'));
+    ['garage','dashboard','labs','checklist'].forEach(v=>{
+        const b=document.getElementById('nav-'+v);
+        if(b) b.classList.remove('is-active','is-active-cy');
+    });
+    const nk=(view==='details')?'garage':view;
+    const nb=document.getElementById('nav-'+nk);
+    if(nb) nb.classList.add(view==='labs'?'is-active-cy':'is-active');
+    document.getElementById('view-'+view).classList.remove('hidden');
+    const titles={garage:'Super App Otomotif',details:'Detail Kendaraan',dashboard:'Live GPS Ride',labs:'Pro Labs — Beta',checklist:'Touring Gear Check'};
+    document.getElementById('header-subtitle').textContent=titles[view]||'Garasi Digital Pro';
+    if(view==='dashboard') startSpeedometer(); else stopSpeedometer();
+    if(view!=='labs'){stopTelemetry();stopAudioRPM();}
+    if(view==='garage')    loadVehicles();
+    if(view==='checklist') loadChecklist();
+};
+
+/* ── VEHICLES ─────────────────────────────────────────── */
+const loadVehicles=async()=>{
+    try{
+        const list=await dbAction('vehicles','getAll');
+        const el=document.getElementById('vehicle-list');
+        if(!list.length){
+            el.innerHTML=`<div class="flex flex-col items-center justify-center py-12 gap-3 clip-tr" style="background:var(--s1);border:1px dashed var(--border2)">
+              <i class="fa-solid fa-warehouse text-4xl" style="color:var(--muted)"></i>
+              <p class="f-exo font-bold text-xs tracking-[3px] uppercase" style="color:var(--muted)">Garasi Kosong</p>
+              <p class="f-bar text-xs" style="color:var(--muted)">Tap TAMBAH untuk daftar kendaraan</p></div>`;
+            return;
+        }
+        el.innerHTML='';
+        list.forEach(v=>{
+            const isM=v.type==='motor';
+            const c=document.createElement('div');
+            c.className='vehicle-card clip-tr p-4 flex items-center gap-4';
+            c.onclick=()=>openVehicleDetail(v.id,v.name,v.brand,v.type);
+            c.innerHTML=`<div class="flex-shrink-0 w-12 h-12 flex items-center justify-center text-xl clip-sm" style="background:rgba(200,255,0,.06);border:1px solid rgba(200,255,0,.14)"><i class="fa-solid ${isM?'fa-motorcycle':'fa-car'} neon-text"></i></div>
+              <div class="flex-1 min-w-0"><h3 class="f-exo font-black text-base uppercase tracking-wide leading-none">${v.name}</h3>
+              <p class="f-bar text-xs tracking-widest uppercase mt-1" style="color:var(--muted2)">${v.brand} · ${v.type.toUpperCase()}</p></div>
+              <i class="fa-solid fa-chevron-right text-sm neon-text opacity-40 flex-shrink-0"></i>`;
+            el.appendChild(c);
+        });
+    } catch(err){showToast('Gagal memuat garasi','alert');}
+};
+
+const openVehicleDetail=(id,name,brand,type)=>{
+    currentVehicleId=id;
+    const isM=type==='motor';
+    document.getElementById('detail-name').textContent=name.toUpperCase();
+    document.getElementById('detail-brand').textContent=`${brand} · ${type.toUpperCase()}`;
+    document.getElementById('detail-icon').innerHTML=`<i class="fa-solid ${isM?'fa-motorcycle':'fa-car'} neon-text"></i>`;
+    loadLogs();switchView('details');
+};
+
+const loadLogs=async()=>{
+    if(!currentVehicleId)return;
+    try{
+        const raw=await dbAction('logs','getIndex',null,'vehicleId',currentVehicleId);
+        const el=document.getElementById('logs-list');
+        raw.sort((a,b)=>parseInt(a.odo)-parseInt(b.odo));
+        let prevOdo=null;
+        const proc=raw.map(l=>{
+            if(l.logType==='fuel'){const eff=prevOdo!==null?((l.odo-prevOdo)/parseFloat(l.liter)).toFixed(1):null;prevOdo=l.odo;return{...l,eff};}
+            return l;
+        }).sort((a,b)=>new Date(b.date)-new Date(a.date));
+        if(!proc.length){el.innerHTML=`<p class="text-center f-bar text-xs tracking-widest uppercase py-8" style="color:var(--muted)">BELUM ADA RIWAYAT</p>`;return;}
+        el.innerHTML=proc.map(l=>{
+            const svc=l.logType==='service',clr=svc?'var(--cyber)':'var(--neon)',ico=svc?'fa-wrench':'fa-gas-pump';
+            const badge=(!svc&&l.eff)?`<span class="f-mono text-[8px] px-1.5 py-0.5" style="background:rgba(200,255,0,.1);border:1px solid rgba(200,255,0,.2);color:var(--neon)">${l.eff} KM/L</span>`:'';
+            const lbl=svc?l.parts:`ISI BENSIN ${l.liter}L`;
+            return`<div class="log-item clip-tr p-3 flex items-center gap-3">
+              <div class="w-9 h-9 flex-shrink-0 flex items-center justify-center clip-sm" style="background:var(--s2);border:1px solid var(--border)"><i class="fa-solid ${ico} text-xs" style="color:${clr}"></i></div>
+              <div class="flex-1 min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="f-exo font-bold text-xs uppercase tracking-wide truncate">${lbl}</span>${badge}</div>
+              <div class="flex justify-between items-center mt-0.5"><span class="f-mono text-[10px]" style="color:var(--muted2)">${l.odo} KM</span>
+              <div class="flex items-center gap-2"><span class="f-mono text-[10px] neon-text">Rp${(l.cost||0).toLocaleString('id-ID')}</span><span class="f-bar text-[9px]" style="color:var(--muted)">${l.date}</span></div></div></div></div>`;
+        }).join('');
+    } catch(err){showToast('Gagal memuat riwayat','alert');}
+};
+
+/* ── FORMS ────────────────────────────────────────────── */
+document.getElementById('form-vehicle').onsubmit=async e=>{
+    e.preventDefault();
+    try{
+        await dbAction('vehicles','add',{id:'v_'+Date.now(),type:document.querySelector('input[name="v_type"]:checked').value,name:document.getElementById('v_name').value.trim(),brand:document.getElementById('v_brand').value.trim()});
+        closeModal('modal-add-vehicle');e.target.reset();updateTypeUI();showToast('Kendaraan tersimpan!','neon');loadVehicles();
+    } catch(err){showToast('Gagal simpan: '+(err.name||err),'alert');}
+};
+document.getElementById('form-service').onsubmit=async e=>{
+    e.preventDefault();const today=new Date().toISOString().split('T')[0];
+    try{
+        await dbAction('logs','add',{vehicleId:currentVehicleId,logType:'service',date:document.getElementById('s_date').value,odo:parseInt(document.getElementById('s_odo').value),parts:document.getElementById('s_parts').value,cost:parseInt(document.getElementById('s_cost').value||0)});
+        closeModal('modal-add-service');e.target.reset();document.getElementById('s_date').value=today;loadLogs();showToast('Servis dicatat!','cyber');
+    } catch(err){showToast('Gagal simpan','alert');}
+};
+document.getElementById('form-fuel').onsubmit=async e=>{
+    e.preventDefault();const today=new Date().toISOString().split('T')[0];
+    try{
+        await dbAction('logs','add',{vehicleId:currentVehicleId,logType:'fuel',date:document.getElementById('f_date').value,odo:parseInt(document.getElementById('f_odo').value),liter:parseFloat(document.getElementById('f_liter').value),cost:parseInt(document.getElementById('f_cost').value||0)});
+        closeModal('modal-add-fuel');e.target.reset();document.getElementById('f_date').value=today;loadLogs();showToast('Bensin dicatat!','neon');
+    } catch(err){showToast('Gagal simpan','alert');}
+};
+
+/* ── EXPORT CSV ───────────────────────────────────────── */
+const exportDataCSV=async()=>{
+    if(!currentVehicleId)return;
+    try{
+        const logs=await dbAction('logs','getIndex',null,'vehicleId',currentVehicleId);
+        if(!logs.length)return showToast('Tidak ada data!','warn');
+        let csv='Tanggal,Tipe,KM,Detail,Liter,Biaya\n';
+        logs.sort((a,b)=>new Date(a.date)-new Date(b.date)).forEach(r=>csv+=`${r.date},${r.logType},${r.odo},"${r.parts||'-'}",${r.liter||'-'},${r.cost||0}\n`);
+        const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`GarasiPro_${Date.now()}.csv`;a.click();
+        showToast('Download CSV dimulai!','neon');
+    } catch(err){showToast('Gagal export','alert');}
+};
+
+/* ── CHECKLIST ────────────────────────────────────────── */
+const loadChecklist=async()=>{
+    try{
+        const items=await dbAction('checklists','getAll');
+        const el=document.getElementById('checklist-items');
+        if(!items.length){el.innerHTML=`<p class="text-center f-bar text-xs tracking-widest uppercase py-8" style="color:var(--muted)">DAFTAR KOSONG</p>`;return;}
+        el.innerHTML=items.map(it=>`<div class="check-item clip-tr p-3 flex items-center gap-3 ${it.done?'is-done':''}">
+          <button onclick="toggleCheck(${it.id},${!it.done})" class="w-6 h-6 flex items-center justify-center flex-shrink-0 clip-sm" style="border:1.5px solid ${it.done?'var(--neon)':'var(--border2)'};background:${it.done?'rgba(200,255,0,.12)':'transparent'}">
+            ${it.done?'<i class="fa-solid fa-check text-[9px] neon-text"></i>':''}</button>
+          <span class="flex-1 f-bar text-sm tracking-wide ${it.done?'line-through':''}" style="color:${it.done?'var(--muted)':'var(--text)'}">${it.text}</span>
+          <button onclick="deleteCheck(${it.id})" class="w-7 h-7 flex items-center justify-center" style="color:var(--muted)"><i class="fa-solid fa-xmark text-xs"></i></button></div>`).join('');
+    } catch(err){showToast('Gagal load checklist','alert');}
+};
+const addCheckItem=async()=>{const inp=document.getElementById('c_item');const t=inp.value.trim();if(!t)return;try{await dbAction('checklists','add',{text:t,done:false});inp.value='';loadChecklist();}catch(err){showToast('Gagal tambah item','alert');}};
+document.getElementById('c_item').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addCheckItem();}});
+const toggleCheck=(id,done)=>{const tx=db.transaction(['checklists'],'readwrite');const s=tx.objectStore('checklists');const r=s.get(id);r.onsuccess=()=>{const d=r.result;d.done=done;s.put(d);tx.oncomplete=()=>loadChecklist();};};
+const deleteCheck=async id=>{try{await dbAction('checklists','delete',id);loadChecklist();}catch(err){showToast('Gagal hapus','alert');}};
+const confirmClearChecklist=()=>showConfirm('Reset Checklist','Semua item akan dihapus permanen.','RESET',async()=>{await dbAction('checklists','clear');loadChecklist();});
+
+/* ── GPS ──────────────────────────────────────────────── */
+const setGpsDots=(cls)=>{['gps-dot','gps-dot-2','gps-dot-3'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='dot '+cls;});};
+
+const startSpeedometer=async()=>{
+    if(!('geolocation' in navigator))return showToast('GPS tidak didukung.','alert');
+    try{wakeLock=await navigator.wakeLock.request('screen');}catch(_){}
+    maxSpeed=0;
+    geoWatchId=navigator.geolocation.watchPosition(pos=>{
+        setGpsDots('dot-on');
+        document.getElementById('gps-status').textContent='GPS AKTIF';
+        currentLat=pos.coords.latitude; currentLng=pos.coords.longitude;
+        document.getElementById('val-lat').textContent=currentLat.toFixed(4);
+        document.getElementById('val-lng').textContent=currentLng.toFixed(4);
+        const acc=`ACC:${Math.round(pos.coords.accuracy||0)}m`;
+        document.getElementById('gps-acc').textContent=acc;
+        const gps2=document.getElementById('gps-acc-2');if(gps2)gps2.textContent=acc;
+        setSpeedoArc(pos.coords.speed?pos.coords.speed*3.6:0);
+        const d=Math.hypot(currentLat-(-6.89),currentLng-112.04);
+        document.getElementById('geofence-alert').classList.toggle('hidden',d>=0.05);
+    },()=>{setGpsDots('dot-err');document.getElementById('gps-status').textContent='GPS ERROR';},
+    {enableHighAccuracy:true});
+};
+const stopSpeedometer=()=>{
+    if(geoWatchId!==null){navigator.geolocation.clearWatch(geoWatchId);geoWatchId=null;}
+    if(wakeLock){wakeLock.release().catch(()=>{});wakeLock=null;}
+    setGpsDots('dot-off');
+};
+const triggerSOS=()=>{
+    if(currentLat) window.open(`sms:?body=${encodeURIComponent(`[DARURAT] Butuh bantuan! Lokasi: https://maps.google.com/?q=${currentLat},${currentLng}`)}`,'_blank');
+    else showToast('Tunggu GPS terkunci…','warn');
+};
+
+/* ── TELEMETRY BUTTON SYNC ────────────────────────────── */
+const TELE_ON ='background:rgba(255,34,68,.12);border:1px solid rgba(255,34,68,.4);color:var(--alert);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
+const TELE_OFF='background:var(--s2);border:1px solid var(--border2);color:var(--muted2);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
+const AUDIO_ON ='background:rgba(255,34,68,.12);border:1px solid rgba(255,34,68,.4);color:var(--alert);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
+const AUDIO_OFF='background:var(--s2);border:1px solid var(--border2);color:var(--muted2);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
+
+const updateTelemetryBtns=active=>{
+    ['btn-telemetry','btn-telemetry-ls'].forEach(id=>{
+        const b=document.getElementById(id);if(!b)return;
+        b.textContent=active?'STOP':'START';b.style.cssText=active?TELE_ON:TELE_OFF;
+    });
+};
+const updateAudioBtns=active=>{
+    ['btn-audio','btn-audio-ls'].forEach(id=>{
+        const b=document.getElementById(id);if(!b)return;
+        b.textContent=active?'STOP':'MIC ON';b.style.cssText=active?AUDIO_ON:AUDIO_OFF;
+    });
+};
+
+/* ── TELEMETRY & CRASH ────────────────────────────────── */
+let telActive=false,crashTimer=null,crashCount=10;
+
+const handleMotion=e=>{
+    const acc=e.accelerationIncludingGravity;if(!acc)return;
+    const G=Math.sqrt(acc.x*acc.x+acc.y*acc.y+acc.z*acc.z)/9.81;
+    const gx=(acc.x||0)/9.81, gy=(acc.y||0)/9.81;
+    // Labs display
+    const labsG=document.getElementById('gforce-val');if(labsG)labsG.textContent=G.toFixed(1);
+    // Dashboard 2D meter
+    updateGForceMeter(G,gx,gy);
+    if(G>4.0&&!crashTimer)triggerAutoCrash();
+};
+
+const handleOrient=e=>{
+    let angle=Math.round(e.gamma||0);
+    angle=Math.max(-90,Math.min(90,angle));
+    // Labs CSS needle
+    const labsN=document.getElementById('lean-needle');if(labsN)labsN.style.transform=`translateX(-50%) rotate(${angle}deg)`;
+    const labsV=document.getElementById('lean-val');if(labsV)labsV.textContent=Math.abs(angle);
+    // Dashboard SVG gauge
+    updateLeanGauge(angle);
+};
+
+const toggleTelemetry=()=>{
+    if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){
+        DeviceMotionEvent.requestPermission().then(s=>s==='granted'?runTelemetry():showToast('Izin sensor ditolak','alert')).catch(console.error);
+    } else runTelemetry();
+};
+const runTelemetry=()=>{
+    telActive=!telActive;
+    updateTelemetryBtns(telActive);
+    const strip=document.getElementById('portrait-tele');
+    if(strip) strip.style.display=telActive?'grid':'none';
+    if(telActive){
+        window.addEventListener('devicemotion',handleMotion);
+        window.addEventListener('deviceorientation',handleOrient);
+    } else {
+        window.removeEventListener('devicemotion',handleMotion);
+        window.removeEventListener('deviceorientation',handleOrient);
+        // Reset gauges to neutral
+        updateGForceMeter(1,0,0);
+        updateLeanGauge(0);
+    }
+};
+const stopTelemetry=()=>{if(!telActive)return;telActive=false;runTelemetry();};
+
+const triggerAutoCrash=()=>{
+    document.getElementById('crash-modal').classList.remove('hidden');crashCount=10;
+    document.getElementById('crash-count').textContent=crashCount;
+    crashTimer=setInterval(()=>{crashCount--;document.getElementById('crash-count').textContent=crashCount;
+        if(crashCount<=0){clearInterval(crashTimer);crashTimer=null;triggerSOS();document.getElementById('crash-modal').classList.add('hidden');}},1000);
+};
+const cancelCrash=()=>{clearInterval(crashTimer);crashTimer=null;document.getElementById('crash-modal').classList.add('hidden');};
+
+/* ── AI ODOMETER ──────────────────────────────────────── */
+const triggerAiScanner=()=>document.getElementById('ai-cam-input').click();
+const processAIOdometer=async e=>{
+    const file=e.target.files[0];if(!file)return;
+    document.getElementById('loading-overlay').classList.remove('hidden');
+    try{
+        const w=await Tesseract.createWorker('eng');const r=await w.recognize(file);await w.terminate();
+        const nums=r.data.text.match(/\d+/g);
+        if(nums){const best=nums.reduce((a,b)=>a.length>=b.length?a:b);document.getElementById('f_odo').value=best;showToast(`AI: ${best} KM terdeteksi`,'cyber');openModal('modal-add-fuel');}
+        else{showToast('AI gagal baca angka. Input manual.','warn');openModal('modal-add-fuel');}
+    } catch(err){showToast('AI Error — coba lagi','alert');}
+    document.getElementById('loading-overlay').classList.add('hidden');e.target.value='';
+};
+
+/* ── ACOUSTIC RPM ─────────────────────────────────────── */
+let audioCtx=null,analyser=null,animReq=null;
+const toggleAudioRPM=async()=>{
+    if(audioCtx){stopAudioRPM();return;}
+    try{
+        const stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+        audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+        analyser=audioCtx.createAnalyser();
+        audioCtx.createMediaStreamSource(stream).connect(analyser);
+        analyser.fftSize=256;
+        const buf=new Uint8Array(analyser.frequencyBinCount);
+        updateAudioBtns(true);
+        const draw=()=>{
+            animReq=requestAnimationFrame(draw);
+            analyser.getByteFrequencyData(buf);
+            const pct=(Math.max(...buf)/255)*100;
+            const rpm=pct>8?Math.round(1000+pct*80):0;
+            ['audio-visual','audio-visual-ls'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';});
+            ['rpm-val','rpm-val-ls'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=rpm;});
+        };
+        draw();
+    } catch(_){showToast('Akses mikrofon ditolak','alert');}
+};
+const stopAudioRPM=()=>{
+    if(!audioCtx)return;
+    if(animReq)cancelAnimationFrame(animReq);
+    audioCtx.close();audioCtx=null;analyser=null;animReq=null;
+    updateAudioBtns(false);
+    ['audio-visual','audio-visual-ls'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width='0%';});
+    ['rpm-val','rpm-val-ls'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='0';});
+};
+
+/* ── OBD2 ─────────────────────────────────────────────── */
+const connectOBD2=async()=>{
+    if(!navigator.bluetooth)return showToast('Browser tidak support Web Bluetooth!','alert');
+    try{
+        showToast('Mencari ELM327…','cyber');
+        const dev=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:['generic_access']});
+        showToast(`Konek ke ${dev.name}`,'neon');
+        document.getElementById('obd-data').classList.remove('hidden');
+        document.getElementById('obd-data').textContent=`> CONNECTED: ${dev.name}\n> RPM: --\n> COOLANT: --\n> DTC: READING...`;
+    } catch(_){
+        showToast('Batal. Mode simulator aktif.','muted');
+        document.getElementById('obd-data').classList.remove('hidden');
+        document.getElementById('obd-data').textContent=`> SIMULATOR MODE\n> CONNECTED: ELM327-DEMO\n> RPM: 1850\n> COOLANT: 92°C\n> DTC: NONE`;
+    }
+};
+
+/* ── INIT ─────────────────────────────────────────────── */
+window.onload=async()=>{
+    buildSpeedoSVG();
+    buildGForceSVG();
+    buildLeanSVG();
+    // Initialize G-force to resting state (1G, dot at center)
+    updateGForceMeter(1,0,0);
+    applyTheme(document.documentElement.getAttribute('data-theme')||'dark');
+
+    try{ await initDB(); }
+    catch(err){
+        console.error('[DB]',err);
+        document.getElementById('main-content').innerHTML=`
+          <div class="flex flex-col items-center justify-center gap-5 p-8 h-full">
+            <div class="w-16 h-16 flex items-center justify-center clip-md" style="background:rgba(255,34,68,.1);border:1px solid rgba(255,34,68,.35)"><i class="fa-solid fa-database text-2xl alert-text"></i></div>
+            <div class="text-center"><p class="f-exo font-black text-lg uppercase tracking-widest alert-text">Database Error</p>
+            <p class="f-mono text-xs mt-2" style="color:var(--muted2)">${err.message||'IndexedDB tidak tersedia'}</p></div>
+            <button onclick="recoverDB()" class="btn-fill clip-sm px-6 py-3 text-xs tracking-[3px]">RESET & PERBAIKI DB</button></div>`;
+        return;
+    }
+    switchView('garage');
+    document.getElementById('btn-settings').onclick=()=>showToast('Settings — coming soon','muted');
+};
+
+window.recoverDB=()=>{
+    const r=indexedDB.deleteDatabase(DB_NAME);
+    r.onsuccess=()=>{showToast('DB dihapus. Reload…','neon');setTimeout(()=>location.reload(),2000);};
+    r.onerror=()=>showToast('Gagal hapus DB. Coba manual.','alert');
+};
+</script>
+</body>
+</html>
