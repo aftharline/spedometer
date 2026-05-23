@@ -1,5 +1,5 @@
 /* ================================================================
-   GARASI PRO — Service Worker v4
+   GARASI PRO — Service Worker v5
    Fixes:
    • Bug #1: catch() block now returns proper Response (not undefined)
    • Bug #2: skipWaiting() moved inside event.waitUntil() so SW
@@ -8,7 +8,7 @@
    • Bug #4: Live Server hot-reload endpoints are not cached
 ================================================================ */
 
-const CACHE_NAME   = 'garasi-pro-v4';
+const CACHE_NAME   = 'garasi-pro-v5';
 const SKIP_ORIGINS = ['chrome-extension://', 'moz-extension://', 'safari-extension://'];
 
 // Core static assets to pre-cache on install
@@ -26,6 +26,7 @@ const CDN_ASSETS = [
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-brands-400.woff2',
     'https://cdn.tailwindcss.com',
     'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js',
+    'https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js',
     'https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap',
 ];
 
