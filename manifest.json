@@ -1,7 +1,7 @@
 {
-  "name": "Garasi Digital Pro",
-  "short_name": "GarasiPro",
-  "description": "Super App Otomotif — Telemetri, AI Scanner, GPS Dashboard, dan lebih.",
+  "name": "AFTHRIDE",
+  "short_name": "AFTHRIDE",
+  "description": "Super App Riding — GPS Speedometer, Telemetri IMU, AI Scanner, dan lebih.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#020204",
