@@ -6,7 +6,7 @@
     <title>AFTHRIDE</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#c8ff00">
-    <link rel="icon" href="./assets/icon.jpg" type="image/svg+xml">
+    <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800;900&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -685,17 +685,40 @@
                                     <feGaussianBlur stdDeviation="3" result="b"/>
                                     <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
                                 </filter>
+                                <filter id="sgGlowStrong">
+                                    <feGaussianBlur stdDeviation="6" result="b"/>
+                                    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                </filter>
                             </defs>
-                            <circle cx="132" cy="132" r="126" fill="none" stroke="var(--border)"  stroke-width=".5"/>
-                            <circle cx="132" cy="132" r="118" fill="none" stroke="var(--border2)" stroke-width=".5"/>
-                            <path id="sg-track" fill="none" stroke="var(--s3)"       stroke-width="14" stroke-linecap="round"/>
-                            <path id="sg-fill"  fill="none" stroke="url(#sgFill)"    stroke-width="14" stroke-linecap="round" opacity="0"/>
+                            
+                            <!-- High-Tech Outer Rings -->
+                            <circle cx="132" cy="132" r="128" fill="none" stroke="var(--border2)" stroke-width="1.5" stroke-dasharray="1 8"/>
+                            <circle cx="132" cy="132" r="121" fill="none" stroke="var(--border)" stroke-width="6" stroke-dasharray="2 4"/>
+                            
+                            <!-- LED Segmented Gauge Track -->
+                            <path id="sg-track" fill="none" stroke="var(--s3)"       stroke-width="16" stroke-linecap="butt" stroke-dasharray="3 3"/>
+                            <path id="sg-fill"  fill="none" stroke="url(#sgFill)"    stroke-width="16" stroke-linecap="butt" stroke-dasharray="3 3" opacity="0"/>
+                            
                             <g id="sg-ticks"></g>
-                            <circle cx="132" cy="132" r="100" fill="var(--s1)"/>
-                            <circle cx="132" cy="132" r="99"  fill="none" stroke="var(--border)" stroke-width=".5"/>
-                            <text id="sg-value" x="132" y="125" text-anchor="middle" font-family="Share Tech Mono" font-size="60" fill="var(--neon)" filter="url(#sgGlow)">0</text>
-                            <text x="132" y="146" text-anchor="middle" font-family="Exo 2" font-size="10" fill="var(--muted2)" font-weight="700" letter-spacing="5">KM/H</text>
-                            <text id="sg-max" x="132" y="166" text-anchor="middle" font-family="Share Tech Mono" font-size="9" fill="var(--muted)">MAX 0 KM/H</text>
+                            
+                            <!-- Dynamic Indicator Head -->
+                            <circle id="sg-needle" cx="132" cy="132" r="4" fill="#fff" filter="url(#sgGlow)" opacity="0"/>
+
+                            <!-- Inner Tech Dial -->
+                            <circle cx="132" cy="132" r="86" fill="var(--s1)"/>
+                            <circle cx="132" cy="132" r="85" fill="none" stroke="var(--border2)" stroke-width="0.5"/>
+                            <circle cx="132" cy="132" r="81" fill="none" stroke="var(--border)" stroke-width="3" stroke-dasharray="1 12"/>
+                            
+                            <!-- Typography -->
+                            <text id="sg-value" x="132" y="125" text-anchor="middle" font-family="Share Tech Mono" font-size="64" fill="var(--neon)" filter="url(#sgGlowStrong)" style="letter-spacing:-2px">0</text>
+                            
+                            <!-- Floating Badge for KM/H -->
+                            <g transform="translate(132, 154)">
+                                <rect x="-26" y="-11" width="52" height="16" fill="var(--s2)" rx="8" stroke="var(--border2)" stroke-width="1"/>
+                                <text x="0" y="-1" text-anchor="middle" font-family="Exo 2" font-size="8" fill="var(--cyber)" font-weight="800" letter-spacing="4">KM/H</text>
+                            </g>
+                            
+                            <text id="sg-max" x="132" y="178" text-anchor="middle" font-family="Share Tech Mono" font-size="10" fill="var(--muted)">MAX 0</text>
                         </svg>
                     </div>
 
@@ -1002,7 +1025,9 @@
     <div id="toast" class="absolute top-20 left-1/2 z-[80] pointer-events-none whitespace-nowrap f-exo font-bold text-xs tracking-[2px] uppercase px-4 py-2.5 clip-sm"
          style="background:var(--neon);color:#020204;transform:translateX(-50%) translateY(-60px);opacity:0;transition:transform .3s,opacity .3s"></div>
 
-</div><!-- /#app -->
+</div>
+
+<!-- /#app -->
 
 <!-- ══════════════════════════════════════════════════════════
      JAVASCRIPT
@@ -1067,21 +1092,65 @@ function buildSpeedoSVG(){
     setSpeedoArc(0);
 }
 
-function setSpeedoArc(kmh){
-    const c=Math.min(Math.max(kmh,0),SG.MAX);
+let currentDisplaySpeed=0, targetDisplaySpeed=0, speedAnimReq=null;
+function animateSpeedo(){
+    const diff=targetDisplaySpeed-currentDisplaySpeed;
+    if(Math.abs(diff)<0.1) currentDisplaySpeed=targetDisplaySpeed;
+    else currentDisplaySpeed+=diff*0.08; // sangat smooth
+
+    const c=Math.min(Math.max(currentDisplaySpeed,0),SG.MAX);
     const sw=SG.SWEEP*(c/SG.MAX);
     const fill=document.getElementById('sg-fill');
-    if(sw>0.5){fill.setAttribute('d',arcPath(SG.CX,SG.CY,SG.R,SG.START,SG.START+sw));fill.style.opacity='1';}
-    else fill.style.opacity='0';
-    document.getElementById('sg-value').textContent=Math.round(c);
+    const needle=document.getElementById('sg-needle');
+    
+    if(fill){
+        if(sw>0.5){
+            fill.setAttribute('d',arcPath(SG.CX,SG.CY,SG.R,SG.START,SG.START+sw));
+            fill.style.opacity='1';
+            if(needle){
+                const p = polarXY(SG.CX, SG.CY, SG.R, SG.START+sw);
+                needle.setAttribute('cx', p.x);
+                needle.setAttribute('cy', p.y);
+                needle.style.opacity='1';
+                needle.setAttribute('fill', c > SG.MAX*0.75 ? '#ff2244' : c > SG.MAX*0.4 ? '#c8ff00' : '#00d4ff');
+            }
+        } else {
+            fill.style.opacity='0';
+            if(needle) needle.style.opacity='0';
+        }
+    }
+    const valEl=document.getElementById('sg-value');
+    if(valEl) valEl.textContent=Math.round(c);
+    
     if(c>maxSpeed){
         maxSpeed=c;
-        document.getElementById('sg-max').textContent=`MAX ${Math.round(maxSpeed)} KM/H`;
-        document.getElementById('val-maxspd').textContent=Math.round(maxSpeed);
+        const maxEl=document.getElementById('sg-max');
+        if(maxEl) maxEl.textContent=`MAX ${Math.round(maxSpeed)}`;
+        const valMax=document.getElementById('val-maxspd');
+        if(valMax) valMax.textContent=Math.round(maxSpeed);
     }
     updateRideState({speed:c,maxSpeed});
+    
+    if(Math.abs(diff)>=0.1){
+        speedAnimReq=requestAnimationFrame(animateSpeedo);
+    } else {
+        speedAnimReq=null;
+    }
 }
-function resetMaxSpeed(){maxSpeed=0;setSpeedoArc(0);showToast('Max speed direset','muted');}
+
+function setSpeedoArc(kmh){
+    // Deviasi +25% agar lebih aman (seperti spedo motor asli)
+    targetDisplaySpeed = kmh * 1.25;
+    if(!speedAnimReq) animateSpeedo();
+}
+function resetMaxSpeed(){
+    maxSpeed=0;
+    const maxEl=document.getElementById('sg-max');
+    if(maxEl) maxEl.textContent=`MAX 0`;
+    const valMax=document.getElementById('val-maxspd');
+    if(valMax) valMax.textContent='0';
+    showToast('Max speed direset','muted');
+}
 
 /* ════════════════════════════════════════════════════════
    G-FORCE 2D METER SVG
@@ -2185,6 +2254,11 @@ if(canvas3d){
     };
 
     const animate=()=>{
+        requestAnimationFrame(animate);
+        // Optimasi: Hentikan render 3D jika bukan di menu RIDE untuk menghemat baterai & CPU
+        const dash = document.getElementById('view-dashboard');
+        if(dash && dash.classList.contains('hidden')) return;
+
         const dt=clock.getDelta();
         const t=clock.elapsedTime;
         resize();
@@ -2210,7 +2284,6 @@ if(canvas3d){
         pos.needsUpdate=true;
         renderer.render(scene,camera);
         markRenderDiagnostics();
-        requestAnimationFrame(animate);
     };
     animate();
 }
