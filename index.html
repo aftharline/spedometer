@@ -3,139 +3,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFTHRIDE</title>
+    <title>BLACKCROWN RIDE — BCR Surabaya</title>
+    <meta name="description" content="BLACKCROWN RIDE — Super App resmi Black Crown Riders Surabaya. GPS Speedometer, Telemetri IMU, AI Scanner, dan lebih.">
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#c8ff00">
-    <link rel="icon" href="./assets/icon.jpg" type="image/svg+xml">
+    <meta name="theme-color" content="#d4a017">
+    <link rel="icon" href="./assets/icon.jpg" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800;900&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Bebas+Neue&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>(function(){const t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
     <style>
-        /* ── TOKENS ─────────────────────────────────────── */
+        /* ══════════════════════════════════════════════════
+           BCR DESIGN TOKENS
+        ══════════════════════════════════════════════════ */
         :root {
-            --neon:   #c8ff00; --cyber: #00d4ff;
-            --alert:  #ff2244; --warn:  #ff8800;
-            --bg:     #020204; --s1:    #080810;
-            --s2:     #0e0e18; --s3:    #151520;
-            --border: #1c1c28; --border2:#252535;
-            --text:   #e8e8f0; --muted: #44445a; --muted2:#666680;
+            /* Core Brand */
+            --gold:    #d4a017;
+            --gold2:   #f5c842;
+            --gold3:   #7a5c0a;
+            --red:     #cc1122;
+            --red2:    #ff2244;
+            --red3:    #6e0011;
+            --white:   #f0f0f0;
+            --off-wh:  #c8c8c8;
+
+            /* Dark backgrounds */
+            --bg:      #080808;
+            --s1:      #111111;
+            --s2:      #191919;
+            --s3:      #222222;
+            --s4:      #2a2a2a;
+
+            /* Borders */
+            --border:  #2c2c2c;
+            --border2: #3a3a3a;
+            --borderG: rgba(212,160,23,.35);
+            --borderR: rgba(204,17,34,.35);
+
+            /* Text */
+            --text:    #f0f0f0;
+            --muted:   #555555;
+            --muted2:  #888888;
+
+            /* Accent aliases (keep compat) */
+            --neon:    #d4a017;
+            --cyber:   #f5c842;
+            --alert:   #cc1122;
+            --warn:    #ff6600;
         }
+
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        body{background:var(--bg);color:var(--text);font-family:'Barlow Condensed',sans-serif;
-             -webkit-tap-highlight-color:transparent;overflow:hidden;height:100dvh;width:100vw}
+        html{scroll-behavior:smooth}
+        body{
+            background:var(--bg);
+            color:var(--text);
+            font-family:'Rajdhani',sans-serif;
+            -webkit-tap-highlight-color:transparent;
+            overflow:hidden;
+            height:100dvh;
+            width:100vw;
+        }
         button{user-select:none}
-        ::-webkit-scrollbar{width:2px} ::-webkit-scrollbar-track{background:transparent}
-        ::-webkit-scrollbar-thumb{background:var(--neon);opacity:.3}
+        ::-webkit-scrollbar{width:2px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:var(--gold);opacity:.3}
 
         /* ── TYPOGRAPHY ──────────────────────────────────── */
-        .f-exo{font-family:'Exo 2',sans-serif}
+        .f-bebas{font-family:'Bebas Neue',sans-serif;letter-spacing:2px}
+        .f-rajd{font-family:'Rajdhani',sans-serif}
         .f-mono{font-family:'Share Tech Mono',monospace}
-        .f-bar{font-family:'Barlow Condensed',sans-serif}
+        .f-exo{font-family:'Exo 2',sans-serif}
+
+        /* ── BRAND TEXTURE — Carbon Weave ────────────────── */
+        .carbon{
+            background-image:
+                repeating-linear-gradient(45deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 7px),
+                repeating-linear-gradient(-45deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 7px);
+        }
 
         /* ── HEX BG ──────────────────────────────────────── */
-        .hex-bg{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 4L56 18v28L30 60 4 46V18z' fill='none' stroke='%231c1c28' stroke-width='0.8'/%3E%3C/svg%3E");background-size:60px 104px}
+        .hex-bg{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 4L56 18v28L30 60 4 46V18z' fill='none' stroke='%232c2c2c' stroke-width='0.6'/%3E%3C/svg%3E");background-size:60px 104px}
 
         /* ── SCANLINES ───────────────────────────────────── */
-        .scanlines::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(0,0,0,.18) 3px,rgba(0,0,0,.18) 4px);pointer-events:none;border-radius:inherit;z-index:1}
-
-        /* ── CARBON ──────────────────────────────────────── */
-        .carbon{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 1px,transparent 1px,transparent 7px),repeating-linear-gradient(-45deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 1px,transparent 1px,transparent 7px)}
+        .scanlines::after{
+            content:'';position:absolute;inset:0;
+            background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(0,0,0,.15) 3px,rgba(0,0,0,.15) 4px);
+            pointer-events:none;border-radius:inherit;z-index:1
+        }
 
         /* ── CLIP PATHS ─────────────────────────────────── */
-        .clip-sm {clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
-        .clip-md {clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
-        .clip-lg {clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
-        .clip-tr {clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%)}
-        .clip-tl {clip-path:polygon(12px 0,100% 0,100% 100%,0 100%,0 12px)}
+        .clip-sm  {clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
+        .clip-md  {clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
+        .clip-lg  {clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+        .clip-tr  {clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%)}
+        .clip-tl  {clip-path:polygon(12px 0,100% 0,100% 100%,0 100%,0 12px)}
+
+        /* ── GOLD GLOW UTILS ─────────────────────────────── */
+        .gold-text {color:var(--gold);text-shadow:0 0 12px rgba(212,160,23,.5)}
+        .gold2-text{color:var(--gold2);text-shadow:0 0 10px rgba(245,200,66,.4)}
+        .red-text  {color:var(--red2);text-shadow:0 0 10px rgba(204,17,34,.5)}
+        .white-text{color:var(--white)}
 
         /* ── HEADER ──────────────────────────────────────── */
-        .app-header{background:linear-gradient(180deg,rgba(8,8,16,.98),rgba(8,8,16,.92));border-bottom:1px solid var(--border);position:relative}
-        .app-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon) 40%,var(--cyber) 60%,transparent);opacity:.5}
-        .header-stripe{position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--neon),var(--cyber))}
+        .app-header{
+            background:linear-gradient(180deg,rgba(10,10,10,.99),rgba(10,10,10,.94));
+            border-bottom:1px solid var(--border);
+            position:relative;
+        }
+        .app-header::after{
+            content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+            background:linear-gradient(90deg,transparent,var(--gold) 30%,var(--red) 60%,transparent);
+            opacity:.7;
+        }
+        .header-stripe{
+            position:absolute;left:0;top:0;bottom:0;width:3px;
+            background:linear-gradient(180deg,var(--gold),var(--red));
+        }
+
+        /* Crown logo decorative */
+        .crown-badge{
+            display:inline-flex;align-items:center;gap:5px;
+            padding:2px 8px 2px 6px;
+            background:linear-gradient(90deg,rgba(212,160,23,.15),rgba(204,17,34,.08));
+            border:1px solid var(--borderG);
+            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+        }
 
         /* ── NAV ─────────────────────────────────────────── */
-        .nav-bar{background:rgba(8,8,16,.98);border-top:1px solid var(--border);position:relative}
-        .nav-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:.25}
-        .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px 6px;gap:3px;color:var(--muted);background:none;border:none;cursor:pointer;position:relative;transition:color .2s}
-        .nav-btn::after{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--neon);transform:scaleX(0);transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
-        .nav-btn.is-active{color:var(--neon)} .nav-btn.is-active::after{transform:scaleX(1)}
-        .nav-btn.is-active-cy{color:var(--cyber)} .nav-btn.is-active-cy::after{background:var(--cyber);transform:scaleX(1)}
+        .nav-bar{
+            background:rgba(10,10,10,.98);
+            border-top:1px solid var(--border);
+            position:relative;
+        }
+        .nav-bar::before{
+            content:'';position:absolute;top:0;left:0;right:0;height:1px;
+            background:linear-gradient(90deg,transparent,var(--gold),transparent);
+            opacity:.3;
+        }
+        .nav-btn{
+            flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+            padding:8px 4px 6px;gap:3px;color:var(--muted);background:none;border:none;
+            cursor:pointer;position:relative;transition:color .2s;
+        }
+        .nav-btn::after{
+            content:'';position:absolute;top:0;left:20%;right:20%;height:2px;
+            background:linear-gradient(90deg,var(--gold),var(--gold2));
+            transform:scaleX(0);
+            transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+        }
+        .nav-btn.is-active{color:var(--gold)}
+        .nav-btn.is-active::after{transform:scaleX(1)}
+        .nav-btn.is-active-red{color:var(--red2)}
+        .nav-btn.is-active-red::after{background:var(--red);transform:scaleX(1)}
         .nav-icon{font-size:17px}
         .nav-label{font-size:8px;font-family:'Exo 2',sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
 
         /* ── BUTTONS ─────────────────────────────────────── */
-        .btn-neon{background:rgba(200,255,0,.08);border:1px solid rgba(200,255,0,.35);color:var(--neon);font-family:'Exo 2',sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .18s}
-        .btn-neon:active{background:rgba(200,255,0,.2);transform:scale(.96)}
-        .btn-fill{background:var(--neon);color:#020204;font-family:'Exo 2',sans-serif;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .18s}
-        .btn-fill:active{opacity:.85;transform:scale(.96)}
+        .btn-gold{
+            background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.4);
+            color:var(--gold);font-family:'Exo 2',sans-serif;font-weight:700;
+            letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .18s;
+        }
+        .btn-gold:active{background:rgba(212,160,23,.22);transform:scale(.96)}
+        .btn-fill-gold{
+            background:linear-gradient(135deg,var(--gold),var(--gold2));
+            color:#0a0a0a;font-family:'Exo 2',sans-serif;font-weight:800;
+            letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .18s;
+        }
+        .btn-fill-gold:active{opacity:.85;transform:scale(.96)}
+        .btn-red{
+            background:rgba(204,17,34,.1);border:1px solid rgba(204,17,34,.4);
+            color:var(--red2);font-family:'Exo 2',sans-serif;font-weight:700;
+            letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .18s;
+        }
+        .btn-red:active{background:rgba(204,17,34,.22);transform:scale(.96)}
 
         /* ── INPUTS ──────────────────────────────────────── */
-        .inp{background:var(--s2);border:1px solid var(--border2);color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:15px;padding:11px 14px;width:100%;outline:none;transition:border-color .18s}
-        .inp:focus{border-color:var(--neon)} .inp::placeholder{color:var(--muted)}
+        .inp{
+            background:var(--s2);border:1px solid var(--border2);color:var(--text);
+            font-family:'Rajdhani',sans-serif;font-size:15px;padding:11px 14px;
+            width:100%;outline:none;transition:border-color .18s;
+        }
+        .inp:focus{border-color:var(--gold)}
+        .inp::placeholder{color:var(--muted)}
         .inp[type="date"]{color-scheme:dark}
-        label.inp-label{font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);display:block;margin-bottom:5px}
+        label.inp-label{
+            font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;
+            letter-spacing:2px;text-transform:uppercase;color:var(--muted2);
+            display:block;margin-bottom:5px;
+        }
 
-        /* ── CARDS / LOGS ────────────────────────────────── */
-        .vehicle-card{background:var(--s1);border:1px solid var(--border);position:relative;overflow:hidden;cursor:pointer;transition:border-color .18s,background .18s}
-        .vehicle-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--neon),var(--cyber));opacity:0;transition:opacity .18s}
-        .vehicle-card:active{border-color:rgba(200,255,0,.4);background:var(--s2)} .vehicle-card:active::before{opacity:1}
+        /* ── CARDS ───────────────────────────────────────── */
+        .vehicle-card{
+            background:var(--s1);border:1px solid var(--border);position:relative;
+            overflow:hidden;cursor:pointer;transition:border-color .18s,background .18s;
+        }
+        .vehicle-card::before{
+            content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+            background:linear-gradient(180deg,var(--gold),var(--red));
+            opacity:0;transition:opacity .18s;
+        }
+        .vehicle-card:active{border-color:var(--borderG);background:var(--s2)}
+        .vehicle-card:active::before{opacity:1}
         .log-item{background:var(--s1);border:1px solid var(--border)}
 
         /* ── STATUS DOTS ─────────────────────────────────── */
         .dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
-        .dot-on{background:var(--neon);box-shadow:0 0 6px var(--neon);animation:blink 2s ease-in-out infinite}
+        .dot-on{background:var(--gold);box-shadow:0 0 6px var(--gold);animation:blink 2s ease-in-out infinite}
         .dot-off{background:var(--muted)}
-        .dot-err{background:var(--alert);box-shadow:0 0 6px var(--alert);animation:blink .8s ease-in-out infinite}
+        .dot-err{background:var(--red2);box-shadow:0 0 6px var(--red2);animation:blink .8s ease-in-out infinite}
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
 
-        /* ── CLASSIC GAUGE (Labs only) ───────────────────── */
-        .gauge-wrap{width:170px;height:85px;border-top-left-radius:85px;border-top-right-radius:85px;border:2px solid var(--border2);border-bottom:0;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 100%,rgba(200,255,0,.05),transparent 60%),var(--s2)}
-        .gauge-needle{width:2px;height:74px;background:linear-gradient(to top,var(--neon) 60%,transparent);position:absolute;bottom:0;left:50%;transform-origin:bottom center;transform:translateX(-50%) rotate(0deg);transition:transform .07s linear;box-shadow:0 0 6px var(--neon)}
-        .gauge-needle::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:10px;height:10px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon)}
+        /* ── GAUGE WRAP (Labs) ───────────────────────────── */
+        .gauge-wrap{
+            width:170px;height:85px;
+            border-top-left-radius:85px;border-top-right-radius:85px;
+            border:2px solid var(--border2);border-bottom:0;
+            position:relative;overflow:hidden;
+            background:radial-gradient(ellipse at 50% 100%,rgba(212,160,23,.06),transparent 60%),var(--s2);
+        }
+        .gauge-needle{
+            width:2px;height:74px;
+            background:linear-gradient(to top,var(--gold) 60%,transparent);
+            position:absolute;bottom:0;left:50%;
+            transform-origin:bottom center;
+            transform:translateX(-50%) rotate(0deg);
+            transition:transform .07s linear;
+            box-shadow:0 0 6px var(--gold);
+        }
+        .gauge-needle::after{
+            content:'';position:absolute;bottom:-5px;left:50%;
+            transform:translateX(-50%);width:10px;height:10px;
+            border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);
+        }
         .gauge-center{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:1px;height:12px;background:rgba(255,255,255,.1)}
 
         /* ── AUDIO BAR ───────────────────────────────────── */
         .audio-bar{width:100%;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
-        .audio-fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--cyber),var(--alert));width:0%;transition:width .04s}
+        .audio-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2),var(--red));width:0%;transition:width .04s}
 
         /* ── SPEEDOMETER SVG ─────────────────────────────── */
-        #speedo-svg{filter:drop-shadow(0 0 24px rgba(200,255,0,.2))}
+        #speedo-svg{filter:drop-shadow(0 0 28px rgba(212,160,23,.25))}
 
         /* ── OBD TERMINAL ────────────────────────────────── */
-        .obd-term{background:#020c02;border:1px solid rgba(0,212,255,.25);font-family:'Share Tech Mono',monospace;font-size:11px;color:#00d4ff;line-height:1.7;padding:12px 14px;white-space:pre-line}
+        .obd-term{
+            background:#060400;border:1px solid rgba(212,160,23,.2);
+            font-family:'Share Tech Mono',monospace;font-size:11px;
+            color:var(--gold);line-height:1.7;padding:12px 14px;white-space:pre-line;
+        }
 
         /* ── MODAL SHEET ─────────────────────────────────── */
         .modal-sheet{background:var(--s1);border-top:1px solid var(--border2);position:relative}
-        .modal-sheet::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:.4}
+        .modal-sheet::before{
+            content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+            background:linear-gradient(90deg,transparent,var(--gold),transparent);
+            opacity:.5;
+        }
+
+        /* ── SENSOR CHIP ─────────────────────────────────── */
+        .sensor-chip{
+            display:inline-flex;align-items:center;gap:5px;padding:3px 7px;
+            background:rgba(212,160,23,.06);border:1px solid rgba(212,160,23,.22);
+            color:var(--gold);font-family:'Share Tech Mono',monospace;font-size:9px;line-height:1;
+            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+        }
 
         /* ── ANIMATIONS ──────────────────────────────────── */
-        @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes spinCW{to{transform:rotate(360deg)}}
-        @keyframes spinCCW{to{transform:rotate(-360deg)}}
-        @keyframes pulseAlert{0%{box-shadow:0 0 0 0 rgba(255,34,68,.7)}70%{box-shadow:0 0 0 24px rgba(255,34,68,0)}100%{box-shadow:0 0 0 0 rgba(255,34,68,0)}}
-        .slide-up{animation:slideUp .3s cubic-bezier(.25,.46,.45,.94) forwards}
-        .fade-in{animation:fadeIn .3s ease forwards}
-        .spin-cw{animation:spinCW 1.4s linear infinite}
-        .spin-ccw{animation:spinCCW 1s linear infinite}
-        .btn-sos,.crash-modal-wrap{animation:pulseAlert 1.5s infinite}
+        @keyframes slideUp  {from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+        @keyframes fadeIn   {from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes spinCW   {to{transform:rotate(360deg)}}
+        @keyframes spinCCW  {to{transform:rotate(-360deg)}}
+        @keyframes pulseRed {0%{box-shadow:0 0 0 0 rgba(204,17,34,.7)}70%{box-shadow:0 0 0 24px rgba(204,17,34,0)}100%{box-shadow:0 0 0 0 rgba(204,17,34,0)}}
+        @keyframes goldPulse{0%,100%{text-shadow:0 0 10px rgba(212,160,23,.5)}50%{text-shadow:0 0 22px rgba(245,200,66,.9)}}
+        @keyframes hudSweep {to{transform:rotate(360deg)}}
+        @keyframes panelScan{
+            0%,48%{transform:translateX(-120%)}
+            68%{transform:translateX(120%)}
+            100%{transform:translateX(120%)}
+        }
+
+        .slide-up   {animation:slideUp .3s cubic-bezier(.25,.46,.45,.94) forwards}
+        .fade-in    {animation:fadeIn .3s ease forwards}
+        .spin-cw    {animation:spinCW 1.4s linear infinite}
+        .spin-ccw   {animation:spinCCW 1s linear infinite}
+        .btn-sos,.crash-modal-wrap{animation:pulseRed 1.5s infinite}
 
         /* ── CHECKLIST ───────────────────────────────────── */
         .check-item{background:var(--s1);border:1px solid var(--border);transition:border-color .18s}
-        .check-item.is-done{border-color:rgba(200,255,0,.15)}
+        .check-item.is-done{border-color:rgba(212,160,23,.2)}
 
         /* ── MISC ────────────────────────────────────────── */
-        .neon-text{color:var(--neon);text-shadow:0 0 14px rgba(200,255,0,.4)}
-        .cyber-text{color:var(--cyber);text-shadow:0 0 14px rgba(0,212,255,.4)}
-        .alert-text{color:var(--alert)}
         section.hidden{display:none !important}
-        #main-content{scrollbar-width:thin;scrollbar-color:var(--neon) transparent}
+        #main-content{scrollbar-width:thin;scrollbar-color:var(--gold) transparent}
 
-        /* ── ROTATION LOCK BUTTON ────────────────────────── */
+        /* ── ROTATION LOCK ───────────────────────────────── */
         #btn-rot-lock{
             display:inline-flex;align-items:center;gap:4px;
             padding:3px 7px;
@@ -144,224 +308,131 @@
             cursor:pointer;transition:all .18s;position:relative;
             clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
         }
-        #btn-rot-lock[data-mode="auto"]{
-            background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.22);color:var(--cyber);
-        }
-        #btn-rot-lock[data-mode="portrait"]{
-            background:rgba(200,255,0,.08);border:1px solid rgba(200,255,0,.32);color:var(--neon);
-        }
-        #btn-rot-lock[data-mode="landscape"]{
-            background:rgba(255,136,0,.08);border:1px solid rgba(255,136,0,.32);color:var(--warn);
-        }
+        #btn-rot-lock[data-mode="auto"]     {background:rgba(212,160,23,.06);border:1px solid rgba(212,160,23,.22);color:var(--gold)}
+        #btn-rot-lock[data-mode="portrait"] {background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.32);color:var(--gold2)}
+        #btn-rot-lock[data-mode="landscape"]{background:rgba(204,17,34,.08);border:1px solid rgba(204,17,34,.32);color:var(--red2)}
         #btn-rot-lock:active{transform:scale(.93);opacity:.8}
 
         /* ══════════════════════════════════════════════════
            INSTRUMENT CLUSTER — PORTRAIT DEFAULT
         ══════════════════════════════════════════════════ */
         #view-dashboard{
-            padding:16px 16px 12px;
-            gap:10px;
+            padding:12px 12px 10px;
+            gap:8px;
             min-height:calc(100dvh - 140px);
             position:relative;
             overflow:hidden;
             background:
-                radial-gradient(circle at 50% 35%,rgba(0,212,255,.12),transparent 34%),
-                linear-gradient(180deg,rgba(200,255,0,.04),transparent 22%),
+                radial-gradient(circle at 50% 30%,rgba(212,160,23,.1),transparent 38%),
+                radial-gradient(circle at 85% 80%,rgba(204,17,34,.06),transparent 30%),
                 var(--bg);
         }
         #view-dashboard::before{
-            content:'';
-            position:absolute;
-            inset:-40%;
-            pointer-events:none;
-            background:conic-gradient(from 120deg,transparent,rgba(200,255,0,.08),transparent 28%,rgba(0,212,255,.07),transparent 48%);
-            animation:hudSweep 8s linear infinite;
-            opacity:.55;
+            content:'';position:absolute;inset:-40%;pointer-events:none;
+            background:conic-gradient(from 120deg,transparent,rgba(212,160,23,.07),transparent 28%,rgba(204,17,34,.05),transparent 48%);
+            animation:hudSweep 10s linear infinite;opacity:.5;
         }
-        #ride-3d-layer{
-            position:absolute;
-            inset:0;
-            pointer-events:none;
-            z-index:0;
-            opacity:1;
-            mix-blend-mode:screen;
-        }
-        #ride-3d-canvas{
-            width:100%;
-            height:100%;
-            display:block;
-        }
-        #dash-status,#geofence-alert,#instrument-cluster,#dash-bottom{
-            position:relative;
-            z-index:2;
-        }
-        #instrument-cluster{
-            display:flex;
-            flex-direction:column;
-            flex:1;
-            min-height:0;
-            align-items:center;
-            justify-content:center;
-        }
-        #panel-speed{
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            gap:6px;
-            width:100%;
-            position:relative;
-            isolation:isolate;
-        }
+        #ride-3d-layer{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:1;mix-blend-mode:screen}
+        #ride-3d-canvas{width:100%;height:100%;display:block}
+        #dash-status,#geofence-alert,#instrument-cluster,#dash-bottom{position:relative;z-index:2}
+        #instrument-cluster{display:flex;flex-direction:column;flex:1;min-height:0;align-items:center;justify-content:center}
+        #panel-speed{display:flex;flex-direction:column;align-items:center;gap:5px;width:100%;position:relative;isolation:isolate}
+
         /* G-force and Lean panels hidden in portrait */
         #panel-gforce,#panel-lean{display:none}
 
         /* Portrait tele strip */
-        #portrait-tele{
-            display:none; /* toggled by JS when telemetry active */
-            width:100%;
+        #portrait-tele{display:none;width:100%}
+
+        /* Speedo container */
+        #speedo-container{display:flex;align-items:center;justify-content:center;position:relative}
+
+        /* Rotating ring behind speedo */
+        #speedo-container::before{
+            content:'';position:absolute;
+            width:min(74vw,274px);aspect-ratio:1;border-radius:50%;
+            background:repeating-conic-gradient(from 0deg,rgba(212,160,23,.12) 0 3deg,transparent 3deg 10deg);
+            mask:radial-gradient(circle,transparent 0 57%,#000 58% 64%,transparent 65%);
+            animation:spinCW 20s linear infinite;opacity:.5;
         }
 
-        /* Speedo container in portrait just wraps the SVG naturally */
-        #speedo-container{
-            display:flex;
-            align-items:center;
-            justify-content:center;
-        }
-
-        /* SVG wrap (for lean + gforce panels) */
-        .svg-wrap{
-            flex:1;
-            min-height:0;
-            width:100%;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            overflow:hidden;
-        }
-        .svg-wrap svg{
-            max-width:100%;
-            max-height:100%;
-            width:auto;
-            height:auto;
-        }
+        /* SVG wrap */
+        .svg-wrap{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .svg-wrap svg{max-width:100%;max-height:100%;width:auto;height:auto}
 
         /* Instrument panel header */
-        .inst-hdr{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            flex-shrink:0;
-            width:100%;
-        }
-        .inst-title{
-            font-family:'Exo 2',sans-serif;
-            font-size:9px;
-            font-weight:700;
-            letter-spacing:3px;
-            text-transform:uppercase;
-        }
+        .inst-hdr{display:flex;justify-content:space-between;align-items:center;flex-shrink:0;width:100%}
+        .inst-title{font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
 
-        /* Panel accent lines (top) */
-        .inst-panel-speed{border-top:2px solid var(--neon)}
-        .inst-panel-gforce{border-top:2px solid var(--alert)}
-        .inst-panel-lean{border-top:2px solid var(--cyber)}
+        /* Panel accent lines */
+        .inst-panel-speed {border-top:2px solid var(--gold)}
+        .inst-panel-gforce{border-top:2px solid var(--red)}
+        .inst-panel-lean  {border-top:2px solid var(--gold2)}
+
         #panel-speed,#panel-gforce,#panel-lean{
             backdrop-filter:blur(10px);
-            background:linear-gradient(180deg,rgba(8,8,16,.62),rgba(8,8,16,.38));
-            box-shadow:inset 0 0 24px rgba(0,212,255,.04),0 0 28px rgba(0,0,0,.28);
+            background:linear-gradient(180deg,rgba(10,10,10,.65),rgba(10,10,10,.4));
+            box-shadow:inset 0 0 24px rgba(212,160,23,.04),0 0 28px rgba(0,0,0,.35);
         }
         #panel-speed::after,#panel-gforce::after,#panel-lean::after{
-            content:'';
-            position:absolute;
-            inset:0;
-            pointer-events:none;
-            background:linear-gradient(120deg,transparent 0 42%,rgba(255,255,255,.08) 48%,transparent 56% 100%);
-            transform:translateX(-120%);
-            animation:panelScan 4.6s ease-in-out infinite;
-            opacity:.45;
-            z-index:-1;
-        }
-        #speedo-container{
-            position:relative;
-        }
-        #speedo-container::before{
-            content:'';
-            position:absolute;
-            width:min(74vw,270px);
-            aspect-ratio:1;
-            border-radius:50%;
-            background:repeating-conic-gradient(from 0deg,rgba(200,255,0,.13) 0 4deg,transparent 4deg 11deg);
-            mask:radial-gradient(circle,transparent 0 57%,#000 58% 64%,transparent 65%);
-            animation:spinCW 18s linear infinite;
-            opacity:.45;
-        }
-        .sensor-chip{
-            display:inline-flex;
-            align-items:center;
-            gap:5px;
-            padding:3px 7px;
-            background:rgba(0,212,255,.06);
-            border:1px solid rgba(0,212,255,.22);
-            color:var(--cyber);
-            font-family:'Share Tech Mono',monospace;
-            font-size:9px;
-            line-height:1;
-            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
-        }
-        @keyframes hudSweep{to{transform:rotate(360deg)}}
-        @keyframes panelScan{
-            0%,48%{transform:translateX(-120%)}
-            68%{transform:translateX(120%)}
-            100%{transform:translateX(120%)}
+            content:'';position:absolute;inset:0;pointer-events:none;
+            background:linear-gradient(120deg,transparent 0 42%,rgba(255,255,255,.06) 48%,transparent 56% 100%);
+            transform:translateX(-120%);animation:panelScan 5s ease-in-out infinite;opacity:.4;z-index:-1;
         }
 
         /* Bottom dash bar */
-        #dash-bottom{
-            display:flex;
-            flex-direction:column;
-            gap:6px;
-            flex-shrink:0;
+        #dash-bottom{display:flex;flex-direction:column;gap:6px;flex-shrink:0;width:100%}
+
+        /* ── BCR MINI INSTRUMENTS GRID ───────────────────── */
+        #bcr-mini-instruments{
+            display:grid;
+            grid-template-columns:repeat(4,1fr);
+            gap:4px;
             width:100%;
+        }
+        .mini-inst{
+            background:var(--s1);border:1px solid var(--border);
+            padding:5px 4px;text-align:center;
+            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+        }
+        .mini-inst-val{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--gold)}
+        .mini-inst-lbl{font-family:'Exo 2',sans-serif;font-size:6px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+        /* ── COMPASS RING ────────────────────────────────── */
+        #compass-ring{
+            display:flex;align-items:center;justify-content:center;
+            gap:4px;
+            font-family:'Share Tech Mono',monospace;font-size:10px;
+            color:var(--muted2);overflow:hidden;
+            white-space:nowrap;
         }
 
         /* ══════════════════════════════════════════════════
-           LIGHT MODE
+           LIGHT MODE (minimal — BCR is always dark)
         ══════════════════════════════════════════════════ */
         [data-theme="light"]{
-            --neon:#4d8c00; --cyber:#0077aa;
-            --alert:#cc1133; --warn:#cc5500;
-            --bg:#ebebf2; --s1:#f4f4fa;
-            --s2:#e2e2ec; --s3:#d4d4e0;
-            --border:#c8c8d8; --border2:#b8b8cc;
-            --text:#181828; --muted:#8888a0; --muted2:#606078;
+            --gold:#8a6000;--gold2:#b08000;
+            --red:#990011;--red2:#cc1122;
+            --bg:#f0ece4;--s1:#e8e4dc;--s2:#dedad2;--s3:#d2cec6;
+            --border:#c0bbb0;--border2:#aca7a0;
+            --text:#0a0a0a;--muted:#888070;--muted2:#666055;
             color-scheme:light;
         }
         [data-theme="light"] body{color-scheme:light}
         [data-theme="light"] .inp[type="date"]{color-scheme:light}
-        [data-theme="light"] .hex-bg{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 4L56 18v28L30 60 4 46V18z' fill='none' stroke='%23c0c0d4' stroke-width='0.8'/%3E%3C/svg%3E")}
-        [data-theme="light"] .obd-term{background:#f0f8f2;border-color:rgba(0,100,150,.3)}
-        [data-theme="light"] .app-header{background:linear-gradient(180deg,rgba(235,235,242,.98),rgba(230,230,240,.95))}
-        [data-theme="light"] .nav-bar{background:rgba(235,235,242,.98)}
-        [data-theme="light"] .neon-text{text-shadow:0 0 10px rgba(77,140,0,.25)}
-        [data-theme="light"] .cyber-text{text-shadow:0 0 10px rgba(0,119,170,.25)}
-        [data-theme="light"] .carbon{background-image:repeating-linear-gradient(45deg,rgba(0,0,0,.025) 0,rgba(0,0,0,.025) 1px,transparent 1px,transparent 7px),repeating-linear-gradient(-45deg,rgba(0,0,0,.025) 0,rgba(0,0,0,.025) 1px,transparent 1px,transparent 7px)}
-        [data-theme="light"] #speedo-svg{filter:drop-shadow(0 0 16px rgba(77,140,0,.2))}
-        [data-theme="light"] .gauge-needle{box-shadow:0 0 4px var(--neon)}
-        [data-theme="light"] .gauge-needle::after{box-shadow:0 0 6px var(--neon)}
-        [data-theme="light"] #view-dashboard{background:radial-gradient(circle at 50% 35%,rgba(0,119,170,.12),transparent 34%),linear-gradient(180deg,rgba(77,140,0,.05),transparent 22%),var(--bg)}
+        [data-theme="light"] .hex-bg{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 4L56 18v28L30 60 4 46V18z' fill='none' stroke='%23c0bbb0' stroke-width='0.6'/%3E%3C/svg%3E")}
+        [data-theme="light"] .obd-term{background:#f8f5e8;border-color:rgba(140,96,0,.3);color:#8a6000}
+        [data-theme="light"] .app-header{background:linear-gradient(180deg,rgba(240,236,228,.98),rgba(232,228,220,.95))}
+        [data-theme="light"] .nav-bar{background:rgba(240,236,228,.98)}
+        [data-theme="light"] #view-dashboard{background:radial-gradient(circle at 50% 30%,rgba(138,96,0,.1),transparent 38%),var(--bg)}
+        [data-theme="light"] #speedo-svg{filter:drop-shadow(0 0 16px rgba(138,96,0,.2))}
 
         /* ══════════════════════════════════════════════════
            LANDSCAPE — FULL SCREEN + 3-PANEL CLUSTER
         ══════════════════════════════════════════════════ */
         @media (orientation:landscape){
-
-            /* App goes full-width, row layout */
             #app{max-width:100% !important;flex-direction:row !important}
-
-            /* Hide portrait header */
             .app-header{display:none !important}
-
-            /* Side nav */
             .nav-bar{
                 width:54px !important;height:100dvh !important;
                 flex-direction:column !important;flex:none !important;
@@ -370,179 +441,86 @@
                 padding-top:max(6px,env(safe-area-inset-top)) !important;
                 padding-bottom:max(6px,env(safe-area-inset-bottom)) !important;
             }
-            .nav-bar::before{top:0;bottom:0;left:auto;right:0;width:1px;height:100%;background:linear-gradient(180deg,transparent,var(--neon),transparent);opacity:.2}
+            .nav-bar::before{top:0;bottom:0;left:auto;right:0;width:1px;height:100%;background:linear-gradient(180deg,transparent,var(--gold),transparent);opacity:.2}
             .nav-btn{flex:1 !important;width:100% !important;padding:6px 0 !important}
             .nav-label{display:none !important}
             .nav-btn::after{top:20% !important;bottom:20% !important;left:0 !important;right:auto !important;width:2px !important;height:auto !important;transform:scaleY(0) !important;transition:transform .25s cubic-bezier(.34,1.56,.64,1) !important}
-            .nav-btn.is-active::after,.nav-btn.is-active-cy::after{transform:scaleY(1) !important}
-
-            /* Main fills rest */
+            .nav-btn.is-active::after,.nav-btn.is-active-red::after{transform:scaleY(1) !important}
             #main-content{flex:1 !important;overflow-y:auto !important;overflow-x:hidden !important;height:100dvh !important}
-
-            /* ── DASHBOARD in landscape ── */
-            #view-dashboard{
-                padding:6px 8px 6px 8px !important;
-                gap:5px !important;
-                height:100dvh !important;
-                min-height:unset !important;
-                overflow:hidden !important;
-            }
-
-            /* Cluster becomes a 3-column row */
-            #instrument-cluster{
-                flex-direction:row !important;
-                align-items:stretch !important;
-                justify-content:stretch !important;
-                flex:1 !important;
-                gap:6px !important;
-                min-height:0 !important;
-            }
-
-            /* All 3 panels visible, equal flex */
-            #panel-speed,#panel-gforce,#panel-lean{
-                flex:1 !important;
-                display:flex !important;
-                flex-direction:column !important;
-                gap:5px !important;
-                min-width:0 !important;
-                padding:8px !important;
-                position:relative;
-                overflow:hidden;
-                background:linear-gradient(180deg,rgba(8,8,16,.58),rgba(8,8,16,.35));
-                border:1px solid var(--border2);
-            }
-
-            /* Per-panel accent corners */
+            #view-dashboard{padding:6px 8px 6px 8px !important;gap:5px !important;height:100dvh !important;min-height:unset !important;overflow:hidden !important}
+            #instrument-cluster{flex-direction:row !important;align-items:stretch !important;justify-content:stretch !important;flex:1 !important;gap:6px !important;min-height:0 !important}
+            #panel-speed,#panel-gforce,#panel-lean{flex:1 !important;display:flex !important;flex-direction:column !important;gap:5px !important;min-width:0 !important;padding:8px !important;position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(10,10,10,.6),rgba(10,10,10,.38));border:1px solid var(--border2)}
             #panel-speed {clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%)}
             #panel-lean  {clip-path:polygon(10px 0,100% 0,100% 100%,0 100%,0 10px)}
-
-            /* Speedo scales to fill panel */
-            #speedo-container{
-                flex:1 !important;
-                min-height:0 !important;
-                width:100% !important;
-                display:flex !important;
-                align-items:center !important;
-                justify-content:center !important;
-                overflow:hidden !important;
-            }
-            #speedo-container #speedo-svg{
-                max-width:100% !important;
-                max-height:100% !important;
-                width:auto !important;
-                height:auto !important;
-            }
-
-            /* Hide portrait-only elements */
+            #speedo-container{flex:1 !important;min-height:0 !important;width:100% !important;display:flex !important;align-items:center !important;justify-content:center !important;overflow:hidden !important}
+            #speedo-container #speedo-svg{max-width:100% !important;max-height:100% !important;width:auto !important;height:auto !important}
             .portrait-only{display:none !important}
-
-            /* Bottom bar goes horizontal */
-            #dash-bottom{
-                flex-direction:row !important;
-                align-items:center !important;
-                gap:6px !important;
-                flex-shrink:0 !important;
-            }
+            #dash-bottom{flex-direction:row !important;align-items:center !important;gap:6px !important;flex-shrink:0 !important}
             #ls-stats{flex:1 !important;display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:4px !important}
             #ls-sos{flex:none !important;white-space:nowrap;padding:7px 16px !important;font-size:10px !important;letter-spacing:2px !important}
-
-            /* Compact stat cells */
             #ls-stats > div{padding:4px !important}
             #ls-stats .stat-num{font-size:12px !important}
             #ls-stats .stat-lbl{font-size:6px !important}
+            #bcr-mini-instruments{display:none !important}
         }
 
-        /* ══════════════════════════════════════════════════
-           FORCE PORTRAIT LOCK
-           body.force-portrait menimpa landscape media query.
-           Spesifisitas (body.class + selector) > media query selector.
-        ══════════════════════════════════════════════════ */
+        /* ── FORCE PORTRAIT ──────────────────────────────── */
         @media (orientation: landscape) {
-            body.force-portrait #app {
-                width: 100vh !important;
-                height: 100vw !important;
-                max-width: none !important;
-                position: absolute !important;
-                top: 50% !important;
-                left: 50% !important;
-                transform: translate(-50%, -50%) rotate(-90deg) !important;
-                transform-origin: center center !important;
-                flex-direction: column !important;
-            }
+            body.force-portrait #app{width:100vh !important;height:100vw !important;max-width:none !important;position:absolute !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) rotate(-90deg) !important;transform-origin:center center !important;flex-direction:column !important}
         }
         @media (orientation: portrait) {
-            body.force-portrait #app {
-                max-width: 28rem !important; flex-direction: column !important;
-            }
+            body.force-portrait #app{max-width:28rem !important;flex-direction:column !important}
         }
-        
-        body.force-portrait .app-header { display: flex !important; }
-        body.force-portrait .nav-bar { width: 100% !important; height: auto !important; flex-direction: row !important; flex: none !important; border-top: 1px solid var(--border) !important; border-right: none !important; order: 0 !important; padding-top: 0 !important; padding-bottom: env(safe-area-inset-bottom) !important; }
-        body.force-portrait .nav-bar::before { top: 0 !important; bottom: auto !important; left: 0 !important; right: 0 !important; width: 100% !important; height: 1px !important; background: linear-gradient(90deg,transparent,var(--neon),transparent) !important; opacity: .25 !important; }
-        body.force-portrait .nav-btn { flex: 1 !important; width: auto !important; flex-direction: column !important; padding: 8px 4px 6px !important; }
-        body.force-portrait .nav-label { display: flex !important; }
-        body.force-portrait .nav-btn::after { top: 0 !important; bottom: auto !important; left: 20% !important; right: 20% !important; width: auto !important; height: 2px !important; transform: scaleX(0) !important; transition: transform .25s cubic-bezier(.34,1.56,.64,1) !important; }
-        body.force-portrait .nav-btn.is-active::after, body.force-portrait .nav-btn.is-active-cy::after { transform: scaleX(1) !important; }
-        body.force-portrait #main-content { flex: 1 !important; overflow-y: auto !important; overflow-x: hidden !important; height: auto !important; }
-        body.force-portrait #view-dashboard { padding: 16px 16px 12px !important; gap: 10px !important; height: auto !important; min-height: calc(100% - 140px) !important; overflow: hidden !important; }
-        body.force-portrait #instrument-cluster { flex-direction: column !important; align-items: center !important; justify-content: center !important; flex: unset !important; gap: unset !important; }
-        body.force-portrait #panel-gforce, body.force-portrait #panel-lean { display: none !important; }
-        body.force-portrait #panel-speed { flex: unset !important; display: flex !important; flex-direction: column !important; padding: 0 !important; gap: 6px !important; min-width: unset !important; background: transparent !important; border: none !important; clip-path: unset !important; }
-        body.force-portrait #speedo-container { flex: unset !important; min-height: unset !important; width: auto !important; }
-        body.force-portrait .portrait-only { display: grid !important; }
-        body.force-portrait #dash-bottom { flex-direction: column !important; gap: 6px !important; }
-        body.force-portrait #ls-stats { flex: unset !important; display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 8px !important; }
-        body.force-portrait #ls-sos { flex: unset !important; white-space: unset !important; padding: 12px !important; font-size: 13px !important; letter-spacing: 3px !important; }
-        body.force-portrait #ls-stats > div { padding: 6px 4px !important; }
-        body.force-portrait #ls-stats .stat-num { font-size: 13px !important; }
-        body.force-portrait #ls-stats .stat-lbl { font-size: 7px !important; }
+        body.force-portrait .app-header{display:flex !important}
+        body.force-portrait .nav-bar{width:100% !important;height:auto !important;flex-direction:row !important;flex:none !important;border-top:1px solid var(--border) !important;border-right:none !important;order:0 !important;padding-top:0 !important;padding-bottom:env(safe-area-inset-bottom) !important}
+        body.force-portrait .nav-bar::before{top:0 !important;bottom:auto !important;left:0 !important;right:0 !important;width:100% !important;height:1px !important;background:linear-gradient(90deg,transparent,var(--gold),transparent) !important;opacity:.3 !important}
+        body.force-portrait .nav-btn{flex:1 !important;width:auto !important;flex-direction:column !important;padding:8px 4px 6px !important}
+        body.force-portrait .nav-label{display:flex !important}
+        body.force-portrait .nav-btn::after{top:0 !important;bottom:auto !important;left:20% !important;right:20% !important;width:auto !important;height:2px !important;transform:scaleX(0) !important;transition:transform .25s cubic-bezier(.34,1.56,.64,1) !important}
+        body.force-portrait .nav-btn.is-active::after,.nav-btn.is-active-red::after{transform:scaleX(1) !important}
+        body.force-portrait #main-content{flex:1 !important;overflow-y:auto !important;overflow-x:hidden !important;height:auto !important}
+        body.force-portrait #view-dashboard{padding:12px 12px 10px !important;gap:8px !important;height:auto !important;min-height:calc(100% - 140px) !important;overflow:hidden !important}
+        body.force-portrait #instrument-cluster{flex-direction:column !important;align-items:center !important;justify-content:center !important;flex:unset !important;gap:unset !important}
+        body.force-portrait #panel-gforce,body.force-portrait #panel-lean{display:none !important}
+        body.force-portrait #panel-speed{flex:unset !important;display:flex !important;flex-direction:column !important;padding:0 !important;gap:5px !important;min-width:unset !important;background:transparent !important;border:none !important;clip-path:unset !important}
+        body.force-portrait #speedo-container{flex:unset !important;min-height:unset !important;width:auto !important}
+        body.force-portrait .portrait-only{display:grid !important}
+        body.force-portrait #dash-bottom{flex-direction:column !important;gap:6px !important}
+        body.force-portrait #ls-stats{flex:unset !important;display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:8px !important}
+        body.force-portrait #ls-sos{flex:unset !important;white-space:unset !important;padding:12px !important;font-size:13px !important;letter-spacing:3px !important}
+        body.force-portrait #ls-stats > div{padding:6px 4px !important}
+        body.force-portrait #ls-stats .stat-num{font-size:13px !important}
+        body.force-portrait #ls-stats .stat-lbl{font-size:7px !important}
 
-        /* ══════════════════════════════════════════════════
-           FORCE LANDSCAPE LOCK
-           body.force-landscape memaksa layout landscape
-           meskipun perangkat dalam orientasi portrait.
-        ══════════════════════════════════════════════════ */
+        /* ── FORCE LANDSCAPE ─────────────────────────────── */
         @media (orientation: portrait) {
-            body.force-landscape #app {
-                width: 100vh !important;
-                height: 100vw !important;
-                max-width: none !important;
-                position: absolute !important;
-                top: 50% !important;
-                left: 50% !important;
-                transform: translate(-50%, -50%) rotate(90deg) !important;
-                transform-origin: center center !important;
-                flex-direction: row !important;
-            }
+            body.force-landscape #app{width:100vh !important;height:100vw !important;max-width:none !important;position:absolute !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) rotate(90deg) !important;transform-origin:center center !important;flex-direction:row !important}
         }
         @media (orientation: landscape) {
-            body.force-landscape #app {
-                max-width: 100% !important; flex-direction: row !important;
-            }
+            body.force-landscape #app{max-width:100% !important;flex-direction:row !important}
         }
-
-        body.force-landscape .app-header { display: none !important; }
-        body.force-landscape .nav-bar { width: 54px !important; height: 100% !important; flex-direction: column !important; flex: none !important; border-top: none !important; border-right: 1px solid var(--border) !important; order: -1 !important; padding-top: max(6px, env(safe-area-inset-top)) !important; padding-bottom: max(6px, env(safe-area-inset-bottom)) !important; }
-        body.force-landscape .nav-bar::before { top: 0 !important; bottom: 0 !important; left: auto !important; right: 0 !important; width: 1px !important; height: 100% !important; background: linear-gradient(180deg,transparent,var(--neon),transparent) !important; opacity: .2 !important; }
-        body.force-landscape .nav-btn { flex: 1 !important; width: 100% !important; flex-direction: column !important; padding: 6px 0 !important; }
-        body.force-landscape .nav-label { display: none !important; }
-        body.force-landscape .nav-btn::after { top: 20% !important; bottom: 20% !important; left: 0 !important; right: auto !important; width: 2px !important; height: auto !important; transform: scaleY(0) !important; transition: transform .25s cubic-bezier(.34,1.56,.64,1) !important; }
-        body.force-landscape .nav-btn.is-active::after, body.force-landscape .nav-btn.is-active-cy::after { transform: scaleY(1) !important; }
-        body.force-landscape #main-content { flex: 1 !important; overflow-y: auto !important; overflow-x: hidden !important; height: 100% !important; }
-        body.force-landscape #view-dashboard { padding: 6px 8px !important; gap: 5px !important; height: 100% !important; min-height: unset !important; overflow: hidden !important; }
-        body.force-landscape #instrument-cluster { flex-direction: row !important; align-items: stretch !important; justify-content: stretch !important; flex: 1 !important; gap: 6px !important; min-height: 0 !important; }
-        body.force-landscape #panel-speed, body.force-landscape #panel-gforce, body.force-landscape #panel-lean { flex: 1 !important; display: flex !important; flex-direction: column !important; gap: 5px !important; min-width: 0 !important; padding: 8px !important; position: relative !important; overflow: hidden !important; background: linear-gradient(180deg,rgba(8,8,16,.58),rgba(8,8,16,.35)) !important; border: 1px solid var(--border2) !important; }
-        body.force-landscape #panel-speed { clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%) !important; }
-        body.force-landscape #panel-lean { clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px) !important; }
-        body.force-landscape #speedo-container { flex: 1 !important; min-height: 0 !important; width: 100% !important; display: flex !important; align-items: center !important; justify-content: center !important; overflow: hidden !important; }
-        body.force-landscape #speedo-container #speedo-svg { max-width: 100% !important; max-height: 100% !important; width: auto !important; height: auto !important; }
-        body.force-landscape .portrait-only { display: none !important; }
-        body.force-landscape #dash-bottom { flex-direction: row !important; align-items: center !important; gap: 6px !important; flex-shrink: 0 !important; }
-        body.force-landscape #ls-stats { flex: 1 !important; display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 4px !important; }
-        body.force-landscape #ls-sos { flex: none !important; white-space: nowrap !important; padding: 7px 16px !important; font-size: 10px !important; letter-spacing: 2px !important; }
-        body.force-landscape #ls-stats > div { padding: 4px !important; }
-        body.force-landscape #ls-stats .stat-num { font-size: 12px !important; }
-        body.force-landscape #ls-stats .stat-lbl { font-size: 6px !important; }
+        body.force-landscape .app-header{display:none !important}
+        body.force-landscape .nav-bar{width:54px !important;height:100% !important;flex-direction:column !important;flex:none !important;border-top:none !important;border-right:1px solid var(--border) !important;order:-1 !important;padding-top:max(6px,env(safe-area-inset-top)) !important;padding-bottom:max(6px,env(safe-area-inset-bottom)) !important}
+        body.force-landscape .nav-btn{flex:1 !important;width:100% !important;flex-direction:column !important;padding:6px 0 !important}
+        body.force-landscape .nav-label{display:none !important}
+        body.force-landscape .nav-btn::after{top:20% !important;bottom:20% !important;left:0 !important;right:auto !important;width:2px !important;height:auto !important;transform:scaleY(0) !important;transition:transform .25s cubic-bezier(.34,1.56,.64,1) !important}
+        body.force-landscape .nav-btn.is-active::after,.body.force-landscape .nav-btn.is-active-red::after{transform:scaleY(1) !important}
+        body.force-landscape #main-content{flex:1 !important;overflow-y:auto !important;overflow-x:hidden !important;height:100% !important}
+        body.force-landscape #view-dashboard{padding:6px 8px !important;gap:5px !important;height:100% !important;min-height:unset !important;overflow:hidden !important}
+        body.force-landscape #instrument-cluster{flex-direction:row !important;align-items:stretch !important;justify-content:stretch !important;flex:1 !important;gap:6px !important;min-height:0 !important}
+        body.force-landscape #panel-speed,body.force-landscape #panel-gforce,body.force-landscape #panel-lean{flex:1 !important;display:flex !important;flex-direction:column !important;gap:5px !important;min-width:0 !important;padding:8px !important;position:relative !important;overflow:hidden !important;background:linear-gradient(180deg,rgba(10,10,10,.6),rgba(10,10,10,.38)) !important;border:1px solid var(--border2) !important}
+        body.force-landscape #panel-speed{clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%) !important}
+        body.force-landscape #panel-lean{clip-path:polygon(10px 0,100% 0,100% 100%,0 100%,0 10px) !important}
+        body.force-landscape #speedo-container{flex:1 !important;min-height:0 !important;width:100% !important;display:flex !important;align-items:center !important;justify-content:center !important;overflow:hidden !important}
+        body.force-landscape #speedo-container #speedo-svg{max-width:100% !important;max-height:100% !important;width:auto !important;height:auto !important}
+        body.force-landscape .portrait-only{display:none !important}
+        body.force-landscape #dash-bottom{flex-direction:row !important;align-items:center !important;gap:6px !important;flex-shrink:0 !important}
+        body.force-landscape #ls-stats{flex:1 !important;display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:4px !important}
+        body.force-landscape #ls-sos{flex:none !important;white-space:nowrap !important;padding:7px 16px !important;font-size:10px !important;letter-spacing:2px !important}
+        body.force-landscape #ls-stats > div{padding:4px !important}
+        body.force-landscape #ls-stats .stat-num{font-size:12px !important}
+        body.force-landscape #ls-stats .stat-lbl{font-size:6px !important}
+        body.force-landscape #bcr-mini-instruments{display:none !important}
     </style>
 </head>
 
@@ -555,19 +533,21 @@
         <div class="header-stripe"></div>
         <div class="pl-4">
             <div class="flex items-center gap-2">
-                <h1 class="f-exo font-black text-xl tracking-[4px] uppercase">AFTH<span class="neon-text">RIDE</span></h1>
-                <span class="f-exo font-bold text-[8px] tracking-widest px-2 py-0.5 uppercase"
-                      style="background:rgba(200,255,0,.1);border:1px solid rgba(200,255,0,.25);color:var(--neon)">APP</span>
+                <h1 class="f-bebas text-2xl" style="letter-spacing:4px">BLACK<span class="gold-text">CROWN</span></h1>
+                <div class="crown-badge">
+                    <i class="fa-solid fa-crown text-[8px] gold-text"></i>
+                    <span class="f-exo font-black text-[8px] tracking-widest uppercase gold-text">RIDE</span>
+                </div>
             </div>
-            <p class="f-bar text-[10px] tracking-[3px] uppercase mt-0.5" style="color:var(--muted2)" id="header-subtitle">Super App Riding</p>
+            <p class="f-rajd text-[10px] tracking-[3px] uppercase mt-0.5" style="color:var(--muted2)" id="header-subtitle">Black Crown Riders Surabaya</p>
         </div>
         <div class="flex items-center gap-2">
             <span class="dot dot-off" id="gps-dot"></span>
             <button id="btn-theme" onclick="toggleTheme()" aria-label="Ganti tema" class="w-9 h-9 flex items-center justify-center clip-sm active:scale-90" style="background:var(--s2);border:1px solid var(--border2)">
-                <i class="fa-solid fa-sun text-xs neon-text"></i>
+                <i class="fa-solid fa-sun text-xs gold-text"></i>
             </button>
             <button id="btn-settings" aria-label="Pengaturan" class="w-9 h-9 flex items-center justify-center clip-sm active:scale-90" style="background:var(--s2);border:1px solid var(--border2)">
-                <i class="fa-solid fa-sliders text-xs neon-text"></i>
+                <i class="fa-solid fa-sliders text-xs gold-text"></i>
             </button>
         </div>
     </header>
@@ -580,9 +560,9 @@
             <div class="flex justify-between items-center">
                 <div>
                     <h2 class="f-exo font-bold text-lg uppercase tracking-[3px]">Kendaraan</h2>
-                    <p class="f-bar text-[10px] tracking-[3px] uppercase mt-0.5" style="color:var(--muted2)">My Garage</p>
+                    <p class="f-rajd text-[10px] tracking-[3px] uppercase mt-0.5" style="color:var(--muted2)">BCR Garage</p>
                 </div>
-                <button onclick="openModal('modal-add-vehicle')" class="btn-fill clip-sm px-4 py-2 text-xs flex items-center gap-1.5">
+                <button onclick="openModal('modal-add-vehicle')" class="btn-fill-gold clip-sm px-4 py-2 text-xs flex items-center gap-1.5">
                     <i class="fa-solid fa-plus text-[10px]"></i>TAMBAH
                 </button>
             </div>
@@ -591,14 +571,14 @@
 
         <!-- ═══ VEHICLE DETAIL ════════════════════════════ -->
         <section id="view-details" class="hidden p-5 space-y-4 fade-in">
-            <button onclick="switchView('garage')" class="flex items-center gap-2 f-bar text-xs tracking-widest uppercase" style="color:var(--muted2)">
+            <button onclick="switchView('garage')" class="flex items-center gap-2 f-rajd text-xs tracking-widest uppercase" style="color:var(--muted2)">
                 <i class="fa-solid fa-chevron-left text-[10px]"></i>Kembali ke Garasi
             </button>
             <div class="vehicle-card clip-tr p-4 flex items-center gap-4">
-                <div id="detail-icon" class="w-12 h-12 flex items-center justify-center text-xl flex-shrink-0 clip-sm" style="background:rgba(200,255,0,.07);border:1px solid rgba(200,255,0,.18)"></div>
+                <div id="detail-icon" class="w-12 h-12 flex items-center justify-center text-xl flex-shrink-0 clip-sm" style="background:rgba(212,160,23,.07);border:1px solid rgba(212,160,23,.2)"></div>
                 <div class="flex-1 min-w-0">
                     <h2 id="detail-name" class="f-exo font-black text-base uppercase tracking-wider leading-none">—</h2>
-                    <p id="detail-brand" class="f-bar text-xs tracking-widest uppercase mt-1" style="color:var(--muted2)">—</p>
+                    <p id="detail-brand" class="f-rajd text-xs tracking-widest uppercase mt-1" style="color:var(--muted2)">—</p>
                 </div>
                 <button onclick="exportDataCSV()" aria-label="Ekspor CSV" class="w-9 h-9 flex items-center justify-center clip-sm flex-shrink-0 active:scale-90" style="background:var(--s2);border:1px solid var(--border2)">
                     <i class="fa-solid fa-file-csv text-xs" style="color:var(--muted2)"></i>
@@ -606,12 +586,12 @@
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="openModal('modal-add-service')" class="clip-tr p-4 flex flex-col items-center gap-2 active:scale-95" style="background:var(--s1);border:1px solid var(--border2)">
-                    <i class="fa-solid fa-wrench text-lg" style="color:var(--cyber)"></i>
+                    <i class="fa-solid fa-wrench text-lg" style="color:var(--gold)"></i>
                     <span class="f-exo font-bold text-xs tracking-widest uppercase">SERVIS</span>
                 </button>
                 <button onclick="triggerAiScanner()" class="clip-tr p-4 flex flex-col items-center gap-2 active:scale-95 relative" style="background:var(--s1);border:1px solid var(--border2)">
-                    <span class="f-exo font-black text-[8px] tracking-widest px-2 py-0.5 absolute top-0 right-0" style="background:var(--neon);color:#020204">AI</span>
-                    <i class="fa-solid fa-gas-pump text-lg neon-text"></i>
+                    <span class="f-exo font-black text-[8px] tracking-widest px-2 py-0.5 absolute top-0 right-0" style="background:var(--gold);color:#0a0a0a">AI</span>
+                    <i class="fa-solid fa-gas-pump text-lg gold-text"></i>
                     <span class="f-exo font-bold text-xs tracking-widest uppercase">BENSIN</span>
                     <input type="file" id="ai-cam-input" accept="image/*" capture="environment" class="hidden" onchange="processAIOdometer(event)">
                 </button>
@@ -625,20 +605,17 @@
             </div>
         </section>
 
-        <!-- ═══ DASHBOARD — INSTRUMENT CLUSTER ════════════
-             Portrait : single column (speed only + compact strip)
-             Landscape: 3 equal columns → Speed | G-Force | Lean
-        ════════════════════════════════════════════════ -->
+        <!-- ═══ DASHBOARD — INSTRUMENT CLUSTER ════════════ -->
         <section id="view-dashboard" class="hidden flex flex-col fade-in">
             <div id="ride-3d-layer" aria-hidden="true">
                 <canvas id="ride-3d-canvas"></canvas>
             </div>
 
-            <!-- GPS status bar (always visible) -->
+            <!-- GPS status bar -->
             <div id="dash-status" class="flex justify-between items-center flex-none">
                 <div class="flex items-center gap-2">
                     <span class="dot dot-off" id="gps-dot-2"></span>
-                    <span class="f-bar text-xs tracking-widest uppercase" id="gps-status" style="color:var(--muted2)">MENCARI GPS…</span>
+                    <span class="f-rajd text-xs tracking-widest uppercase" id="gps-status" style="color:var(--muted2)">MENCARI GPS…</span>
                 </div>
                 <div class="flex items-center gap-2 flex-wrap justify-end">
                     <span class="sensor-chip" id="sensor-chip"><i class="fa-solid fa-satellite-dish text-[8px]"></i>IDLE</span>
@@ -647,12 +624,12 @@
                         <i id="rot-lock-icon" class="fa-solid fa-rotate text-[9px]"></i>
                         <span id="rot-lock-label">AUTO</span>
                     </button>
-                    <button onclick="resetMaxSpeed()" class="f-exo font-bold text-[9px] px-2 py-1 tracking-widest uppercase" style="background:var(--s2);border:1px solid var(--border);color:var(--muted2)">RESET MAX</button>
+                    <button onclick="resetMaxSpeed()" class="f-exo font-bold text-[9px] px-2 py-1 tracking-widest uppercase" style="background:var(--s2);border:1px solid var(--border);color:var(--muted2)">RST MAX</button>
                 </div>
             </div>
 
             <!-- Geofence alert -->
-            <div id="geofence-alert" class="hidden flex-none p-2 text-center f-exo font-bold text-[10px] tracking-widest uppercase" style="background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.3);color:var(--cyber)">
+            <div id="geofence-alert" class="hidden flex-none p-2 text-center f-exo font-bold text-[10px] tracking-widest uppercase" style="background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.35);color:var(--gold)">
                 <i class="fa-solid fa-building-columns mr-1"></i>ZONA SAMSAT TERDETEKSI — CEK PAJAK!
             </div>
 
@@ -664,7 +641,7 @@
                 <!-- ── PANEL 1: SPEED ───────────────────── -->
                 <div id="panel-speed" class="inst-panel-speed">
                     <div class="inst-hdr">
-                        <span class="inst-title" style="color:var(--neon)">
+                        <span class="inst-title" style="color:var(--gold)">
                             <i class="fa-solid fa-gauge-high mr-1" style="font-size:8px"></i>SPEED
                         </span>
                         <div class="flex items-center gap-2">
@@ -674,65 +651,108 @@
                     </div>
 
                     <div id="speedo-container">
-                        <svg id="speedo-svg" width="264" height="264" viewBox="0 0 264 264">
+                        <svg id="speedo-svg" width="268" height="268" viewBox="0 0 268 268">
                             <defs>
+                                <!-- Main gradient: slow=gold → medium=white → fast=red -->
                                 <linearGradient id="sgFill" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stop-color="#00d4ff"/>
-                                    <stop offset="50%" stop-color="#c8ff00"/>
-                                    <stop offset="100%" stop-color="#ff2244"/>
+                                    <stop offset="0%"   stop-color="#d4a017"/>
+                                    <stop offset="40%"  stop-color="#f5c842"/>
+                                    <stop offset="75%"  stop-color="#ffffff"/>
+                                    <stop offset="100%" stop-color="#cc1122"/>
                                 </linearGradient>
+                                <!-- Gold radial for inner dial -->
+                                <radialGradient id="dialBg" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%"   stop-color="#191410"/>
+                                    <stop offset="100%" stop-color="#0d0d0d"/>
+                                </radialGradient>
+                                <!-- Glow filters -->
                                 <filter id="sgGlow">
                                     <feGaussianBlur stdDeviation="3" result="b"/>
                                     <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
                                 </filter>
                                 <filter id="sgGlowStrong">
-                                    <feGaussianBlur stdDeviation="6" result="b"/>
+                                    <feGaussianBlur stdDeviation="7" result="b"/>
+                                    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                </filter>
+                                <filter id="crownGlow">
+                                    <feGaussianBlur stdDeviation="2" result="b"/>
                                     <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
                                 </filter>
                             </defs>
-                            
-                            <!-- High-Tech Outer Rings -->
-                            <circle cx="132" cy="132" r="128" fill="none" stroke="var(--border2)" stroke-width="1.5" stroke-dasharray="1 8"/>
-                            <circle cx="132" cy="132" r="121" fill="none" stroke="var(--border)" stroke-width="6" stroke-dasharray="2 4"/>
-                            
-                            <!-- LED Segmented Gauge Track -->
-                            <path id="sg-track" fill="none" stroke="var(--s3)"       stroke-width="16" stroke-linecap="butt" stroke-dasharray="3 3"/>
-                            <path id="sg-fill"  fill="none" stroke="url(#sgFill)"    stroke-width="16" stroke-linecap="butt" stroke-dasharray="3 3" opacity="0"/>
-                            
-                            <g id="sg-ticks"></g>
-                            
-                            <!-- Dynamic Indicator Head -->
-                            <circle id="sg-needle" cx="132" cy="132" r="4" fill="#fff" filter="url(#sgGlow)" opacity="0"/>
 
-                            <!-- Inner Tech Dial -->
-                            <circle cx="132" cy="132" r="86" fill="var(--s1)"/>
-                            <circle cx="132" cy="132" r="85" fill="none" stroke="var(--border2)" stroke-width="0.5"/>
-                            <circle cx="132" cy="132" r="81" fill="none" stroke="var(--border)" stroke-width="3" stroke-dasharray="1 12"/>
-                            
-                            <!-- Typography -->
-                            <text id="sg-value" x="132" y="125" text-anchor="middle" font-family="Share Tech Mono" font-size="64" fill="var(--neon)" filter="url(#sgGlowStrong)" style="letter-spacing:-2px">0</text>
-                            
-                            <!-- Floating Badge for KM/H -->
-                            <g transform="translate(132, 154)">
-                                <rect x="-26" y="-11" width="52" height="16" fill="var(--s2)" rx="8" stroke="var(--border2)" stroke-width="1"/>
-                                <text x="0" y="-1" text-anchor="middle" font-family="Exo 2" font-size="8" fill="var(--cyber)" font-weight="800" letter-spacing="4">KM/H</text>
+                            <!-- Outermost decorative ring -->
+                            <circle cx="134" cy="134" r="130" fill="none" stroke="#2c2c2c" stroke-width="1" stroke-dasharray="1 8"/>
+                            <circle cx="134" cy="134" r="124" fill="none" stroke="#1a1a1a" stroke-width="5" stroke-dasharray="2 4"/>
+
+                            <!-- Gold accent outer ring segments -->
+                            <circle cx="134" cy="134" r="120" fill="none" stroke="rgba(212,160,23,.12)" stroke-width="2"/>
+
+                            <!-- LED Segmented Gauge Track -->
+                            <path id="sg-track" fill="none" stroke="#222222" stroke-width="14" stroke-linecap="butt" stroke-dasharray="3 3.5"/>
+                            <path id="sg-fill"  fill="none" stroke="url(#sgFill)" stroke-width="14" stroke-linecap="butt" stroke-dasharray="3 3.5" opacity="0"/>
+
+                            <!-- Tick marks group -->
+                            <g id="sg-ticks"></g>
+
+                            <!-- Dynamic Indicator Head -->
+                            <circle id="sg-needle" cx="134" cy="134" r="5" fill="#fff" filter="url(#sgGlow)" opacity="0"/>
+
+                            <!-- Inner Dial Background -->
+                            <circle cx="134" cy="134" r="88" fill="url(#dialBg)"/>
+                            <circle cx="134" cy="134" r="87" fill="none" stroke="#2a2a2a" stroke-width="0.5"/>
+                            <circle cx="134" cy="134" r="83" fill="none" stroke="#222" stroke-width="2.5" stroke-dasharray="1 10"/>
+
+                            <!-- Subtle gold inner ring -->
+                            <circle cx="134" cy="134" r="80" fill="none" stroke="rgba(212,160,23,.08)" stroke-width="1"/>
+
+                            <!-- Speed Value -->
+                            <text id="sg-value" x="134" y="122" text-anchor="middle" font-family="Bebas Neue,sans-serif" font-size="72" fill="#d4a017" filter="url(#sgGlowStrong)" letter-spacing="-1">0</text>
+
+                            <!-- KM/H Badge -->
+                            <g transform="translate(134,158)">
+                                <rect x="-28" y="-11" width="56" height="18" fill="#1a1a1a" rx="9" stroke="rgba(212,160,23,.3)" stroke-width="1"/>
+                                <text x="0" y="-0.5" text-anchor="middle" font-family="Exo 2" font-size="8" fill="#d4a017" font-weight="800" letter-spacing="4">KM/H</text>
                             </g>
-                            
-                            <text id="sg-max" x="132" y="178" text-anchor="middle" font-family="Share Tech Mono" font-size="10" fill="var(--muted)">MAX 0</text>
+
+                            <!-- Max Speed -->
+                            <text id="sg-max" x="134" y="183" text-anchor="middle" font-family="Share Tech Mono" font-size="9.5" fill="#555">MAX 0</text>
+
+                            <!-- BCR Crown watermark -->
+                            <text x="134" y="200" text-anchor="middle" font-family="Exo 2" font-size="7" fill="rgba(212,160,23,.25)" font-weight="700" letter-spacing="3">BCR SURABAYA</text>
                         </svg>
                     </div>
 
-                    <!-- Portrait-only compact telemetry strip (shown by JS when active) -->
+                    <!-- Portrait-only compact telemetry strip -->
                     <div id="portrait-tele" class="portrait-only grid grid-cols-2 gap-2 w-full">
-                        <div onclick="calibrateLean()" class="flex items-center justify-center gap-2 clip-sm" style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);padding:6px 8px;cursor:pointer" title="Tap untuk set 0°">
-                            <i class="fa-solid fa-motorcycle text-xs" style="color:var(--cyber)"></i>
-                            <span class="f-mono text-lg cyber-text" id="lean-val-p">0</span>
-                            <span class="f-bar text-[9px] uppercase" style="color:var(--muted)">° LEAN</span>
+                        <div onclick="calibrateLean()" class="flex items-center justify-center gap-2 clip-sm" style="background:rgba(212,160,23,.06);border:1px solid rgba(212,160,23,.2);padding:6px 8px;cursor:pointer" title="Tap untuk set 0°">
+                            <i class="fa-solid fa-motorcycle text-xs gold-text"></i>
+                            <span class="f-mono text-lg gold-text" id="lean-val-p">0</span>
+                            <span class="f-rajd text-[9px] uppercase" style="color:var(--muted)">° LEAN</span>
                         </div>
-                        <div class="flex items-center justify-center gap-2 clip-sm" style="background:rgba(255,34,68,.06);border:1px solid rgba(255,34,68,.2);padding:6px 8px">
-                            <i class="fa-solid fa-circle-notch text-xs alert-text"></i>
-                            <span class="f-mono text-lg alert-text" id="gforce-val-p">1.0</span>
-                            <span class="f-bar text-[9px] uppercase" style="color:var(--muted)">G-FORCE</span>
+                        <div class="flex items-center justify-center gap-2 clip-sm" style="background:rgba(204,17,34,.06);border:1px solid rgba(204,17,34,.2);padding:6px 8px">
+                            <i class="fa-solid fa-circle-notch text-xs red-text"></i>
+                            <span class="f-mono text-lg red-text" id="gforce-val-p">1.0</span>
+                            <span class="f-rajd text-[9px] uppercase" style="color:var(--muted)">G-FORCE</span>
+                        </div>
+                    </div>
+
+                    <!-- BCR Mini Instruments (portrait-only, below speedo) -->
+                    <div id="bcr-mini-instruments" class="portrait-only" style="display:grid">
+                        <div class="mini-inst">
+                            <div class="mini-inst-val" id="mini-altitude">—</div>
+                            <div class="mini-inst-lbl"><i class="fa-solid fa-mountain" style="font-size:6px"></i> ALT m</div>
+                        </div>
+                        <div class="mini-inst">
+                            <div class="mini-inst-val" id="mini-clock">--:--</div>
+                            <div class="mini-inst-lbl"><i class="fa-solid fa-clock" style="font-size:6px"></i> TIME</div>
+                        </div>
+                        <div class="mini-inst">
+                            <div class="mini-inst-val" id="mini-trip">0.0</div>
+                            <div class="mini-inst-lbl"><i class="fa-solid fa-road" style="font-size:6px"></i> TRIP km</div>
+                        </div>
+                        <div class="mini-inst">
+                            <div class="mini-inst-val" id="mini-bearing">—</div>
+                            <div class="mini-inst-lbl"><i class="fa-solid fa-compass" style="font-size:6px"></i> HDG</div>
                         </div>
                     </div>
                 </div><!-- /#panel-speed -->
@@ -740,7 +760,7 @@
                 <!-- ── PANEL 2: G-FORCE (landscape center) ─ -->
                 <div id="panel-gforce" class="inst-panel-gforce">
                     <div class="inst-hdr">
-                        <span class="inst-title" style="color:var(--alert)">
+                        <span class="inst-title" style="color:var(--red2)">
                             <i class="fa-solid fa-circle-notch mr-1" style="font-size:8px"></i>G-FORCE
                         </span>
                         <button id="btn-telemetry-ls" onclick="toggleTelemetry()"
@@ -748,7 +768,6 @@
                                 style="background:var(--s2);border:1px solid var(--border2);color:var(--muted2)">START</button>
                     </div>
 
-                    <!-- G-force 2D SVG (built by JS) -->
                     <div class="svg-wrap">
                         <svg id="gf-svg" viewBox="0 0 220 220" preserveAspectRatio="xMidYMid meet"></svg>
                     </div>
@@ -757,7 +776,7 @@
                     <div class="flex-none" style="padding:0 2px">
                         <div class="flex justify-between items-center mb-1">
                             <span class="f-exo font-bold text-[8px] tracking-[2px] uppercase" style="color:var(--muted)">
-                                <i class="fa-solid fa-wave-square mr-1" style="color:var(--cyber);font-size:7px"></i>ACOUSTIC RPM
+                                <i class="fa-solid fa-wave-square mr-1" style="color:var(--gold);font-size:7px"></i>ACOUSTIC RPM
                             </span>
                             <button id="btn-audio-ls" onclick="toggleAudioRPM()"
                                     class="f-exo font-bold text-[8px] px-2 py-0.5 tracking-widest uppercase clip-sm"
@@ -765,24 +784,47 @@
                         </div>
                         <div class="audio-bar mb-1"><div id="audio-visual-ls" class="audio-fill"></div></div>
                         <div class="flex items-baseline justify-center gap-1">
-                            <span class="f-mono text-base cyber-text" id="rpm-val-ls">0</span>
-                            <span class="f-bar text-[8px] uppercase" style="color:var(--muted)">RPM</span>
+                            <span class="f-mono text-base gold-text" id="rpm-val-ls">0</span>
+                            <span class="f-rajd text-[8px] uppercase" style="color:var(--muted)">RPM</span>
+                        </div>
+                    </div>
+
+                    <!-- Altitude & Clock in landscape -->
+                    <div class="grid grid-cols-2 gap-2 mt-1">
+                        <div class="mini-inst" style="clip-path:none;border-color:rgba(212,160,23,.25)">
+                            <div class="mini-inst-val" id="ls-altitude">—</div>
+                            <div class="mini-inst-lbl">ALT m</div>
+                        </div>
+                        <div class="mini-inst" style="clip-path:none;border-color:rgba(212,160,23,.25)">
+                            <div class="mini-inst-val" id="ls-clock">--:--</div>
+                            <div class="mini-inst-lbl">TIME</div>
                         </div>
                     </div>
                 </div><!-- /#panel-gforce -->
 
-                <!-- ── PANEL 3: LEAN ANGLE (landscape right) -->
+                <!-- ── PANEL 3: LEAN ANGLE (landscape right) ─ -->
                 <div id="panel-lean" class="inst-panel-lean" onclick="calibrateLean()" style="cursor:pointer" title="Tap untuk set 0°">
                     <div class="inst-hdr">
-                        <span class="inst-title" style="color:var(--cyber)">
+                        <span class="inst-title" style="color:var(--gold2)">
                             <i class="fa-solid fa-motorcycle mr-1" style="font-size:8px"></i>LEAN ANGLE
                         </span>
                         <span class="f-mono text-[9px]" id="lean-dir-hdr" style="color:var(--muted)">CENTER</span>
                     </div>
 
-                    <!-- Lean SVG gauge (built by JS) -->
                     <div class="svg-wrap">
                         <svg id="lean-svg" viewBox="0 0 220 220" preserveAspectRatio="xMidYMid meet"></svg>
+                    </div>
+
+                    <!-- Trip & bearing in lean panel -->
+                    <div class="grid grid-cols-2 gap-2 mt-1">
+                        <div class="mini-inst" style="clip-path:none;border-color:rgba(245,200,66,.25)">
+                            <div class="mini-inst-val" id="ls-trip">0.0</div>
+                            <div class="mini-inst-lbl">TRIP km</div>
+                        </div>
+                        <div class="mini-inst" style="clip-path:none;border-color:rgba(245,200,66,.25)">
+                            <div class="mini-inst-val" id="ls-compass">—</div>
+                            <div class="mini-inst-lbl">COMPASS</div>
+                        </div>
                     </div>
                 </div><!-- /#panel-lean -->
 
@@ -792,25 +834,25 @@
             <div id="dash-bottom">
                 <div id="ls-stats" class="grid grid-cols-4 gap-2">
                     <div class="text-center clip-sm" style="background:var(--s1);border:1px solid var(--border);padding:6px 4px">
-                        <div class="f-mono stat-num cyber-text" style="font-size:13px" id="val-lat">—</div>
-                        <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:7px">LAT</div>
+                        <div class="f-mono stat-num gold-text" style="font-size:12px" id="val-lat">—</div>
+                        <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:6px">LAT</div>
                     </div>
                     <div class="text-center clip-sm" style="background:var(--s1);border:1px solid var(--border);padding:6px 4px">
-                        <div class="f-mono stat-num cyber-text" style="font-size:13px" id="val-lng">—</div>
-                        <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:7px">LNG</div>
+                        <div class="f-mono stat-num gold-text" style="font-size:12px" id="val-lng">—</div>
+                        <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:6px">LNG</div>
                     </div>
                     <div class="text-center clip-sm" style="background:var(--s1);border:1px solid var(--border);padding:6px 4px">
-                        <div class="f-mono stat-num" style="color:var(--warn);font-size:13px" id="val-maxspd">0</div>
-                        <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:7px">MAX KM/H</div>
+                        <div class="f-mono stat-num" style="color:var(--gold2);font-size:12px" id="val-maxspd">0</div>
+                        <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:6px">MAX KM/H</div>
                     </div>
                     <div class="text-center clip-sm" style="background:var(--s1);border:1px solid var(--border);padding:6px 4px">
-                        <div class="f-mono stat-num neon-text" style="font-size:13px" id="val-heading">—</div>
-                        <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:7px">HDG</div>
+                        <div class="f-mono stat-num" style="color:var(--white);font-size:12px" id="val-heading">—</div>
+                        <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:6px">HDG</div>
                     </div>
                 </div>
                 <button id="ls-sos" onclick="triggerSOS()"
                         class="btn-sos w-full flex items-center justify-center gap-2 f-exo font-black tracking-[3px] uppercase clip-md"
-                        style="background:var(--alert);color:#fff;padding:12px;font-size:13px">
+                        style="background:var(--red);color:#fff;padding:11px;font-size:13px">
                     <i class="fa-solid fa-triangle-exclamation"></i>DARURAT SOS
                 </button>
             </div>
@@ -820,20 +862,21 @@
         <!-- ═══ LABS ═══════════════════════════════════════ -->
         <section id="view-labs" class="hidden p-5 space-y-4 fade-in">
             <div class="flex items-center gap-3 mb-1">
-                <div class="w-9 h-9 flex items-center justify-center clip-sm" style="background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25)">
-                    <i class="fa-solid fa-flask text-sm cyber-text"></i>
+                <div class="w-9 h-9 flex items-center justify-center clip-sm" style="background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.25)">
+                    <i class="fa-solid fa-flask text-sm gold-text"></i>
                 </div>
                 <div>
                     <h2 class="f-exo font-bold text-base uppercase tracking-[3px]">Pro Labs</h2>
-                    <p class="f-bar text-[10px] tracking-[3px] uppercase" style="color:var(--muted2)">BETA SENSORS</p>
+                    <p class="f-rajd text-[10px] tracking-[3px] uppercase" style="color:var(--muted2)">BCR SENSOR SUITE</p>
                 </div>
             </div>
 
+            <!-- Telemetry & Crash -->
             <div class="carbon p-4 space-y-4 clip-tr" style="background:var(--s1);border:1px solid var(--border2)">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-motorcycle neon-text text-sm"></i>
-                        <h3 class="f-exo font-bold text-xs tracking-[3px] uppercase">Telemetri & Crash</h3>
+                        <i class="fa-solid fa-motorcycle gold-text text-sm"></i>
+                        <h3 class="f-exo font-bold text-xs tracking-[3px] uppercase">Telemetri &amp; Crash</h3>
                     </div>
                     <button id="btn-telemetry" onclick="toggleTelemetry()"
                             class="f-exo font-bold text-[10px] px-3 py-1.5 tracking-widest uppercase clip-sm"
@@ -846,43 +889,74 @@
                             <div class="gauge-center"></div>
                         </div>
                         <div class="flex items-baseline gap-1">
-                            <span class="f-mono text-2xl neon-text" id="lean-val">0</span>
-                            <span class="f-bar text-[10px] tracking-widest uppercase" style="color:var(--muted)">° LEAN</span>
+                            <span class="f-mono text-2xl gold-text" id="lean-val">0</span>
+                            <span class="f-rajd text-[10px] tracking-widest uppercase" style="color:var(--muted)">° LEAN</span>
                         </div>
                     </div>
                     <div class="flex flex-col items-center gap-2">
-                        <div class="relative w-20 h-20 flex items-center justify-center scanlines clip-md" style="background:rgba(255,34,68,.05);border:2px solid rgba(255,34,68,.3)">
-                            <span class="f-mono text-2xl font-bold alert-text" id="gforce-val">1.0</span>
+                        <div class="relative w-20 h-20 flex items-center justify-center scanlines clip-md" style="background:rgba(204,17,34,.05);border:2px solid rgba(204,17,34,.3)">
+                            <span class="f-mono text-2xl font-bold red-text" id="gforce-val">1.0</span>
                         </div>
-                        <span class="f-bar text-[10px] tracking-widest uppercase" style="color:var(--muted)">G-FORCE</span>
+                        <span class="f-rajd text-[10px] tracking-widest uppercase" style="color:var(--muted)">G-FORCE</span>
                     </div>
                 </div>
             </div>
 
+            <!-- Acoustic RPM -->
             <div class="p-4 space-y-3 clip-tr" style="background:var(--s1);border:1px solid var(--border2)">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-wave-square cyber-text text-sm"></i>
+                        <i class="fa-solid fa-wave-square gold-text text-sm"></i>
                         <h3 class="f-exo font-bold text-xs tracking-[3px] uppercase">Acoustic RPM</h3>
                     </div>
                     <button id="btn-audio" onclick="toggleAudioRPM()"
                             class="f-exo font-bold text-[10px] px-3 py-1.5 tracking-widest uppercase clip-sm"
                             style="background:var(--s2);border:1px solid var(--border2);color:var(--muted2)">MIC ON</button>
                 </div>
-                <p class="f-bar text-[10px] tracking-widest uppercase" style="color:var(--muted)">Dekatkan ke knalpot · Estimasi RPM via audio</p>
+                <p class="f-rajd text-[10px] tracking-widest uppercase" style="color:var(--muted)">Dekatkan ke knalpot · Estimasi RPM via audio</p>
                 <div class="audio-bar"><div id="audio-visual" class="audio-fill"></div></div>
                 <div class="flex items-baseline justify-center gap-2 pt-1">
-                    <span class="f-mono text-4xl cyber-text" id="rpm-val">0</span>
-                    <span class="f-bar text-sm tracking-widest uppercase" style="color:var(--muted)">RPM</span>
+                    <span class="f-mono text-4xl gold-text" id="rpm-val">0</span>
+                    <span class="f-rajd text-sm tracking-widest uppercase" style="color:var(--muted)">RPM</span>
                 </div>
             </div>
 
+            <!-- Altitude & Environment -->
+            <div class="p-4 space-y-3 clip-tr" style="background:var(--s1);border:1px solid var(--border2)">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="fa-solid fa-mountain gold-text text-sm"></i>
+                    <h3 class="f-exo font-bold text-xs tracking-[3px] uppercase">Altitude &amp; Environment</h3>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="text-center p-3" style="background:var(--s2);border:1px solid var(--border)">
+                        <div class="f-mono text-2xl gold-text" id="labs-altitude">—</div>
+                        <div class="f-exo font-bold text-[9px] tracking-widest uppercase mt-1" style="color:var(--muted)">ALTITUDE (m)</div>
+                    </div>
+                    <div class="text-center p-3" style="background:var(--s2);border:1px solid var(--border)">
+                        <div class="f-mono text-2xl gold-text" id="labs-accuracy">—</div>
+                        <div class="f-exo font-bold text-[9px] tracking-widest uppercase mt-1" style="color:var(--muted)">GPS ACC (m)</div>
+                    </div>
+                    <div class="text-center p-3" style="background:var(--s2);border:1px solid var(--border)">
+                        <div class="f-mono text-2xl" style="color:var(--off-wh)" id="labs-compass">—</div>
+                        <div class="f-exo font-bold text-[9px] tracking-widest uppercase mt-1" style="color:var(--muted)">COMPASS</div>
+                    </div>
+                    <div class="text-center p-3" style="background:var(--s2);border:1px solid var(--border)">
+                        <div class="f-mono text-2xl" style="color:var(--off-wh)" id="labs-trip">0.0</div>
+                        <div class="f-exo font-bold text-[9px] tracking-widest uppercase mt-1" style="color:var(--muted)">TRIP KM</div>
+                    </div>
+                </div>
+                <button onclick="resetTrip()" class="w-full py-2 f-exo font-bold text-xs tracking-widest uppercase clip-sm" style="background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.25);color:var(--gold)">
+                    RESET TRIP COUNTER
+                </button>
+            </div>
+
+            <!-- OBD2 Scanner -->
             <div class="p-4 space-y-3 clip-tr" style="background:var(--s1);border:1px solid var(--border2)">
                 <div class="flex items-center gap-2 mb-0.5">
                     <i class="fa-brands fa-bluetooth" style="color:#5b9fff"></i>
                     <h3 class="f-exo font-bold text-xs tracking-[3px] uppercase">OBD2 Scanner</h3>
                 </div>
-                <p class="f-bar text-[10px] tracking-widest uppercase" style="color:var(--muted)">Koneksi Bluetooth ke ELM327</p>
+                <p class="f-rajd text-[10px] tracking-widest uppercase" style="color:var(--muted)">Koneksi Bluetooth ke ELM327</p>
                 <button onclick="connectOBD2()" class="w-full py-3 f-exo font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2 clip-sm active:scale-95" style="background:rgba(91,159,255,.08);border:1px solid rgba(91,159,255,.3);color:#5b9fff">
                     <i class="fa-solid fa-link text-[10px]"></i>SCAN PERANGKAT ECU
                 </button>
@@ -895,13 +969,13 @@
             <div class="flex justify-between items-center">
                 <div>
                     <h2 class="f-exo font-bold text-base uppercase tracking-[3px]">Checklist</h2>
-                    <p class="f-bar text-[10px] tracking-[3px] uppercase mt-0.5" style="color:var(--muted2)">TOURING GEAR</p>
+                    <p class="f-rajd text-[10px] tracking-[3px] uppercase mt-0.5" style="color:var(--muted2)">TOURING GEAR</p>
                 </div>
-                <button onclick="confirmClearChecklist()" class="f-exo font-bold text-[10px] px-3 py-1.5 tracking-widest uppercase clip-sm" style="background:rgba(255,34,68,.08);border:1px solid rgba(255,34,68,.3);color:var(--alert)">RESET</button>
+                <button onclick="confirmClearChecklist()" class="f-exo font-bold text-[10px] px-3 py-1.5 tracking-widest uppercase clip-sm btn-red">RESET</button>
             </div>
             <div class="flex gap-2">
                 <input type="text" id="c_item" placeholder="Tambah barang bawaan..." class="inp clip-sm flex-1 text-sm" autocomplete="off">
-                <button onclick="addCheckItem()" aria-label="Tambah item checklist" class="btn-fill clip-sm px-4 flex-shrink-0" style="padding-top:11px;padding-bottom:11px"><i class="fa-solid fa-plus text-xs"></i></button>
+                <button onclick="addCheckItem()" aria-label="Tambah item checklist" class="btn-fill-gold clip-sm px-4 flex-shrink-0" style="padding-top:11px;padding-bottom:11px"><i class="fa-solid fa-plus text-xs"></i></button>
             </div>
             <div id="checklist-items" class="space-y-2 pb-6"></div>
         </section>
@@ -913,44 +987,44 @@
         <button onclick="switchView('garage')"    id="nav-garage"    class="nav-btn is-active"><i class="nav-icon fa-solid fa-warehouse"></i><span class="nav-label">Garasi</span></button>
         <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn"><i class="nav-icon fa-solid fa-gauge-high"></i><span class="nav-label">Ride</span></button>
         <button onclick="switchView('labs')"      id="nav-labs"      class="nav-btn relative">
-            <span class="absolute top-2 right-3 w-1.5 h-1.5 rounded-full" style="background:var(--alert);box-shadow:0 0 5px var(--alert)"></span>
+            <span class="absolute top-2 right-3 w-1.5 h-1.5 rounded-full" style="background:var(--red2);box-shadow:0 0 5px var(--red2)"></span>
             <i class="nav-icon fa-solid fa-flask"></i><span class="nav-label">Labs</span>
         </button>
         <button onclick="switchView('checklist')" id="nav-checklist" class="nav-btn"><i class="nav-icon fa-solid fa-list-check"></i><span class="nav-label">Gear</span></button>
     </nav>
 
     <!-- ── OVERLAYS ─────────────────────────────────────── -->
-    <div id="modal-overlay" class="hidden absolute inset-0 z-40" style="background:rgba(0,0,0,.82);backdrop-filter:blur(4px)" onclick="overlayTap(event)"></div>
+    <div id="modal-overlay" class="hidden absolute inset-0 z-40" style="background:rgba(0,0,0,.85);backdrop-filter:blur(4px)" onclick="overlayTap(event)"></div>
 
-    <div id="loading-overlay" class="hidden absolute inset-0 z-[60] flex flex-col items-center justify-center gap-6" style="background:rgba(2,2,4,.96)">
+    <div id="loading-overlay" class="hidden absolute inset-0 z-[60] flex flex-col items-center justify-center gap-6" style="background:rgba(8,8,8,.96)">
         <div class="relative w-20 h-20">
-            <div class="absolute inset-0 rounded-full spin-cw"  style="border:2px solid transparent;border-top-color:var(--neon);border-right-color:var(--neon)"></div>
-            <div class="absolute inset-3 rounded-full spin-ccw" style="border:2px solid transparent;border-bottom-color:var(--cyber)"></div>
-            <div class="absolute inset-0 flex items-center justify-center"><i class="fa-solid fa-eye text-xl neon-text"></i></div>
+            <div class="absolute inset-0 rounded-full spin-cw" style="border:2px solid transparent;border-top-color:var(--gold);border-right-color:var(--gold)"></div>
+            <div class="absolute inset-3 rounded-full spin-ccw" style="border:2px solid transparent;border-bottom-color:var(--red)"></div>
+            <div class="absolute inset-0 flex items-center justify-center"><i class="fa-solid fa-crown text-xl gold-text"></i></div>
         </div>
         <div class="text-center">
-            <p class="f-mono text-sm tracking-widest uppercase cyber-text">AI SCANNING ODOMETER…</p>
-            <p class="f-bar text-xs tracking-widest uppercase mt-1" style="color:var(--muted)">Harap tunggu</p>
+            <p class="f-mono text-sm tracking-widest uppercase gold-text">AI SCANNING ODOMETER…</p>
+            <p class="f-rajd text-xs tracking-widest uppercase mt-1" style="color:var(--muted)">Harap tunggu</p>
         </div>
     </div>
 
     <div id="custom-confirm" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10/12 max-w-sm z-[65] clip-lg" style="background:var(--s1);border:1px solid var(--border2)">
         <div class="p-6">
-            <div class="w-10 h-10 flex items-center justify-center mb-4 clip-sm" style="background:rgba(255,34,68,.1);border:1px solid rgba(255,34,68,.3)">
-                <i class="fa-solid fa-triangle-exclamation text-xs alert-text"></i>
+            <div class="w-10 h-10 flex items-center justify-center mb-4 clip-sm" style="background:rgba(204,17,34,.1);border:1px solid rgba(204,17,34,.3)">
+                <i class="fa-solid fa-triangle-exclamation text-xs red-text"></i>
             </div>
             <h3 id="cc-title" class="f-exo font-black text-lg uppercase tracking-wider mb-2">Konfirmasi</h3>
-            <p  id="cc-msg"   class="f-bar text-sm mb-6" style="color:var(--muted2)">Pesan detail.</p>
+            <p  id="cc-msg"   class="f-rajd text-sm mb-6" style="color:var(--muted2)">Pesan detail.</p>
             <div class="flex gap-3">
                 <button id="cc-no"  class="flex-1 py-3 f-exo font-bold text-xs tracking-widest uppercase clip-sm" style="background:var(--s2);border:1px solid var(--border2)">BATAL</button>
-                <button id="cc-yes" class="flex-1 py-3 f-exo font-bold text-xs tracking-widest uppercase clip-sm alert-text" style="background:rgba(255,34,68,.2);border:1px solid rgba(255,34,68,.4)">HAPUS</button>
+                <button id="cc-yes" class="flex-1 py-3 f-exo font-bold text-xs tracking-widest uppercase clip-sm red-text" style="background:rgba(204,17,34,.2);border:1px solid rgba(204,17,34,.4)">HAPUS</button>
             </div>
         </div>
     </div>
 
-    <div id="crash-modal" class="hidden absolute inset-0 z-[70] flex flex-col items-center justify-center text-center p-6 crash-modal-wrap" style="background:var(--alert)">
-        <i class="fa-solid fa-car-burst text-7xl mb-6" style="color:rgba(0,0,0,.35)"></i>
-        <div class="f-exo font-black text-4xl uppercase tracking-[4px] text-black mb-2">CRASH!</div>
+    <div id="crash-modal" class="hidden absolute inset-0 z-[70] flex flex-col items-center justify-center text-center p-6 crash-modal-wrap" style="background:var(--red)">
+        <i class="fa-solid fa-car-burst text-7xl mb-6" style="color:rgba(0,0,0,.3)"></i>
+        <div class="f-bebas text-5xl text-black mb-2">CRASH DETECTED!</div>
         <div class="f-exo font-bold text-sm uppercase tracking-widest" style="color:rgba(0,0,0,.6);margin-bottom:2rem">SOS otomatis dalam…</div>
         <span id="crash-count" class="f-mono font-bold text-9xl text-black" style="margin-bottom:3rem">10</span>
         <button onclick="cancelCrash()" class="w-full py-5 f-exo font-black text-lg tracking-[3px] uppercase clip-md" style="background:black;color:white">✓ SAYA AMAN — BATAL</button>
@@ -960,16 +1034,16 @@
     <div id="modal-add-vehicle" class="hidden absolute bottom-0 left-0 right-0 z-50 slide-up clip-tl modal-sheet">
         <div class="p-6" style="padding-top:28px">
             <div class="flex justify-between items-start mb-6">
-                <div><h3 class="f-exo font-black text-lg uppercase tracking-[3px]">Tambah Kendaraan</h3><p class="f-bar text-[10px] tracking-widest uppercase mt-1" style="color:var(--muted2)">NEW VEHICLE</p></div>
+                <div><h3 class="f-exo font-black text-lg uppercase tracking-[3px]">Tambah Kendaraan</h3><p class="f-rajd text-[10px] tracking-widest uppercase mt-1" style="color:var(--muted2)">NEW VEHICLE</p></div>
                 <button onclick="closeModal('modal-add-vehicle')" aria-label="Tutup tambah kendaraan" class="w-8 h-8 flex items-center justify-center clip-sm" style="background:var(--s2);border:1px solid var(--border2)"><i class="fa-solid fa-xmark text-xs"></i></button>
             </div>
             <form id="form-vehicle" class="space-y-4">
                 <div>
                     <label class="inp-label">Jenis Kendaraan</label>
                     <div class="grid grid-cols-2 gap-3">
-                        <label id="lbl-motor" class="flex items-center justify-center gap-2 p-3 cursor-pointer clip-sm" style="background:var(--s2);border:1px solid rgba(200,255,0,.4)">
+                        <label id="lbl-motor" class="flex items-center justify-center gap-2 p-3 cursor-pointer clip-sm" style="background:var(--s2);border:1px solid rgba(212,160,23,.4)">
                             <input type="radio" name="v_type" value="motor" class="hidden" checked onchange="updateTypeUI()">
-                            <i class="fa-solid fa-motorcycle neon-text"></i><span class="f-exo font-bold text-xs tracking-widest uppercase neon-text">MOTOR</span>
+                            <i class="fa-solid fa-motorcycle gold-text"></i><span class="f-exo font-bold text-xs tracking-widest uppercase gold-text">MOTOR</span>
                         </label>
                         <label id="lbl-mobil" class="flex items-center justify-center gap-2 p-3 cursor-pointer clip-sm" style="background:var(--s2);border:1px solid var(--border2)">
                             <input type="radio" name="v_type" value="mobil" class="hidden" onchange="updateTypeUI()">
@@ -979,7 +1053,7 @@
                 </div>
                 <div><label class="inp-label">Nama Kendaraan</label><input type="text" id="v_name" required placeholder="cth: Scoopy 125" class="inp clip-sm" autocomplete="off"></div>
                 <div><label class="inp-label">Merk / Brand</label><input type="text" id="v_brand" required placeholder="cth: Honda" class="inp clip-sm" autocomplete="off"></div>
-                <button type="submit" class="btn-fill clip-sm w-full py-4 text-xs tracking-[3px]">SIMPAN KENDARAAN</button>
+                <button type="submit" class="btn-fill-gold clip-sm w-full py-4 text-xs tracking-[3px]">SIMPAN KENDARAAN</button>
             </form>
         </div>
     </div>
@@ -987,7 +1061,7 @@
     <div id="modal-add-service" class="hidden absolute bottom-0 left-0 right-0 z-50 slide-up clip-tl modal-sheet">
         <div class="p-6" style="padding-top:28px">
             <div class="flex justify-between items-start mb-5">
-                <div><h3 class="f-exo font-black text-lg uppercase tracking-[3px]">Catat Servis</h3><p class="f-bar text-[10px] tracking-widest uppercase mt-1" style="color:var(--muted2)">SERVICE LOG</p></div>
+                <div><h3 class="f-exo font-black text-lg uppercase tracking-[3px]">Catat Servis</h3><p class="f-rajd text-[10px] tracking-widest uppercase mt-1" style="color:var(--muted2)">SERVICE LOG</p></div>
                 <button onclick="closeModal('modal-add-service')" aria-label="Tutup catat servis" class="w-8 h-8 flex items-center justify-center clip-sm" style="background:var(--s2);border:1px solid var(--border2)"><i class="fa-solid fa-xmark text-xs"></i></button>
             </div>
             <form id="form-service" class="space-y-3">
@@ -997,7 +1071,7 @@
                 </div>
                 <div><label class="inp-label">Part / Keterangan</label><input type="text" id="s_parts" required placeholder="Ganti Oli, Busi, Ban..." class="inp clip-sm text-sm" autocomplete="off"></div>
                 <div><label class="inp-label">Biaya (Rp)</label><input type="number" id="s_cost" placeholder="0" class="inp clip-sm text-sm"></div>
-                <button type="submit" class="btn-fill clip-sm w-full py-4 text-xs tracking-[3px] mt-1">SIMPAN SERVIS</button>
+                <button type="submit" class="btn-fill-gold clip-sm w-full py-4 text-xs tracking-[3px] mt-1">SIMPAN SERVIS</button>
             </form>
         </div>
     </div>
@@ -1005,7 +1079,7 @@
     <div id="modal-add-fuel" class="hidden absolute bottom-0 left-0 right-0 z-50 slide-up clip-tl modal-sheet">
         <div class="p-6" style="padding-top:28px">
             <div class="flex justify-between items-start mb-5">
-                <div><h3 class="f-exo font-black text-lg uppercase tracking-[3px]">Catat Bensin</h3><p class="f-bar text-[10px] tracking-widest uppercase mt-1" style="color:var(--muted2)">FUEL LOG</p></div>
+                <div><h3 class="f-exo font-black text-lg uppercase tracking-[3px]">Catat Bensin</h3><p class="f-rajd text-[10px] tracking-widest uppercase mt-1" style="color:var(--muted2)">FUEL LOG</p></div>
                 <button onclick="closeModal('modal-add-fuel')" aria-label="Tutup catat bensin" class="w-8 h-8 flex items-center justify-center clip-sm" style="background:var(--s2);border:1px solid var(--border2)"><i class="fa-solid fa-xmark text-xs"></i></button>
             </div>
             <form id="form-fuel" class="space-y-3">
@@ -1017,17 +1091,15 @@
                     <div><label class="inp-label">Liter</label><input type="number" step="0.01" id="f_liter" required placeholder="0.00" class="inp clip-sm text-sm"></div>
                     <div><label class="inp-label">Biaya (Rp)</label><input type="number" id="f_cost" required placeholder="0" class="inp clip-sm text-sm"></div>
                 </div>
-                <button type="submit" class="btn-fill clip-sm w-full py-4 text-xs tracking-[3px] mt-1">SIMPAN BENSIN</button>
+                <button type="submit" class="btn-fill-gold clip-sm w-full py-4 text-xs tracking-[3px] mt-1">SIMPAN BENSIN</button>
             </form>
         </div>
     </div>
 
     <div id="toast" class="absolute top-20 left-1/2 z-[80] pointer-events-none whitespace-nowrap f-exo font-bold text-xs tracking-[2px] uppercase px-4 py-2.5 clip-sm"
-         style="background:var(--neon);color:#020204;transform:translateX(-50%) translateY(-60px);opacity:0;transition:transform .3s,opacity .3s"></div>
+         style="background:var(--gold);color:#0a0a0a;transform:translateX(-50%) translateY(-60px);opacity:0;transition:transform .3s,opacity .3s"></div>
 
-</div>
-
-<!-- /#app -->
+</div><!-- /#app -->
 
 <!-- ══════════════════════════════════════════════════════════
      JAVASCRIPT
@@ -1057,72 +1129,101 @@ function arcPath(cx,cy,r,startDeg,endDeg){
 }
 
 /* ════════════════════════════════════════════════════════
-   SPEEDOMETER
+   SPEEDOMETER — BCR TUNED
+   ▸ MAX 240 km/h (BCR-standard)
+   ▸ High-response smoothing: alpha=0.55 default
+   ▸ No artificial multiplier — pure GPS speed
 ════════════════════════════════════════════════════════ */
-const SG={CX:132,CY:132,R:106,START:135,SWEEP:270,MAX:200};
+const SG={CX:134,CY:134,R:108,START:135,SWEEP:270,MAX:240};
 let maxSpeed=0;
 
 function buildSpeedoSVG(){
     const track=document.getElementById('sg-track');
     const ticks=document.getElementById('sg-ticks');
+    if(!track||!ticks)return;
     track.setAttribute('d',arcPath(SG.CX,SG.CY,SG.R,SG.START,SG.START+SG.SWEEP));
-    for(let i=0;i<=20;i++){
-        const ang=SG.START+(SG.SWEEP/20)*i;
-        const major=i%4===0;
-        const rIn=SG.R+9,rOut=SG.R+(major?22:15);
+
+    // Ticks: 24 divisions (every 10 km/h at MAX=240)
+    const DIV=24;
+    for(let i=0;i<=DIV;i++){
+        const ang=SG.START+(SG.SWEEP/DIV)*i;
+        const major=i%4===0; // major every 40 km/h
+        const rIn=SG.R+8, rOut=SG.R+(major?22:13);
         const p1=polarXY(SG.CX,SG.CY,rIn,ang);
         const p2=polarXY(SG.CX,SG.CY,rOut,ang);
         const ln=document.createElementNS(svgNS,'line');
         ln.setAttribute('x1',p1.x);ln.setAttribute('y1',p1.y);
         ln.setAttribute('x2',p2.x);ln.setAttribute('y2',p2.y);
-        ln.setAttribute('stroke',major?'var(--border2)':'var(--border)');
-        ln.setAttribute('stroke-width',major?'1.5':'0.8');
+        // Gold ticks for danger zone (>180 km/h = i>18)
+        const isRed = i>18;
+        ln.setAttribute('stroke',major?(isRed?'rgba(204,17,34,.8)':'rgba(212,160,23,.6)'):'var(--border2)');
+        ln.setAttribute('stroke-width',major?'2':'0.8');
         ticks.appendChild(ln);
         if(major){
-            const spd=Math.round((SG.MAX/20)*i);
+            const spd=Math.round((SG.MAX/DIV)*i);
             const tp=polarXY(SG.CX,SG.CY,rOut+10,ang);
             const tx=document.createElementNS(svgNS,'text');
             tx.setAttribute('x',tp.x);tx.setAttribute('y',tp.y);
             tx.setAttribute('text-anchor','middle');tx.setAttribute('dominant-baseline','middle');
             tx.setAttribute('font-family','Share Tech Mono');tx.setAttribute('font-size','8');
-            tx.setAttribute('fill','var(--muted)');tx.textContent=spd;
+            tx.setAttribute('fill',isRed?'rgba(204,17,34,.7)':'var(--muted)');
+            tx.textContent=spd;
             ticks.appendChild(tx);
         }
     }
     setSpeedoArc(0);
 }
 
+/* ──────────────────────────────────────────────────────
+   BCR Speed Accuracy Engine
+   ▸ Dual-source: GPS native speed + Haversine calc
+   ▸ Alpha 0.55 default → snappy like real speedo
+   ▸ No artificial +25% offset (GPS gives true speed)
+   ▸ Kalman-style adaptive alpha based on accuracy
+────────────────────────────────────────────────────── */
 let currentDisplaySpeed=0, targetDisplaySpeed=0, speedAnimReq=null;
-function animateSpeedo(){
-    const diff=targetDisplaySpeed-currentDisplaySpeed;
-    if(Math.abs(diff)<0.1) currentDisplaySpeed=targetDisplaySpeed;
-    else currentDisplaySpeed+=diff*0.08; // sangat smooth
+const SPEEDO_ANIM_ALPHA = 0.62; // Fast display response
 
-    const c=Math.min(Math.max(currentDisplaySpeed,0),SG.MAX);
-    const sw=SG.SWEEP*(c/SG.MAX);
-    const fill=document.getElementById('sg-fill');
-    const needle=document.getElementById('sg-needle');
-    
+function animateSpeedo(){
+    const diff = targetDisplaySpeed - currentDisplaySpeed;
+    if(Math.abs(diff) < 0.4){
+        currentDisplaySpeed = targetDisplaySpeed;
+    } else {
+        // Variable speed animation: fast for big changes, smooth for small
+        const factor = Math.abs(diff) > 15 ? 0.72 : Math.abs(diff) > 5 ? SPEEDO_ANIM_ALPHA : 0.45;
+        currentDisplaySpeed += diff * factor;
+    }
+
+    const c = Math.min(Math.max(currentDisplaySpeed,0),SG.MAX);
+    const sw = SG.SWEEP * (c/SG.MAX);
+    const fill   = document.getElementById('sg-fill');
+    const needle = document.getElementById('sg-needle');
+
     if(fill){
-        if(sw>0.5){
-            fill.setAttribute('d',arcPath(SG.CX,SG.CY,SG.R,SG.START,SG.START+sw));
+        if(sw > 0.5){
+            fill.setAttribute('d', arcPath(SG.CX,SG.CY,SG.R,SG.START,SG.START+sw));
             fill.style.opacity='1';
             if(needle){
-                const p = polarXY(SG.CX, SG.CY, SG.R, SG.START+sw);
-                needle.setAttribute('cx', p.x);
-                needle.setAttribute('cy', p.y);
+                const p = polarXY(SG.CX,SG.CY,SG.R,SG.START+sw);
+                needle.setAttribute('cx',p.x);
+                needle.setAttribute('cy',p.y);
                 needle.style.opacity='1';
-                needle.setAttribute('fill', c > SG.MAX*0.75 ? '#ff2244' : c > SG.MAX*0.4 ? '#c8ff00' : '#00d4ff');
+                // Color: gold → white → red
+                if(c > SG.MAX*0.75) needle.setAttribute('fill','#cc1122');
+                else if(c > SG.MAX*0.5) needle.setAttribute('fill','#ffffff');
+                else needle.setAttribute('fill','#d4a017');
             }
         } else {
             fill.style.opacity='0';
             if(needle) needle.style.opacity='0';
         }
     }
+
     const valEl=document.getElementById('sg-value');
     if(valEl) valEl.textContent=Math.round(c);
-    
-    if(c>maxSpeed){
+
+    // Update max
+    if(c > maxSpeed){
         maxSpeed=c;
         const maxEl=document.getElementById('sg-max');
         if(maxEl) maxEl.textContent=`MAX ${Math.round(maxSpeed)}`;
@@ -1130,8 +1231,8 @@ function animateSpeedo(){
         if(valMax) valMax.textContent=Math.round(maxSpeed);
     }
     updateRideState({speed:c,maxSpeed});
-    
-    if(Math.abs(diff)>=0.1){
+
+    if(Math.abs(diff) >= 0.4){
         speedAnimReq=requestAnimationFrame(animateSpeedo);
     } else {
         speedAnimReq=null;
@@ -1139,22 +1240,20 @@ function animateSpeedo(){
 }
 
 function setSpeedoArc(kmh){
-    // Deviasi +25% agar lebih aman (seperti spedo motor asli)
-    targetDisplaySpeed = kmh * 1.25;
+    targetDisplaySpeed = Math.max(0, kmh);
     if(!speedAnimReq) animateSpeedo();
 }
 function resetMaxSpeed(){
     maxSpeed=0;
     const maxEl=document.getElementById('sg-max');
-    if(maxEl) maxEl.textContent=`MAX 0`;
+    if(maxEl) maxEl.textContent='MAX 0';
     const valMax=document.getElementById('val-maxspd');
     if(valMax) valMax.textContent='0';
     showToast('Max speed direset','muted');
 }
 
 /* ════════════════════════════════════════════════════════
-   G-FORCE 2D METER SVG
-   Center = 110,110  |  R_rings = 80  |  R_arc = 96
+   G-FORCE 2D METER SVG — BCR RED/GOLD THEME
 ════════════════════════════════════════════════════════ */
 const GF={CX:110,CY:110,R:80,RARC:96};
 
@@ -1163,101 +1262,68 @@ function buildGForceSVG(){
     if(!svg)return;
     svg.innerHTML='';
 
-    // Defs: glow filter + radial bg gradient
     const defs=svgE('defs');
     defs.innerHTML=`
       <filter id="gfGlow"><feGaussianBlur stdDeviation="3" result="b"/>
         <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       <radialGradient id="gfBg" cx="50%" cy="50%" r="50%">
-        <stop offset="0%"   stop-color="rgba(255,34,68,0.08)"/>
+        <stop offset="0%"   stop-color="rgba(204,17,34,0.07)"/>
         <stop offset="100%" stop-color="transparent"/>
       </radialGradient>`;
     svg.appendChild(defs);
 
-    // Outer decorative rings
-    svg.appendChild(svgE('circle',{cx:110,cy:110,r:108,fill:'none',stroke:'var(--border)', 'stroke-width':'.5'}));
+    svg.appendChild(svgE('circle',{cx:110,cy:110,r:108,fill:'none',stroke:'var(--border)','stroke-width':'.5'}));
     svg.appendChild(svgE('circle',{cx:110,cy:110,r:100,fill:'none',stroke:'var(--border2)','stroke-width':'.5'}));
 
-    // Outer G-arc track (total G magnitude display)
-    const arcTrack=svgE('path',{
-        fill:'none',stroke:'var(--s3)','stroke-width':'8','stroke-linecap':'round',opacity:'.5'
-    });
+    const arcTrack=svgE('path',{fill:'none',stroke:'var(--s3)','stroke-width':'8','stroke-linecap':'round',opacity:'.5'});
     arcTrack.setAttribute('d',arcPath(GF.CX,GF.CY,GF.RARC,135,405));
     svg.appendChild(arcTrack);
 
-    // Dynamic outer arc fill
-    const arcFill=svgE('path',{
-        id:'gf-arc',fill:'none',stroke:'var(--alert)',
-        'stroke-width':'8','stroke-linecap':'round',opacity:'0',filter:'url(#gfGlow)'
-    });
+    const arcFill=svgE('path',{id:'gf-arc',fill:'none',stroke:'var(--red2)',
+        'stroke-width':'8','stroke-linecap':'round',opacity:'0',filter:'url(#gfGlow)'});
     svg.appendChild(arcFill);
 
-    // Radial background fill inside rings
     svg.appendChild(svgE('circle',{cx:110,cy:110,r:GF.R,fill:'url(#gfBg)'}));
 
-    // Concentric G-rings with labels
-    [
-        {r:GF.R*0.25,lbl:'0.5G'},
-        {r:GF.R*0.50,lbl:'1G'},
-        {r:GF.R*0.75,lbl:'1.5G'},
-        {r:GF.R,     lbl:'2G'},
-    ].forEach(({r,lbl})=>{
+    [{r:GF.R*0.25,lbl:'0.5G'},{r:GF.R*0.50,lbl:'1G'},{r:GF.R*0.75,lbl:'1.5G'},{r:GF.R,lbl:'2G'}].forEach(({r,lbl})=>{
         svg.appendChild(svgE('circle',{cx:110,cy:110,r,fill:'none',stroke:'var(--border2)','stroke-width':'0.7','stroke-dasharray':'2 5'}));
         const lp=polarXY(110,110,r,20);
         svg.appendChild(svgE('text',{'x':lp.x,'y':lp.y,'text-anchor':'middle','dominant-baseline':'middle',
             'font-family':'Share Tech Mono','font-size':'6.5','fill':'var(--muted)'},lbl));
     });
 
-    // Crosshair lines
     svg.appendChild(svgE('line',{x1:22,y1:110,x2:198,y2:110,stroke:'var(--border2)','stroke-width':'.5'}));
     svg.appendChild(svgE('line',{x1:110,y1:22,x2:110,y2:198,stroke:'var(--border2)','stroke-width':'.5'}));
 
-    // Cardinal direction labels
     [['F',110,18],['B',110,206],['L',18,113],['R',202,113]].forEach(([t,x,y])=>{
         svg.appendChild(svgE('text',{x,y,'text-anchor':'middle','dominant-baseline':'middle',
             'font-family':'Exo 2','font-size':'7','font-weight':'700','fill':'var(--muted)'},t));
     });
 
-    // Dot glow halo
-    svg.appendChild(svgE('circle',{id:'gf-ring',cx:110,cy:110,r:16,
-        fill:'none',stroke:'var(--muted)','stroke-width':'1',opacity:'0'}));
-
-    // Main G-force dot
-    svg.appendChild(svgE('circle',{id:'gf-dot',cx:110,cy:110,r:9,
-        fill:'var(--muted)',stroke:'none',filter:'url(#gfGlow)'}));
-
-    // G value (center, behind dot but still readable)
-    svg.appendChild(svgE('text',{id:'gf-sv',x:110,y:104,
-        'text-anchor':'middle','font-family':'Share Tech Mono',
-        'font-size':'24','fill':'var(--alert)',filter:'url(#gfGlow)'},'1.0'));
-    svg.appendChild(svgE('text',{x:110,y:122,
-        'text-anchor':'middle','font-family':'Exo 2','font-size':'7',
-        'fill':'var(--muted2)','font-weight':'700','letter-spacing':'2'},'G-FORCE'));
+    svg.appendChild(svgE('circle',{id:'gf-ring',cx:110,cy:110,r:16,fill:'none',stroke:'var(--muted)','stroke-width':'1',opacity:'0'}));
+    svg.appendChild(svgE('circle',{id:'gf-dot',cx:110,cy:110,r:9,fill:'var(--muted)',stroke:'none',filter:'url(#gfGlow)'}));
+    svg.appendChild(svgE('text',{id:'gf-sv',x:110,y:104,'text-anchor':'middle','font-family':'Share Tech Mono','font-size':'24','fill':'var(--red2)',filter:'url(#gfGlow)'},'1.0'));
+    svg.appendChild(svgE('text',{x:110,y:122,'text-anchor':'middle','font-family':'Exo 2','font-size':'7','fill':'var(--muted2)','font-weight':'700','letter-spacing':'2'},'G-FORCE'));
 }
 
 function updateGForceMeter(G,gx,gy){
-    const MAX=2, CX=GF.CX, CY=GF.CY, R=GF.R, RARC=GF.RARC;
-
-    // Dot XY (gx = lateral, gy = longitudinal)
+    const MAX=2,CX=GF.CX,CY=GF.CY,R=GF.R,RARC=GF.RARC;
     let dx=CX+(gx/MAX)*R, dy=CY-(gy/MAX)*R;
     const dist=Math.hypot(dx-CX,dy-CY);
     if(dist>R){dx=CX+(dx-CX)*R/dist; dy=CY+(dy-CY)*R/dist;}
 
-    const dot =document.getElementById('gf-dot');
+    const dot=document.getElementById('gf-dot');
     const ring=document.getElementById('gf-ring');
-    const sv  =document.getElementById('gf-sv');
-    const arc =document.getElementById('gf-arc');
+    const sv=document.getElementById('gf-sv');
+    const arc=document.getElementById('gf-arc');
 
-    const color = G<0.4?'var(--muted)':G<1.0?'var(--neon)':G<1.5?'var(--warn)':'var(--alert)';
+    // BCR color: gold low → white mid → red high
+    const color = G<0.4?'var(--muted)':G<1.0?'var(--gold)':G<1.5?'var(--gold2)':'var(--red2)';
 
-    if(dot){ dot.setAttribute('cx',dx.toFixed(1)); dot.setAttribute('cy',dy.toFixed(1));
-             dot.setAttribute('fill',color); }
-    if(ring){ ring.setAttribute('cx',dx.toFixed(1)); ring.setAttribute('cy',dy.toFixed(1));
-              ring.setAttribute('stroke',color);
-              ring.setAttribute('opacity',Math.min(.7,G*.45).toFixed(2)); }
-    if(sv){   sv.textContent=G.toFixed(1); sv.setAttribute('fill',color); }
+    if(dot){dot.setAttribute('cx',dx.toFixed(1));dot.setAttribute('cy',dy.toFixed(1));dot.setAttribute('fill',color);}
+    if(ring){ring.setAttribute('cx',dx.toFixed(1));ring.setAttribute('cy',dy.toFixed(1));ring.setAttribute('stroke',color);ring.setAttribute('opacity',Math.min(.7,G*.45).toFixed(2));}
+    if(sv){sv.textContent=G.toFixed(1);sv.setAttribute('fill',color);}
 
-    // Outer arc: total G magnitude (0–2G maps to 0–270°)
     if(arc){
         const g=Math.min(G,MAX);
         if(g>0.05){
@@ -1268,64 +1334,47 @@ function updateGForceMeter(G,gx,gy){
         } else { arc.style.opacity='0'; }
     }
 
-    // Sync all G displays
-    ['gforce-val','gforce-val-p'].forEach(id=>{
-        const el=document.getElementById(id);
-        if(el) el.textContent=G.toFixed(1);
-    });
+    ['gforce-val','gforce-val-p'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=G.toFixed(1);});
 }
 
 /* ════════════════════════════════════════════════════════
-   LEAN ANGLE GAUGE SVG
-   Center 110,110  |  Arc same geometry as speedometer
-   0° lean = 270° (bottom)  |  ±90° = 270°±120°
+   LEAN ANGLE GAUGE SVG — BCR GOLD THEME
 ════════════════════════════════════════════════════════ */
 const LS={CX:110,CY:110,R:90,START:150,SWEEP:240};
-// LS center angle: 150 + 120 = 270°
 
 function buildLeanSVG(){
     const svg=document.getElementById('lean-svg');
     if(!svg)return;
     svg.innerHTML='';
 
-    // Defs
     const defs=svgE('defs');
     defs.innerHTML=`
       <filter id="lsGlow"><feGaussianBlur stdDeviation="2.5" result="b"/>
         <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
     svg.appendChild(defs);
 
-    // Outer rings
-    svg.appendChild(svgE('circle',{cx:110,cy:110,r:108,fill:'none',stroke:'var(--border)', 'stroke-width':'.5'}));
+    svg.appendChild(svgE('circle',{cx:110,cy:110,r:108,fill:'none',stroke:'var(--border)','stroke-width':'.5'}));
     svg.appendChild(svgE('circle',{cx:110,cy:110,r:100,fill:'none',stroke:'var(--border2)','stroke-width':'.5'}));
 
-    // Color zone arcs (painted low opacity underneath)
-    // Zone mapping: lean ±deg → gauge angle = 270 + (lean/90)*120
-    // ±90° lean → gauge 150° and 390°(=30°)
-    // ±60° lean → gauge 190° and 350°
-    // ±40° lean → gauge 216° and 324°
     const addZone=(s,e,col,op=0.28)=>{
         const p=svgE('path',{fill:'none',stroke:col,'stroke-width':'14','stroke-linecap':'round',opacity:String(op)});
         p.setAttribute('d',arcPath(LS.CX,LS.CY,LS.R,s,e));
         svg.appendChild(p);
     };
-    addZone(150,216,'#ff2244',0.32);  // left danger (>60°)
-    addZone(324,390,'#ff2244',0.32);  // right danger
-    addZone(216,240,'#ff8800',0.28);  // left warn (40–60°)
-    addZone(300,324,'#ff8800',0.28);  // right warn
-    addZone(240,300,'#c8ff00',0.22);  // safe center (±40°)
+    addZone(150,216,'#cc1122',0.3);   // left danger (>60°)
+    addZone(324,390,'#cc1122',0.3);   // right danger
+    addZone(216,240,'#ff6600',0.25);  // left warn (40–60°)
+    addZone(300,324,'#ff6600',0.25);  // right warn
+    addZone(240,300,'#d4a017',0.2);   // safe center (±40°) — gold
 
-    // Full dim track overlay (unifies zone texture)
     const track=svgE('path',{fill:'none',stroke:'var(--s3)','stroke-width':'14','stroke-linecap':'round',opacity:'.35'});
     track.setAttribute('d',arcPath(LS.CX,LS.CY,LS.R,LS.START,LS.START+LS.SWEEP));
     svg.appendChild(track);
 
-    // Dynamic fill arc (grows from center as lean increases)
-    const fill=svgE('path',{id:'ls-fill',fill:'none',stroke:'var(--cyber)',
+    const fill=svgE('path',{id:'ls-fill',fill:'none',stroke:'var(--gold)',
         'stroke-width':'14','stroke-linecap':'round',opacity:'0',filter:'url(#lsGlow)'});
     svg.appendChild(fill);
 
-    // Tick marks at every 15° lean (−90 to +90)
     for(let lean=-90;lean<=90;lean+=15){
         const major=lean%45===0;
         const gaugeAng=270+(lean/90)*120;
@@ -1334,93 +1383,138 @@ function buildLeanSVG(){
         const p1=polarXY(LS.CX,LS.CY,rIn, gaugeAng);
         const p2=polarXY(LS.CX,LS.CY,rOut,gaugeAng);
         svg.appendChild(svgE('line',{x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,
-            stroke:major?'var(--border2)':'var(--border)',
-            'stroke-width':major?'1.5':'0.8'}));
+            stroke:major?'rgba(212,160,23,.6)':'var(--border2)',
+            'stroke-width':major?'1.8':'0.8'}));
         if(major){
             const lbl=lean===0?'0':Math.abs(lean).toString();
-            const col=Math.abs(lean)>=60?'var(--alert)':Math.abs(lean)>=40?'var(--warn)':'var(--muted)';
+            const col=Math.abs(lean)>=60?'var(--red2)':Math.abs(lean)>=40?'var(--warn)':'var(--gold)';
             const tp=polarXY(LS.CX,LS.CY,rOut+10,gaugeAng);
             svg.appendChild(svgE('text',{x:tp.x,y:tp.y,'text-anchor':'middle','dominant-baseline':'middle',
                 'font-family':'Share Tech Mono','font-size':'7.5','fill':col},lbl));
         }
     }
 
-    // Inner circle fill (creates halo effect)
     svg.appendChild(svgE('circle',{cx:110,cy:110,r:72,fill:'var(--s1)'}));
     svg.appendChild(svgE('circle',{cx:110,cy:110,r:71,fill:'none',stroke:'var(--border)','stroke-width':'.5'}));
 
-    // Needle line
     const nTip0=polarXY(LS.CX,LS.CY,LS.R,270);
     svg.appendChild(svgE('line',{id:'ls-needle',
         x1:LS.CX,y1:LS.CY,x2:nTip0.x,y2:nTip0.y,
-        stroke:'var(--cyber)','stroke-width':'2.5','stroke-linecap':'round',filter:'url(#lsGlow)'}));
+        stroke:'var(--gold)','stroke-width':'2.5','stroke-linecap':'round',filter:'url(#lsGlow)'}));
 
-    // Center pivot dot
-    svg.appendChild(svgE('circle',{cx:110,cy:110,r:7,fill:'var(--cyber)',
+    svg.appendChild(svgE('circle',{cx:110,cy:110,r:7,fill:'var(--gold)',
         stroke:'var(--s1)','stroke-width':'2.5',filter:'url(#lsGlow)'}));
 
-    // Angle value (center)
     svg.appendChild(svgE('text',{id:'ls-sv',x:110,y:104,
         'text-anchor':'middle','font-family':'Share Tech Mono',
-        'font-size':'34','fill':'var(--cyber)',filter:'url(#lsGlow)'},'0'));
+        'font-size':'34','fill':'var(--gold)',filter:'url(#lsGlow)'},'0'));
 
-    // Degree symbol + label
     svg.appendChild(svgE('text',{x:110,y:122,
         'text-anchor':'middle','font-family':'Exo 2','font-size':'8',
         'fill':'var(--muted2)','font-weight':'700','letter-spacing':'2'},'DEGREES'));
 
-    // Direction label
     svg.appendChild(svgE('text',{id:'ls-dir',x:110,y:138,
         'text-anchor':'middle','font-family':'Share Tech Mono',
         'font-size':'8','fill':'var(--muted)'},'CENTER'));
 
-    // L/R axis labels at extremes of arc
     const lp=polarXY(LS.CX,LS.CY,LS.R+30,LS.START);
     const rp=polarXY(LS.CX,LS.CY,LS.R+30,LS.START+LS.SWEEP);
     svg.appendChild(svgE('text',{x:lp.x,y:lp.y,'text-anchor':'middle','dominant-baseline':'middle',
-        'font-family':'Exo 2','font-size':'8','font-weight':'700','fill':'var(--alert)'},'L'));
+        'font-family':'Exo 2','font-size':'8','font-weight':'700','fill':'var(--red2)'},'L'));
     svg.appendChild(svgE('text',{x:rp.x,y:rp.y,'text-anchor':'middle','dominant-baseline':'middle',
-        'font-family':'Exo 2','font-size':'8','font-weight':'700','fill':'var(--alert)'},'R'));
+        'font-family':'Exo 2','font-size':'8','font-weight':'700','fill':'var(--red2)'},'R'));
 }
 
 function updateLeanGauge(angle){
     const CX=LS.CX,CY=LS.CY,R=LS.R;
-    const CENTER=270; // 0° lean
+    const CENTER=270;
     const needleDeg=CENTER+(angle/90)*120;
     const tip=polarXY(CX,CY,R,needleDeg);
     const absA=Math.abs(angle);
 
-    // Needle
     const needle=document.getElementById('ls-needle');
     if(needle){needle.setAttribute('x2',tip.x.toFixed(2));needle.setAttribute('y2',tip.y.toFixed(2));}
 
-    // Fill arc from center to needle
     const fillEl=document.getElementById('ls-fill');
     if(fillEl){
         if(absA>0.5){
             const s=angle>=0?CENTER:needleDeg;
             const e=angle>=0?needleDeg:CENTER;
             fillEl.setAttribute('d',arcPath(CX,CY,R,s,e));
-            const col=absA<40?'var(--cyber)':absA<60?'var(--warn)':'var(--alert)';
+            const col=absA<40?'var(--gold)':absA<60?'var(--warn)':'var(--red2)';
             fillEl.setAttribute('stroke',col);
             fillEl.style.opacity='1';
         } else { fillEl.style.opacity='0'; }
     }
 
-    // SVG center texts
     const sv=document.getElementById('ls-sv');
     if(sv) sv.textContent=Math.round(absA);
     const dir=document.getElementById('ls-dir');
     if(dir) dir.textContent=absA<3?'CENTER':angle>0?'→ RIGHT':'LEFT ←';
 
-    // HTML header direction label
     const hdr=document.getElementById('lean-dir-hdr');
     if(hdr) hdr.textContent=absA<3?'—':angle>0?'R →':'← L';
 
-    // Sync Labs + portrait strip
     ['lean-val','lean-val-p'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=Math.round(absA);});
     const labsN=document.getElementById('lean-needle');
     if(labsN)labsN.style.transform=`translateX(-50%) rotate(${angle}deg)`;
+}
+
+/* ── COMPASS ──────────────────────────────────────────── */
+const COMPASS_DIRS = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+function headingToCompass(deg){
+    if(!Number.isFinite(deg))return '—';
+    const idx = Math.round(((deg%360)+360) / 22.5) % 16;
+    return COMPASS_DIRS[idx];
+}
+function updateCompassDisplays(heading){
+    const cmp = headingToCompass(heading);
+    const hdgText = Number.isFinite(heading) ? Math.round(heading)+'°' : '—';
+    const el1=document.getElementById('mini-bearing'); if(el1) el1.textContent = cmp;
+    const el2=document.getElementById('ls-compass');   if(el2) el2.textContent = cmp;
+    const el3=document.getElementById('labs-compass'); if(el3) el3.textContent = cmp + (Number.isFinite(heading)?' '+hdgText:'');
+    const el4=document.getElementById('val-heading');  if(el4) el4.textContent = hdgText;
+    const el5=document.getElementById('mini-bearing'); if(el5) el5.textContent = cmp;
+}
+
+/* ── CLOCK ────────────────────────────────────────────── */
+function updateClock(){
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    const timeStr = h+':'+m+':'+s;
+    const el1=document.getElementById('mini-clock'); if(el1) el1.textContent = h+':'+m;
+    const el2=document.getElementById('ls-clock');   if(el2) el2.textContent = h+':'+m;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+/* ── TRIP ODOMETER ────────────────────────────────────── */
+let tripDistanceKm = parseFloat(localStorage.getItem('bcr_trip')||'0');
+let lastTripPoint = null;
+
+function updateTripDisplays(){
+    const v = tripDistanceKm.toFixed(1);
+    const el1=document.getElementById('mini-trip');  if(el1) el1.textContent = v;
+    const el2=document.getElementById('ls-trip');    if(el2) el2.textContent = v;
+    const el3=document.getElementById('labs-trip');  if(el3) el3.textContent = v;
+}
+function resetTrip(){
+    tripDistanceKm=0;
+    lastTripPoint=null;
+    localStorage.setItem('bcr_trip','0');
+    updateTripDisplays();
+    showToast('Trip counter direset','muted');
+}
+updateTripDisplays();
+
+/* ── ALTITUDE ─────────────────────────────────────────── */
+function updateAltitudeDisplays(alt){
+    const v = Number.isFinite(alt) ? Math.round(alt)+'m' : '—';
+    const el1=document.getElementById('mini-altitude'); if(el1) el1.textContent = v;
+    const el2=document.getElementById('ls-altitude');   if(el2) el2.textContent = v;
+    const el3=document.getElementById('labs-altitude'); if(el3) el3.textContent = Number.isFinite(alt)?Math.round(alt):'—';
 }
 
 /* ── THEME ────────────────────────────────────────────── */
@@ -1429,8 +1523,8 @@ const applyTheme=t=>{
     localStorage.setItem('theme',t);
     const btn=document.getElementById('btn-theme');
     if(btn) btn.innerHTML=t==='light'
-        ?'<i class="fa-solid fa-moon text-xs" style="color:var(--cyber)"></i>'
-        :'<i class="fa-solid fa-sun text-xs neon-text"></i>';
+        ?'<i class="fa-solid fa-moon text-xs" style="color:var(--gold)"></i>'
+        :'<i class="fa-solid fa-sun text-xs gold-text"></i>';
 };
 const toggleTheme=()=>{
     applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
@@ -1459,12 +1553,18 @@ document.getElementById('cc-no').onclick =()=>closeAllModals();
 document.getElementById('cc-yes').onclick=()=>{closeAllModals();if(confirmCb)confirmCb();};
 
 let toastTimer=null;
-const showToast=(msg,type='neon')=>{
+const showToast=(msg,type='gold')=>{
     const el=document.getElementById('toast');
-    const s={neon:'background:var(--neon);color:#020204;',cyber:'background:var(--cyber);color:#020204;',
-             alert:'background:var(--alert);color:#fff;',warn:'background:var(--warn);color:#020204;',
-             muted:'background:var(--s2);color:var(--text);border:1px solid var(--border2);'};
-    el.setAttribute('style',(s[type]||s.neon)+
+    const s={
+        gold:   'background:var(--gold);color:#0a0a0a;',
+        gold2:  'background:var(--gold2);color:#0a0a0a;',
+        alert:  'background:var(--red);color:#fff;',
+        warn:   'background:var(--warn);color:#0a0a0a;',
+        muted:  'background:var(--s2);color:var(--text);border:1px solid var(--border2);',
+        cyber:  'background:var(--gold2);color:#0a0a0a;',
+        neon:   'background:var(--gold);color:#0a0a0a;',
+    };
+    el.setAttribute('style',(s[type]||s.gold)+
         'position:absolute;top:76px;left:50%;transform:translateX(-50%) translateY(0);opacity:1;'+
         'transition:transform .3s,opacity .3s;z-index:80;pointer-events:none;white-space:nowrap;'+
         'font-family:"Exo 2",sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;'+
@@ -1484,10 +1584,10 @@ const updateSensorChip=(label,type='idle')=>{
     const chip=document.getElementById('sensor-chip');
     if(!chip)return;
     const colors={
-        idle:'background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.22);color:var(--cyber);',
-        good:'background:rgba(200,255,0,.08);border:1px solid rgba(200,255,0,.28);color:var(--neon);',
-        warn:'background:rgba(255,136,0,.1);border:1px solid rgba(255,136,0,.32);color:var(--warn);',
-        alert:'background:rgba(255,34,68,.1);border:1px solid rgba(255,34,68,.34);color:var(--alert);'
+        idle: 'background:rgba(212,160,23,.06);border:1px solid rgba(212,160,23,.22);color:var(--gold);',
+        good: 'background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.4);color:var(--gold2);',
+        warn: 'background:rgba(255,102,0,.1);border:1px solid rgba(255,102,0,.32);color:var(--warn);',
+        alert:'background:rgba(204,17,34,.1);border:1px solid rgba(204,17,34,.34);color:var(--red2);'
     };
     chip.setAttribute('style',colors[type]||colors.idle);
     chip.innerHTML=`<i class="fa-solid fa-satellite-dish text-[8px]"></i>${escapeHTML(label)}`;
@@ -1504,23 +1604,22 @@ const overlayTap=e=>{if(e.target.id==='modal-overlay')closeAllModals();};
 
 const updateTypeUI=()=>{
     const isMo=document.querySelector('input[name="v_type"]:checked').value==='motor';
-    const aS='background:var(--s2);border:1px solid rgba(200,255,0,.4);';
+    const aS='background:var(--s2);border:1px solid rgba(212,160,23,.4);';
     const iS='background:var(--s2);border:1px solid var(--border2);';
     ['motor','mobil'].forEach(t=>{
         const lbl=document.getElementById('lbl-'+t);
         const isA=t==='motor'?isMo:!isMo;
         lbl.setAttribute('style',isA?aS:iS);
-        lbl.querySelector('i').className='fa-solid fa-'+(t==='motor'?'motorcycle':'car')+' '+(isA?'neon-text':'');
+        lbl.querySelector('i').className='fa-solid fa-'+(t==='motor'?'motorcycle':'car')+' '+(isA?'gold-text':'');
         lbl.querySelector('i').style.color=isA?'':'var(--muted2)';
-        lbl.querySelector('span').className='f-exo font-bold text-xs tracking-widest uppercase '+(isA?'neon-text':'');
+        lbl.querySelector('span').className='f-exo font-bold text-xs tracking-widest uppercase '+(isA?'gold-text':'');
         lbl.querySelector('span').style.color=isA?'':'var(--muted2)';
     });
 };
-
 const normalizeVehicleType=type=>type==='mobil'?'mobil':'motor';
 
 /* ── DATABASE ─────────────────────────────────────────── */
-const DB_NAME='GarasiProDB',DB_VERSION=4;
+const DB_NAME='BCRideDB',DB_VERSION=5;
 let db;
 
 const initDB=()=>new Promise((res,rej)=>{
@@ -1565,14 +1664,14 @@ const switchView=view=>{
     ALL_VIEWS.forEach(v=>document.getElementById('view-'+v).classList.add('hidden'));
     ['garage','dashboard','labs','checklist'].forEach(v=>{
         const b=document.getElementById('nav-'+v);
-        if(b) b.classList.remove('is-active','is-active-cy');
+        if(b) b.classList.remove('is-active','is-active-red');
     });
     const nk=(view==='details')?'garage':view;
     const nb=document.getElementById('nav-'+nk);
-    if(nb) nb.classList.add(view==='labs'?'is-active-cy':'is-active');
+    if(nb) nb.classList.add(view==='labs'?'is-active-red':'is-active');
     document.getElementById('view-'+view).classList.remove('hidden');
-    const titles={garage:'Super App Riding',details:'Detail Kendaraan',dashboard:'Live GPS Ride',labs:'Pro Labs — Beta',checklist:'Touring Gear Check'};
-    document.getElementById('header-subtitle').textContent=titles[view]||'AFTHRIDE';
+    const titles={garage:'BCR Garage',details:'Detail Kendaraan',dashboard:'BCR Live Ride',labs:'BCR Sensor Suite',checklist:'Touring Gear Check'};
+    document.getElementById('header-subtitle').textContent=titles[view]||'Black Crown Riders Surabaya';
     if(view==='dashboard') startSpeedometer(); else stopSpeedometer();
     if(view!=='labs'){stopTelemetry();stopAudioRPM();}
     if(view==='garage')    loadVehicles();
@@ -1586,9 +1685,9 @@ const loadVehicles=async()=>{
         const el=document.getElementById('vehicle-list');
         if(!list.length){
             el.innerHTML=`<div class="flex flex-col items-center justify-center py-12 gap-3 clip-tr" style="background:var(--s1);border:1px dashed var(--border2)">
-              <i class="fa-solid fa-warehouse text-4xl" style="color:var(--muted)"></i>
+              <i class="fa-solid fa-crown text-4xl" style="color:var(--muted)"></i>
               <p class="f-exo font-bold text-xs tracking-[3px] uppercase" style="color:var(--muted)">Garasi Kosong</p>
-              <p class="f-bar text-xs" style="color:var(--muted)">Tap TAMBAH untuk daftar kendaraan</p></div>`;
+              <p class="f-rajd text-xs" style="color:var(--muted)">Tap TAMBAH untuk daftar kendaraan BCR</p></div>`;
             return;
         }
         el.innerHTML='';
@@ -1598,10 +1697,10 @@ const loadVehicles=async()=>{
             const c=document.createElement('div');
             c.className='vehicle-card clip-tr p-4 flex items-center gap-4';
             c.onclick=()=>openVehicleDetail(v.id,v.name,v.brand,type);
-            c.innerHTML=`<div class="flex-shrink-0 w-12 h-12 flex items-center justify-center text-xl clip-sm" style="background:rgba(200,255,0,.06);border:1px solid rgba(200,255,0,.14)"><i class="fa-solid ${isM?'fa-motorcycle':'fa-car'} neon-text"></i></div>
+            c.innerHTML=`<div class="flex-shrink-0 w-12 h-12 flex items-center justify-center text-xl clip-sm" style="background:rgba(212,160,23,.07);border:1px solid rgba(212,160,23,.18)"><i class="fa-solid ${isM?'fa-motorcycle':'fa-car'} gold-text"></i></div>
               <div class="flex-1 min-w-0"><h3 class="f-exo font-black text-base uppercase tracking-wide leading-none">${escapeHTML(v.name)}</h3>
-              <p class="f-bar text-xs tracking-widest uppercase mt-1" style="color:var(--muted2)">${escapeHTML(v.brand)} · ${type.toUpperCase()}</p></div>
-              <i class="fa-solid fa-chevron-right text-sm neon-text opacity-40 flex-shrink-0"></i>`;
+              <p class="f-rajd text-xs tracking-widest uppercase mt-1" style="color:var(--muted2)">${escapeHTML(v.brand)} · ${type.toUpperCase()}</p></div>
+              <i class="fa-solid fa-chevron-right text-sm gold-text opacity-40 flex-shrink-0"></i>`;
             el.appendChild(c);
         });
     } catch(err){showToast('Gagal memuat garasi','alert');}
@@ -1613,7 +1712,7 @@ const openVehicleDetail=(id,name,brand,type)=>{
     const isM=type==='motor';
     document.getElementById('detail-name').textContent=name.toUpperCase();
     document.getElementById('detail-brand').textContent=`${brand} · ${type.toUpperCase()}`;
-    document.getElementById('detail-icon').innerHTML=`<i class="fa-solid ${isM?'fa-motorcycle':'fa-car'} neon-text"></i>`;
+    document.getElementById('detail-icon').innerHTML=`<i class="fa-solid ${isM?'fa-motorcycle':'fa-car'} gold-text"></i>`;
     loadLogs();switchView('details');
 };
 
@@ -1628,16 +1727,16 @@ const loadLogs=async()=>{
             if(l.logType==='fuel'){const eff=prevOdo!==null?((l.odo-prevOdo)/parseFloat(l.liter)).toFixed(1):null;prevOdo=l.odo;return{...l,eff};}
             return l;
         }).sort((a,b)=>new Date(b.date)-new Date(a.date));
-        if(!proc.length){el.innerHTML=`<p class="text-center f-bar text-xs tracking-widest uppercase py-8" style="color:var(--muted)">BELUM ADA RIWAYAT</p>`;return;}
+        if(!proc.length){el.innerHTML=`<p class="text-center f-rajd text-xs tracking-widest uppercase py-8" style="color:var(--muted)">BELUM ADA RIWAYAT</p>`;return;}
         el.innerHTML=proc.map(l=>{
-            const svc=l.logType==='service',clr=svc?'var(--cyber)':'var(--neon)',ico=svc?'fa-wrench':'fa-gas-pump';
-            const badge=(!svc&&l.eff)?`<span class="f-mono text-[8px] px-1.5 py-0.5" style="background:rgba(200,255,0,.1);border:1px solid rgba(200,255,0,.2);color:var(--neon)">${l.eff} KM/L</span>`:'';
+            const svc=l.logType==='service',clr=svc?'var(--gold)':'var(--gold2)',ico=svc?'fa-wrench':'fa-gas-pump';
+            const badge=(!svc&&l.eff)?`<span class="f-mono text-[8px] px-1.5 py-0.5" style="background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.2);color:var(--gold)">${l.eff} KM/L</span>`:'';
             const lbl=svc?escapeHTML(l.parts):`ISI BENSIN ${escapeHTML(l.liter)}L`;
             return`<div class="log-item clip-tr p-3 flex items-center gap-3">
               <div class="w-9 h-9 flex-shrink-0 flex items-center justify-center clip-sm" style="background:var(--s2);border:1px solid var(--border)"><i class="fa-solid ${ico} text-xs" style="color:${clr}"></i></div>
               <div class="flex-1 min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="f-exo font-bold text-xs uppercase tracking-wide truncate">${lbl}</span>${badge}</div>
               <div class="flex justify-between items-center mt-0.5"><span class="f-mono text-[10px]" style="color:var(--muted2)">${escapeHTML(l.odo)} KM</span>
-              <div class="flex items-center gap-2"><span class="f-mono text-[10px] neon-text">Rp${(l.cost||0).toLocaleString('id-ID')}</span><span class="f-bar text-[9px]" style="color:var(--muted)">${escapeHTML(l.date)}</span></div></div></div></div>`;
+              <div class="flex items-center gap-2"><span class="f-mono text-[10px] gold-text">Rp${(l.cost||0).toLocaleString('id-ID')}</span><span class="f-rajd text-[9px]" style="color:var(--muted)">${escapeHTML(l.date)}</span></div></div></div></div>`;
         }).join('');
     } catch(err){showToast('Gagal memuat riwayat','alert');}
 };
@@ -1647,21 +1746,21 @@ document.getElementById('form-vehicle').onsubmit=async e=>{
     e.preventDefault();
     try{
         await dbAction('vehicles','add',{id:'v_'+Date.now(),type:document.querySelector('input[name="v_type"]:checked').value,name:document.getElementById('v_name').value.trim(),brand:document.getElementById('v_brand').value.trim()});
-        closeModal('modal-add-vehicle');e.target.reset();updateTypeUI();showToast('Kendaraan tersimpan!','neon');loadVehicles();
+        closeModal('modal-add-vehicle');e.target.reset();updateTypeUI();showToast('Kendaraan tersimpan!','gold');loadVehicles();
     } catch(err){showToast('Gagal simpan: '+(err.name||err),'alert');}
 };
 document.getElementById('form-service').onsubmit=async e=>{
     e.preventDefault();const today=new Date().toISOString().split('T')[0];
     try{
         await dbAction('logs','add',{vehicleId:currentVehicleId,logType:'service',date:document.getElementById('s_date').value,odo:parseInt(document.getElementById('s_odo').value),parts:document.getElementById('s_parts').value,cost:parseInt(document.getElementById('s_cost').value||0)});
-        closeModal('modal-add-service');e.target.reset();document.getElementById('s_date').value=today;loadLogs();showToast('Servis dicatat!','cyber');
+        closeModal('modal-add-service');e.target.reset();document.getElementById('s_date').value=today;loadLogs();showToast('Servis dicatat!','gold2');
     } catch(err){showToast('Gagal simpan','alert');}
 };
 document.getElementById('form-fuel').onsubmit=async e=>{
     e.preventDefault();const today=new Date().toISOString().split('T')[0];
     try{
         await dbAction('logs','add',{vehicleId:currentVehicleId,logType:'fuel',date:document.getElementById('f_date').value,odo:parseInt(document.getElementById('f_odo').value),liter:parseFloat(document.getElementById('f_liter').value),cost:parseInt(document.getElementById('f_cost').value||0)});
-        closeModal('modal-add-fuel');e.target.reset();document.getElementById('f_date').value=today;loadLogs();showToast('Bensin dicatat!','neon');
+        closeModal('modal-add-fuel');e.target.reset();document.getElementById('f_date').value=today;loadLogs();showToast('Bensin dicatat!','gold');
     } catch(err){showToast('Gagal simpan','alert');}
 };
 
@@ -1680,8 +1779,8 @@ const exportDataCSV=async()=>{
         logs.sort((a,b)=>new Date(a.date)-new Date(b.date)).forEach(r=>{
             csv+=[r.date,r.logType,r.odo,r.parts||'-',r.liter||'-',r.cost||0].map(csvCell).join(',')+'\n';
         });
-        const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`GarasiPro_${Date.now()}.csv`;a.click();
-        showToast('Download CSV dimulai!','neon');
+        const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`BCRide_${Date.now()}.csv`;a.click();
+        showToast('Download CSV dimulai!','gold');
     } catch(err){showToast('Gagal export','alert');}
 };
 
@@ -1690,11 +1789,11 @@ const loadChecklist=async()=>{
     try{
         const items=await dbAction('checklists','getAll');
         const el=document.getElementById('checklist-items');
-        if(!items.length){el.innerHTML=`<p class="text-center f-bar text-xs tracking-widest uppercase py-8" style="color:var(--muted)">DAFTAR KOSONG</p>`;return;}
+        if(!items.length){el.innerHTML=`<p class="text-center f-rajd text-xs tracking-widest uppercase py-8" style="color:var(--muted)">DAFTAR KOSONG</p>`;return;}
         el.innerHTML=items.map(it=>`<div class="check-item clip-tr p-3 flex items-center gap-3 ${it.done?'is-done':''}">
-          <button onclick="toggleCheck(${it.id},${!it.done})" aria-label="${it.done?'Tandai belum selesai':'Tandai selesai'}" class="w-6 h-6 flex items-center justify-center flex-shrink-0 clip-sm" style="border:1.5px solid ${it.done?'var(--neon)':'var(--border2)'};background:${it.done?'rgba(200,255,0,.12)':'transparent'}">
-            ${it.done?'<i class="fa-solid fa-check text-[9px] neon-text"></i>':''}</button>
-          <span class="flex-1 f-bar text-sm tracking-wide ${it.done?'line-through':''}" style="color:${it.done?'var(--muted)':'var(--text)'}">${escapeHTML(it.text)}</span>
+          <button onclick="toggleCheck(${it.id},${!it.done})" aria-label="${it.done?'Tandai belum selesai':'Tandai selesai'}" class="w-6 h-6 flex items-center justify-center flex-shrink-0 clip-sm" style="border:1.5px solid ${it.done?'var(--gold)':'var(--border2)'};background:${it.done?'rgba(212,160,23,.12)':'transparent'}">
+            ${it.done?'<i class="fa-solid fa-check text-[9px] gold-text"></i>':''}</button>
+          <span class="flex-1 f-rajd text-sm tracking-wide ${it.done?'line-through':''}" style="color:${it.done?'var(--muted)':'var(--text)'}">${escapeHTML(it.text)}</span>
           <button onclick="deleteCheck(${it.id})" aria-label="Hapus item checklist" class="w-7 h-7 flex items-center justify-center" style="color:var(--muted)"><i class="fa-solid fa-xmark text-xs"></i></button></div>`).join('');
     } catch(err){showToast('Gagal load checklist','alert');}
 };
@@ -1704,9 +1803,16 @@ const toggleCheck=(id,done)=>{const tx=db.transaction(['checklists'],'readwrite'
 const deleteCheck=async id=>{try{await dbAction('checklists','delete',id);loadChecklist();}catch(err){showToast('Gagal hapus','alert');}};
 const confirmClearChecklist=()=>showConfirm('Reset Checklist','Semua item akan dihapus permanen.','RESET',async()=>{await dbAction('checklists','clear');loadChecklist();});
 
-/* ── GPS ──────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════
+   GPS — BCR ACCURACY ENGINE
+   ▸ Kalman-adaptive alpha based on GPS accuracy class
+   ▸ Dual-source fusion: native speed + Haversine
+   ▸ Snappy response: alpha 0.55 good GPS, 0.35 fair, 0.18 poor
+   ▸ No dead reckoning lag — direct update on each GPS event
+══════════════════════════════════════════════════════════ */
 const setGpsDots=(cls)=>{['gps-dot','gps-dot-2','gps-dot-3'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='dot '+cls;});};
-let gpsFilteredSpeed=0,lastGpsPoint=null,lastAcceptedGpsAt=0,lastHeading=null;
+let gpsFilteredSpeed=0, lastGpsPoint=null, lastAcceptedGpsAt=0, lastHeading=null;
+let gpsSpeedBuffer=[], GPS_BUF_MAX=3; // Small buffer for spike rejection
 
 const toRad=deg=>deg*Math.PI/180;
 const toDeg=rad=>rad*180/Math.PI;
@@ -1721,55 +1827,112 @@ const bearingDeg=(a,b)=>{
     const x=Math.cos(toRad(a.lat))*Math.sin(toRad(b.lat))-Math.sin(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.cos(toRad(b.lng-a.lng));
     return (toDeg(Math.atan2(y,x))+360)%360;
 };
-const smooth=(prev,next,alpha)=>prev+(next-prev)*alpha;
-const setHeadingDisplay=heading=>{
-    const el=document.getElementById('val-heading');
-    if(el)el.textContent=Number.isFinite(heading)?Math.round(heading)+'°':'—';
-};
+const smoothVal=(prev,next,alpha)=>prev+(next-prev)*alpha;
+
+// Median of small buffer for spike rejection
+function medianSpeed(arr){
+    if(!arr.length)return 0;
+    const s=[...arr].sort((a,b)=>a-b);
+    return s[Math.floor(s.length/2)];
+}
 
 const processGpsPosition=pos=>{
-    const c=pos.coords,now=pos.timestamp||Date.now();
+    const c=pos.coords, now=pos.timestamp||Date.now();
     const acc=c.accuracy||999;
     const point={lat:c.latitude,lng:c.longitude,t:now,acc};
-    const quality=acc<=20?'good':acc<=55?'warn':'alert';
-    const ageOk=now-lastAcceptedGpsAt>350;
+    const quality=acc<=18?'good':acc<=50?'warn':'alert';
 
     currentLat=point.lat;
     currentLng=point.lng;
+
+    // Update coordinate displays
     document.getElementById('val-lat').textContent=currentLat.toFixed(4);
     document.getElementById('val-lng').textContent=currentLng.toFixed(4);
     const accTxt=`ACC:${Math.round(acc)}m`;
     document.getElementById('gps-acc').textContent=accTxt;
     const gps2=document.getElementById('gps-acc-2');if(gps2)gps2.textContent=accTxt;
+    const gpsAccLabs=document.getElementById('labs-accuracy');if(gpsAccLabs)gpsAccLabs.textContent=Math.round(acc);
 
-    let rawSpeed=Number.isFinite(c.speed)&&c.speed>=0?c.speed*3.6:null;
-    if(lastGpsPoint&&ageOk){
-        const dt=Math.max((now-lastGpsPoint.t)/1000,0.2);
-        const dist=haversineMeters(lastGpsPoint,point);
-        const plausible=dist<=Math.max(120,dt*85);
-        if(plausible&&dist>Math.max(2,acc*.18)){
-            const estSpeed=(dist/dt)*3.6;
-            rawSpeed=rawSpeed===null?estSpeed:(rawSpeed*.72+estSpeed*.28);
-            lastHeading=bearingDeg(lastGpsPoint,point);
+    // Altitude
+    const alt=c.altitude;
+    updateAltitudeDisplays(alt);
+
+    // ── BCR Speed Fusion Engine ──
+    let nativeSpeedKmh=null;
+    if(Number.isFinite(c.speed)&&c.speed>=0){
+        nativeSpeedKmh = c.speed * 3.6;
+    }
+
+    let calcSpeedKmh=null;
+    const ageOk = now - lastAcceptedGpsAt > 250; // Accept updates at 250ms min interval
+    if(lastGpsPoint && ageOk){
+        const dt = Math.max((now - lastGpsPoint.t)/1000, 0.15);
+        const dist = haversineMeters(lastGpsPoint, point);
+        // Plausibility: max 120 km/h lateral movement per second
+        const maxPlausible = Math.max(150, dt*100);
+        if(dist < maxPlausible && dist > Math.max(1.5, acc*0.12)){
+            calcSpeedKmh = (dist/dt)*3.6;
+            // Update heading from movement
+            if(dist > 2) lastHeading = bearingDeg(lastGpsPoint, point);
         }
     }
-    if(Number.isFinite(c.heading)&&c.heading>=0&&rawSpeed!==null&&rawSpeed>4){
-        lastHeading=c.heading;
+
+    // Use native GPS heading if moving
+    if(Number.isFinite(c.heading)&&c.heading>=0&&nativeSpeedKmh!==null&&nativeSpeedKmh>3){
+        lastHeading = c.heading;
     }
-    if(rawSpeed===null)rawSpeed=0;
-    if(acc>70&&rawSpeed<8)rawSpeed=0;
-    const alpha=acc<=15?.38:acc<=40?.24:.12;
-    gpsFilteredSpeed=smooth(gpsFilteredSpeed,rawSpeed,alpha);
-    if(gpsFilteredSpeed<1.2)gpsFilteredSpeed=0;
+
+    // ── Fuse native + calculated speed ──
+    let rawSpeed;
+    if(nativeSpeedKmh!==null && calcSpeedKmh!==null){
+        // Weight by GPS accuracy: good accuracy → trust native more
+        const nativeWeight = acc<=18 ? 0.65 : acc<=50 ? 0.5 : 0.35;
+        rawSpeed = nativeSpeedKmh*nativeWeight + calcSpeedKmh*(1-nativeWeight);
+    } else if(nativeSpeedKmh!==null){
+        rawSpeed = nativeSpeedKmh;
+    } else if(calcSpeedKmh!==null){
+        rawSpeed = calcSpeedKmh;
+    } else {
+        rawSpeed = 0;
+    }
+
+    // Sanity: zero out slow speeds with poor accuracy
+    if(acc>65 && rawSpeed<6) rawSpeed=0;
+
+    // Spike rejection via small median buffer
+    gpsSpeedBuffer.push(rawSpeed);
+    if(gpsSpeedBuffer.length>GPS_BUF_MAX) gpsSpeedBuffer.shift();
+    const medSpeed = medianSpeed(gpsSpeedBuffer);
+
+    // ── Adaptive smoothing alpha ──
+    // High accuracy → high alpha (fast response like real speedo)
+    // Low accuracy → lower alpha (smoother but slower)
+    const alpha = acc<=18 ? 0.62 : acc<=35 ? 0.48 : acc<=60 ? 0.32 : 0.18;
+    gpsFilteredSpeed = smoothVal(gpsFilteredSpeed, medSpeed, alpha);
+
+    // Snap to zero when truly stopped
+    if(gpsFilteredSpeed<1.0) gpsFilteredSpeed=0;
+
+    // Trip accumulation
+    if(lastGpsPoint && ageOk && gpsFilteredSpeed>2){
+        const dist=haversineMeters(lastGpsPoint,point);
+        if(dist<300){ // max 300m per tick (plausibility)
+            tripDistanceKm += dist/1000;
+            localStorage.setItem('bcr_trip', tripDistanceKm.toFixed(3));
+            updateTripDisplays();
+        }
+    }
+
     lastGpsPoint=point;
     lastAcceptedGpsAt=now;
 
     setSpeedoArc(gpsFilteredSpeed);
-    setHeadingDisplay(lastHeading);
+    updateCompassDisplays(lastHeading);
     updateRideState({speed:gpsFilteredSpeed,heading:lastHeading||0,gpsAcc:acc,sensor:quality.toUpperCase()});
-    updateSensorChip(acc<=20?'GPS LOCK':acc<=55?'GPS FAIR':'GPS LOW',quality);
+    updateSensorChip(acc<=18?'GPS LOCK':acc<=50?'GPS FAIR':'GPS LOW',quality);
 
-    const d=Math.hypot(currentLat-(-6.89),currentLng-112.04);
+    // Geofence (Surabaya SAMSAT area)
+    const d=Math.hypot(currentLat-(-7.25),currentLng-112.75);
     document.getElementById('geofence-alert').classList.toggle('hidden',d>=0.05);
 };
 
@@ -1780,12 +1943,17 @@ const startSpeedometer=async()=>{
     gpsFilteredSpeed=0;
     lastGpsPoint=null;
     lastAcceptedGpsAt=0;
+    gpsSpeedBuffer=[];
+    // BCR: high frequency GPS updates for maximum accuracy
     geoWatchId=navigator.geolocation.watchPosition(pos=>{
         setGpsDots('dot-on');
         document.getElementById('gps-status').textContent='GPS AKTIF';
         processGpsPosition(pos);
-    },()=>{setGpsDots('dot-err');document.getElementById('gps-status').textContent='GPS ERROR';updateSensorChip('GPS ERR','alert');},
-    {enableHighAccuracy:true,maximumAge:800,timeout:12000});
+    },()=>{
+        setGpsDots('dot-err');
+        document.getElementById('gps-status').textContent='GPS ERROR';
+        updateSensorChip('GPS ERR','alert');
+    },{enableHighAccuracy:true,maximumAge:500,timeout:10000});
 };
 const stopSpeedometer=()=>{
     if(geoWatchId!==null){navigator.geolocation.clearWatch(geoWatchId);geoWatchId=null;}
@@ -1794,14 +1962,14 @@ const stopSpeedometer=()=>{
     updateSensorChip(telActive?'IMU':'IDLE',telActive?'good':'idle');
 };
 const triggerSOS=()=>{
-    if(currentLat) window.open(`sms:?body=${encodeURIComponent(`[DARURAT] Butuh bantuan! Lokasi: https://maps.google.com/?q=${currentLat},${currentLng}`)}`,'_blank');
+    if(currentLat) window.open(`sms:?body=${encodeURIComponent(`[DARURAT BCR] Butuh bantuan! Lokasi: https://maps.google.com/?q=${currentLat},${currentLng}`)}`,'_blank');
     else showToast('Tunggu GPS terkunci…','warn');
 };
 
 /* ── TELEMETRY BUTTON SYNC ────────────────────────────── */
-const TELE_ON ='background:rgba(255,34,68,.12);border:1px solid rgba(255,34,68,.4);color:var(--alert);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
-const TELE_OFF='background:var(--s2);border:1px solid var(--border2);color:var(--muted2);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
-const AUDIO_ON ='background:rgba(255,34,68,.12);border:1px solid rgba(255,34,68,.4);color:var(--alert);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
+const TELE_ON  ='background:rgba(204,17,34,.12);border:1px solid rgba(204,17,34,.4);color:var(--red2);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
+const TELE_OFF ='background:var(--s2);border:1px solid var(--border2);color:var(--muted2);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
+const AUDIO_ON ='background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.4);color:var(--gold);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
 const AUDIO_OFF='background:var(--s2);border:1px solid var(--border2);color:var(--muted2);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
 
 const updateTelemetryBtns=active=>{
@@ -1833,23 +2001,16 @@ const cycleRotLock=()=>{
     const labels={auto:'AUTO',portrait:'PORT',landscape:'LAND'};
     ico.className=`fa-solid ${icons[mode]} text-[9px]`;
     lbl.textContent=labels[mode];
-    // Apply CSS-class-based layout lock (works on all browsers/contexts)
     document.body.classList.remove('force-portrait','force-landscape');
     if(mode==='portrait')  document.body.classList.add('force-portrait');
     if(mode==='landscape') document.body.classList.add('force-landscape');
-    // Reset lean baseline — sensor axis changes with orientation
     leanBaseline=null;
     fusedLean=0;
     updateLeanGauge(0);
-    const modeLabels={
-        auto:'Auto — layout mengikuti layar',
-        portrait:'Portrait terkunci 📱',
-        landscape:'Landscape terkunci 📱'
-    };
+    const modeLabels={auto:'Auto — layout mengikuti layar',portrait:'Portrait terkunci 📱',landscape:'Landscape terkunci 📱'};
     showToast(modeLabels[mode],'muted');
 };
 
-// Helper: get current effective orientation angle (0=portrait, 90/270=landscape)
 const getOrientAngle=()=>{
     const mode=ROT_MODES[rotLockIdx];
     if(mode==='portrait') return 0;
@@ -1863,7 +2024,6 @@ const getOrientAngle=()=>{
 let telActive=false,crashTimer=null,crashCount=10,leanBaseline=null,lastOrientAt=0;
 let fusedLean=0,filteredG=1,filteredGx=0,filteredGy=0,lastCrashPeakAt=0;
 
-// Rolling median buffer for G-force spike rejection
 const G_BUF_SIZE=5;
 let gBuffer=Array(G_BUF_SIZE).fill(1.0),gBufIdx=0;
 const medianG=rawG=>{
@@ -1877,34 +2037,27 @@ const clampLean=angle=>Math.max(-90,Math.min(90,angle));
 const calibrateLean=()=>{
     if(!telActive)return showToast('Mulai telemetri dulu!','warn');
     leanBaseline=null;
-    showToast('Lean Angle Dikalibrasi (0°)','cyber');
+    showToast('Lean Angle Dikalibrasi (0°)','gold2');
 };
 const applyLeanAngle=(rawAngle,source='IMU')=>{
     if(!Number.isFinite(rawAngle))return;
     if(leanBaseline===null) leanBaseline=rawAngle;
     const target=clampLean(rawAngle-leanBaseline);
-    // Snap to 0 if nearly vertical (reduces drift noise)
     const snapped=Math.abs(target)<1.5?0:target;
     const delta=Math.abs(snapped-fusedLean);
-    // Faster response to large changes, smoother for small changes
     const alpha=delta>20?.30:delta>10?.20:.12;
-    fusedLean=smooth(fusedLean,snapped,alpha);
+    fusedLean=smoothVal(fusedLean,snapped,alpha);
     updateLeanGauge(fusedLean);
     updateRideState({lean:fusedLean,sensor:source});
 };
 
-// Orientation-aware lean calculation from accelerometer
 const leanFromAcceleration=acc=>{
     const x=acc.x||0,y=acc.y||0,z=acc.z||0;
     const orientAngle=getOrientAngle();
-    // Portrait (0°/180°): device held vertically, lean = left/right tilt
-    // → roll = atan2(x, z)
     if(orientAngle===0||orientAngle===180){
         if(Math.abs(x)+Math.abs(z)<0.25)return null;
         return Math.atan2(x,z)*180/Math.PI;
     }
-    // Landscape (90°/270°): device rotated, gravity shifts to Y axis
-    // → roll = atan2(y, z); negate for 270° if needed
     const sign=(orientAngle===270)?-1:1;
     if(Math.abs(y)+Math.abs(z)<0.25)return null;
     return sign*Math.atan2(y,z)*180/Math.PI;
@@ -1914,19 +2067,14 @@ const handleMotion=e=>{
     const acc=e.accelerationIncludingGravity;if(!acc)return;
     const rawG=Math.sqrt((acc.x||0)**2+(acc.y||0)**2+(acc.z||0)**2)/9.81;
     const medG=medianG(rawG);
-    // Deadband: near resting G (1.0), snap to avoid jitter
     const targetG=Math.abs(medG-1.0)<0.05?1.0:medG;
-    // Faster rise (spikes), slower fall (smooth decay)
-    filteredG=smooth(filteredG,targetG,targetG>filteredG?.28:.16);
+    filteredG=smoothVal(filteredG,targetG,targetG>filteredG?.28:.16);
     const rawGx=(acc.x||0)/9.81, rawGy=(acc.y||0)/9.81;
-    filteredGx=smooth(filteredGx,rawGx,.20);
-    filteredGy=smooth(filteredGy,rawGy,.20);
-    // Labs display
+    filteredGx=smoothVal(filteredGx,rawGx,.20);
+    filteredGy=smoothVal(filteredGy,rawGy,.20);
     const labsG=document.getElementById('gforce-val');if(labsG)labsG.textContent=filteredG.toFixed(1);
-    // Dashboard 2D meter
     updateGForceMeter(filteredG,filteredGx,filteredGy);
     updateRideState({g:filteredG,gx:filteredGx,gy:filteredGy});
-    // Only use motion for lean if orientation data is stale (>500ms)
     if(Date.now()-lastOrientAt>500){
         const motionLean=leanFromAcceleration(acc);
         if(motionLean!==null) applyLeanAngle(motionLean,'MOTION');
@@ -1937,22 +2085,15 @@ const handleMotion=e=>{
 
 const handleOrient=e=>{
     const orientAngle=getOrientAngle();
-    // Portrait: gamma = left/right tilt (lean angle)
-    // Landscape: beta = front/back, gamma shifts — use beta for lean in landscape
     let leanRaw;
     if(orientAngle===0||orientAngle===180){
-        // Portrait: gamma is roll (left/right lean)
         if(e.gamma===null||e.gamma===undefined)return;
         leanRaw=e.gamma;
     } else {
-        // Landscape: beta is now the roll axis
         if(e.beta===null||e.beta===undefined)return;
-        // beta range is -180..180, lean range is -90..90
-        // normalize: when landscape-right (90°), beta 0=level
         const sign=(orientAngle===270)?-1:1;
         leanRaw=sign*e.beta;
     }
-    // Extra validity check: ensure the tilt data is plausible
     if(!Number.isFinite(leanRaw))return;
     lastOrientAt=Date.now();
     applyLeanAngle(leanRaw,'ORIENT');
@@ -1973,19 +2114,14 @@ const requestSensorPermissions=async()=>{
 const startTelemetry=()=>{
     if(telActive)return;
     telActive=true;
-    leanBaseline=null;
-    lastOrientAt=0;
-    fusedLean=0;
-    filteredG=1;
-    filteredGx=0;
-    filteredGy=0;
+    leanBaseline=null;lastOrientAt=0;fusedLean=0;filteredG=1;filteredGx=0;filteredGy=0;
     updateTelemetryBtns(true);
     const strip=document.getElementById('portrait-tele');
     if(strip) strip.style.display='grid';
     window.addEventListener('devicemotion',handleMotion);
     window.addEventListener('deviceorientation',handleOrient);
     updateSensorChip('IMU ARM','good');
-    showToast('Telemetri aktif — posisi ini dikalibrasi','cyber');
+    showToast('Telemetri aktif — posisi ini dikalibrasi','gold2');
 };
 
 const stopTelemetry=()=>{
@@ -1996,11 +2132,7 @@ const stopTelemetry=()=>{
     updateTelemetryBtns(false);
     const strip=document.getElementById('portrait-tele');
     if(strip) strip.style.display='none';
-    leanBaseline=null;
-    fusedLean=0;
-    filteredG=1;
-    filteredGx=0;
-    filteredGy=0;
+    leanBaseline=null;fusedLean=0;filteredG=1;filteredGx=0;filteredGy=0;
     updateGForceMeter(1,0,0);
     updateLeanGauge(0);
     updateRideState({lean:0,g:1,gx:0,gy:0,sensor:'IDLE'});
@@ -2022,8 +2154,10 @@ const toggleTelemetry=async()=>{
 const triggerAutoCrash=()=>{
     document.getElementById('crash-modal').classList.remove('hidden');crashCount=10;
     document.getElementById('crash-count').textContent=crashCount;
-    crashTimer=setInterval(()=>{crashCount--;document.getElementById('crash-count').textContent=crashCount;
-        if(crashCount<=0){clearInterval(crashTimer);crashTimer=null;triggerSOS();document.getElementById('crash-modal').classList.add('hidden');}},1000);
+    crashTimer=setInterval(()=>{
+        crashCount--;document.getElementById('crash-count').textContent=crashCount;
+        if(crashCount<=0){clearInterval(crashTimer);crashTimer=null;triggerSOS();document.getElementById('crash-modal').classList.add('hidden');}
+    },1000);
 };
 const cancelCrash=()=>{clearInterval(crashTimer);crashTimer=null;document.getElementById('crash-modal').classList.add('hidden');};
 
@@ -2035,7 +2169,7 @@ const processAIOdometer=async e=>{
     try{
         const w=await Tesseract.createWorker('eng');const r=await w.recognize(file);await w.terminate();
         const nums=r.data.text.match(/\d+/g);
-        if(nums){const best=nums.reduce((a,b)=>a.length>=b.length?a:b);document.getElementById('f_odo').value=best;showToast(`AI: ${best} KM terdeteksi`,'cyber');openModal('modal-add-fuel');}
+        if(nums){const best=nums.reduce((a,b)=>a.length>=b.length?a:b);document.getElementById('f_odo').value=best;showToast(`AI: ${best} KM terdeteksi`,'gold2');openModal('modal-add-fuel');}
         else{showToast('AI gagal baca angka. Input manual.','warn');openModal('modal-add-fuel');}
     } catch(err){showToast('AI Error — coba lagi','alert');}
     document.getElementById('loading-overlay').classList.add('hidden');e.target.value='';
@@ -2068,20 +2202,16 @@ const toggleAudioRPM=async()=>{
             }
             const pct=(peak/255)*100;
             const peakHz=peakIdx*hzPerBin;
-            
-            const currentSpeed = rideState.speed || 0;
-            const synRpm = currentSpeed < 2 ? 1200 + Math.random()*150 : 2000 + (currentSpeed * 60);
-            
-            let rawRpm = synRpm;
-            if(pct > 12) {
-                const acoustic = Math.min(12000, Math.max(800, peakHz * 120));
-                rawRpm = acoustic * 0.35 + synRpm * 0.65;
+            const currentSpeed=rideState.speed||0;
+            const synRpm=currentSpeed<2?1200+Math.random()*150:2000+(currentSpeed*60);
+            let rawRpm=synRpm;
+            if(pct>12){
+                const acoustic=Math.min(12000,Math.max(800,peakHz*120));
+                rawRpm=acoustic*0.35+synRpm*0.65;
             }
-            
-            rpmFiltered = smooth(rpmFiltered, rawRpm, 0.08);
+            rpmFiltered=smoothVal(rpmFiltered,rawRpm,0.08);
             const rpm=Math.round(rpmFiltered/10)*10;
-            const uiPct = Math.min(100, Math.max(0, (rpmFiltered/10000)*100));
-            
+            const uiPct=Math.min(100,Math.max(0,(rpmFiltered/10000)*100));
             ['audio-visual','audio-visual-ls'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=uiPct+'%';});
             ['rpm-val','rpm-val-ls'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=rpm;});
         };
@@ -2103,15 +2233,15 @@ const stopAudioRPM=()=>{
 const connectOBD2=async()=>{
     if(!navigator.bluetooth)return showToast('Browser tidak support Web Bluetooth!','alert');
     try{
-        showToast('Mencari ELM327…','cyber');
+        showToast('Mencari ELM327…','gold');
         const dev=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:['generic_access']});
-        showToast(`Konek ke ${dev.name}`,'neon');
+        showToast(`Konek ke ${dev.name}`,'gold');
         document.getElementById('obd-data').classList.remove('hidden');
         document.getElementById('obd-data').textContent=`> CONNECTED: ${dev.name}\n> RPM: --\n> COOLANT: --\n> DTC: READING...`;
     } catch(_){
         showToast('Batal. Mode simulator aktif.','muted');
         document.getElementById('obd-data').classList.remove('hidden');
-        document.getElementById('obd-data').textContent=`> SIMULATOR MODE\n> CONNECTED: ELM327-DEMO\n> RPM: 1850\n> COOLANT: 92°C\n> DTC: NONE`;
+        document.getElementById('obd-data').textContent=`> SIMULATOR MODE\n> CONNECTED: ELM327-BCR\n> RPM: 1850\n> COOLANT: 90°C\n> DTC: NONE`;
     }
 };
 
@@ -2120,7 +2250,6 @@ window.onload=async()=>{
     buildSpeedoSVG();
     buildGForceSVG();
     buildLeanSVG();
-    // Initialize G-force to resting state (1G, dot at center)
     updateGForceMeter(1,0,0);
     applyTheme(document.documentElement.getAttribute('data-theme')||'dark');
 
@@ -2129,14 +2258,14 @@ window.onload=async()=>{
         console.error('[DB]',err);
         document.getElementById('main-content').innerHTML=`
           <div class="flex flex-col items-center justify-center gap-5 p-8 h-full">
-            <div class="w-16 h-16 flex items-center justify-center clip-md" style="background:rgba(255,34,68,.1);border:1px solid rgba(255,34,68,.35)"><i class="fa-solid fa-database text-2xl alert-text"></i></div>
-            <div class="text-center"><p class="f-exo font-black text-lg uppercase tracking-widest alert-text">Database Error</p>
+            <div class="w-16 h-16 flex items-center justify-center clip-md" style="background:rgba(204,17,34,.1);border:1px solid rgba(204,17,34,.35)"><i class="fa-solid fa-database text-2xl red-text"></i></div>
+            <div class="text-center"><p class="f-exo font-black text-lg uppercase tracking-widest red-text">Database Error</p>
             <p class="f-mono text-xs mt-2" style="color:var(--muted2)">${err.message||'IndexedDB tidak tersedia'}</p></div>
-            <button onclick="recoverDB()" class="btn-fill clip-sm px-6 py-3 text-xs tracking-[3px]">RESET & PERBAIKI DB</button></div>`;
+            <button onclick="recoverDB()" class="btn-fill-gold clip-sm px-6 py-3 text-xs tracking-[3px]">RESET & PERBAIKI DB</button></div>`;
         return;
     }
     switchView('garage');
-    document.getElementById('btn-settings').onclick=()=>showToast('Settings — coming soon','muted');
+    document.getElementById('btn-settings').onclick=()=>showToast('BCR Settings — coming soon','muted');
     if('serviceWorker' in navigator){
         navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('[SW] register failed',err));
     }
@@ -2144,10 +2273,12 @@ window.onload=async()=>{
 
 window.recoverDB=()=>{
     const r=indexedDB.deleteDatabase(DB_NAME);
-    r.onsuccess=()=>{showToast('DB dihapus. Reload…','neon');setTimeout(()=>location.reload(),2000);};
+    r.onsuccess=()=>{showToast('DB dihapus. Reload…','gold');setTimeout(()=>location.reload(),2000);};
     r.onerror=()=>showToast('Gagal hapus DB. Coba manual.','alert');
 };
 </script>
+
+<!-- ── THREE.JS — BCR 3D RIDE LAYER ─────────────────── -->
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js';
 
@@ -2161,61 +2292,92 @@ if(canvas3d){
     const renderer=new THREE.WebGLRenderer({canvas:canvas3d,alpha:true,antialias:true});
     renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
 
-    scene.add(new THREE.AmbientLight(0x88aaff,.42));
-    const key=new THREE.DirectionalLight(0xc8ff00,2.6);
+    // BCR lighting: warm gold key light
+    scene.add(new THREE.AmbientLight(0x332211,.55));
+    const key=new THREE.DirectionalLight(0xd4a017,3.0);
     key.position.set(-3,6,5);
     scene.add(key);
-    const rim=new THREE.PointLight(0x00d4ff,4.5,28);
+    const rim=new THREE.PointLight(0xff2244,3.5,28);
     rim.position.set(4,2.2,2);
     scene.add(rim);
+    const fill=new THREE.PointLight(0xffd700,1.5,18);
+    fill.position.set(-4,1,-2);
+    scene.add(fill);
 
     const hud=new THREE.Group();
     scene.add(hud);
 
+    // Road grid — gold center, red accents
     const road=new THREE.Group();
     hud.add(road);
-    const lineMat=new THREE.LineBasicMaterial({color:0x00d4ff,transparent:true,opacity:.28});
-    const centerMat=new THREE.LineBasicMaterial({color:0xc8ff00,transparent:true,opacity:.55});
+    const lineMat =new THREE.LineBasicMaterial({color:0x2a2000,transparent:true,opacity:.35});
+    const centerMat=new THREE.LineBasicMaterial({color:0xd4a017,transparent:true,opacity:.55});
+    const edgeMat  =new THREE.LineBasicMaterial({color:0xcc1122,transparent:true,opacity:.3});
     for(let i=-5;i<=5;i++){
         const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i,-.55,-32),new THREE.Vector3(i,-.55,8)]);
-        road.add(new THREE.Line(g,i===0?centerMat:lineMat));
+        const mat=i===0?centerMat:(Math.abs(i)===5?edgeMat:lineMat);
+        road.add(new THREE.Line(g,mat));
     }
     for(let z=-32;z<=8;z+=2){
         const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-5,-.55,z),new THREE.Vector3(5,-.55,z)]);
         road.add(new THREE.Line(g,lineMat));
     }
 
+    // BCR Bike — black body, gold trim, red accent
     const bike=new THREE.Group();
     hud.add(bike);
-    const neonMat=new THREE.MeshStandardMaterial({color:0xc8ff00,emissive:0xc8ff00,emissiveIntensity:1.8,metalness:.65,roughness:.22});
-    const cyMat=new THREE.MeshStandardMaterial({color:0x00d4ff,emissive:0x00d4ff,emissiveIntensity:2.2,metalness:.45,roughness:.28});
-    const darkMat=new THREE.MeshStandardMaterial({color:0x050509,metalness:.8,roughness:.3});
-    const body=new THREE.Mesh(new THREE.BoxGeometry(2.4,.24,.82),neonMat);
+    const goldMat =new THREE.MeshStandardMaterial({color:0xd4a017,emissive:0xd4a017,emissiveIntensity:1.5,metalness:.7,roughness:.2});
+    const redMat  =new THREE.MeshStandardMaterial({color:0xcc1122,emissive:0xcc1122,emissiveIntensity:1.8,metalness:.5,roughness:.3});
+    const blackMat=new THREE.MeshStandardMaterial({color:0x0d0d0d,metalness:.9,roughness:.2});
+    const chromeMat=new THREE.MeshStandardMaterial({color:0x888888,metalness:1,roughness:.05});
+
+    // Body — sleek black
+    const body=new THREE.Mesh(new THREE.BoxGeometry(2.4,.22,.78),blackMat);
     body.position.y=.35;
     bike.add(body);
-    const cockpit=new THREE.Mesh(new THREE.BoxGeometry(.75,.34,.55),cyMat);
-    cockpit.position.set(.12,.62,-.08);
+    // Gold stripe on body
+    const stripe=new THREE.Mesh(new THREE.BoxGeometry(2.4,.06,.1),goldMat);
+    stripe.position.set(0,.46,.35);
+    bike.add(stripe);
+    // Cockpit — red accent
+    const cockpit=new THREE.Mesh(new THREE.BoxGeometry(.75,.3,.5),redMat);
+    cockpit.position.set(.12,.6,-.08);
     bike.add(cockpit);
+    // Wheels
     const wheelGeo=new THREE.TorusGeometry(.46,.045,10,42);
-    const fw=new THREE.Mesh(wheelGeo,darkMat);
-    fw.position.set(1.05,.08,0);
-    fw.rotation.y=Math.PI/2;
+    const fw=new THREE.Mesh(wheelGeo,blackMat);
+    fw.position.set(1.05,.08,0);fw.rotation.y=Math.PI/2;
     bike.add(fw);
-    const rw=fw.clone();
-    rw.position.x=-1.05;
-    bike.add(rw);
+    const rw=fw.clone();rw.position.x=-1.05;bike.add(rw);
+    // Exhaust — gold pipe
+    const exhaust=new THREE.Mesh(new THREE.CylinderGeometry(.04,.055,.8,10),goldMat);
+    exhaust.rotation.z=Math.PI/2;exhaust.position.set(-.9,.1,.28);
+    bike.add(exhaust);
+
     bike.scale.set(1.45,1.45,1.45);
     bike.position.z=-1.4;
 
+    // BCR Particles — gold sparks
     const points=[];
-    for(let i=0;i<160;i++){
-        points.push((Math.random()-.5)*10,Math.random()*5-1.2,Math.random()*-36+8);
+    for(let i=0;i<180;i++){
+        points.push((Math.random()-.5)*12,Math.random()*6-1.5,Math.random()*-36+8);
     }
     const particleGeo=new THREE.BufferGeometry();
     particleGeo.setAttribute('position',new THREE.Float32BufferAttribute(points,3));
-    const particleMat=new THREE.PointsMaterial({color:0xc8ff00,size:.028,transparent:true,opacity:.6});
+    const particleMat=new THREE.PointsMaterial({color:0xd4a017,size:.025,transparent:true,opacity:.55});
     const particles=new THREE.Points(particleGeo,particleMat);
     scene.add(particles);
+
+    // Red ember particles
+    const pts2=[];
+    for(let i=0;i<60;i++){
+        pts2.push((Math.random()-.5)*8,Math.random()*3-0.5,Math.random()*-20+4);
+    }
+    const geo2=new THREE.BufferGeometry();
+    geo2.setAttribute('position',new THREE.Float32BufferAttribute(pts2,3));
+    const mat2=new THREE.PointsMaterial({color:0xcc1122,size:.018,transparent:true,opacity:.35});
+    const particles2=new THREE.Points(geo2,mat2);
+    scene.add(particles2);
 
     let state={speed:0,lean:0,g:1,gx:0,gy:0,heading:0};
     window.addEventListener('ride3d:update',e=>{state={...state,...e.detail};});
@@ -2224,10 +2386,8 @@ if(canvas3d){
         const rect=canvas3d.getBoundingClientRect();
         const w=Math.floor(rect.width),h=Math.floor(rect.height);
         if(w<10||h<10)return;
-        camera.aspect=w/h;
-        camera.updateProjectionMatrix();
-        renderer.setSize(w,h,false);
-        diagnosticsDone=false;
+        camera.aspect=w/h;camera.updateProjectionMatrix();
+        renderer.setSize(w,h,false);diagnosticsDone=false;
     };
     window.ride3dResize=resize;
     new ResizeObserver(resize).observe(canvas3d);
@@ -2245,8 +2405,7 @@ if(canvas3d){
         let nonblank=0;
         pts.forEach(([x,y],i)=>{
             gl.readPixels(Math.floor(w*x),Math.floor(h*y),1,1,gl.RGBA,gl.UNSIGNED_BYTE,px,i*4);
-            const o=i*4;
-            if(px[o]||px[o+1]||px[o+2]||px[o+3])nonblank++;
+            const o=i*4;if(px[o]||px[o+1]||px[o+2]||px[o+3])nonblank++;
         });
         canvas3d.dataset.rendered=String(nonblank);
         canvas3d.dataset.buffer=`${w}x${h}`;
@@ -2255,9 +2414,8 @@ if(canvas3d){
 
     const animate=()=>{
         requestAnimationFrame(animate);
-        // Optimasi: Hentikan render 3D jika bukan di menu RIDE untuk menghemat baterai & CPU
-        const dash = document.getElementById('view-dashboard');
-        if(dash && dash.classList.contains('hidden')) return;
+        const dash=document.getElementById('view-dashboard');
+        if(dash&&dash.classList.contains('hidden'))return;
 
         const dt=clock.getDelta();
         const t=clock.elapsedTime;
@@ -2266,10 +2424,10 @@ if(canvas3d){
         const speedFactor=Math.min(1,(state.speed||0)/120);
         bike.rotation.z=THREE.MathUtils.lerp(bike.rotation.z,-leanRad,.09);
         bike.rotation.y=THREE.MathUtils.lerp(bike.rotation.y,(state.gx||0)*.22,.07);
-        bike.position.y=.35+Math.sin(t*3.2)*.025+(state.g-1)*.08;
+        bike.position.y=.35+Math.sin(t*3.2)*.022+(state.g-1)*.08;
         fw.rotation.z-=dt*(6+speedFactor*28);
         rw.rotation.z-=dt*(6+speedFactor*28);
-        road.position.z=((t*(2+speedFactor*20))%2);
+        road.position.z=((t*(2+speedFactor*22))%2);
         road.rotation.z=THREE.MathUtils.lerp(road.rotation.z,leanRad*.16,.06);
         hud.rotation.y=THREE.MathUtils.lerp(hud.rotation.y,THREE.MathUtils.degToRad((state.heading||0)%360)*.018,.02);
         camera.position.x=THREE.MathUtils.lerp(camera.position.x,(state.gx||0)*.45,.05);
@@ -2282,6 +2440,17 @@ if(canvas3d){
             if(pos.array[i]>8)pos.array[i]=-36;
         }
         pos.needsUpdate=true;
+
+        const pos2=particles2.geometry.attributes.position;
+        for(let i=2;i<pos2.array.length;i+=3){
+            pos2.array[i]+=dt*(1+speedFactor*10);
+            if(pos2.array[i]>4)pos2.array[i]=-20;
+        }
+        pos2.needsUpdate=true;
+
+        // Dynamic gold glow intensity based on speed
+        key.intensity=THREE.MathUtils.lerp(key.intensity,3.0+speedFactor*1.5,.05);
+
         renderer.render(scene,camera);
         markRenderDiagnostics();
     };

@@ -1,17 +1,17 @@
 {
-  "name": "AFTHRIDE",
-  "short_name": "AFTHRIDE",
-  "description": "Super App Riding — GPS Speedometer, Telemetri IMU, AI Scanner, dan lebih.",
+  "name": "BLACKCROWN RIDE",
+  "short_name": "BCR RIDE",
+  "description": "Super App resmi Black Crown Riders Surabaya — GPS Speedometer, Telemetri IMU, Kompas, Altimeter, AI Scanner, dan lebih.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#020204",
-  "theme_color": "#c8ff00",
+  "background_color": "#080808",
+  "theme_color": "#d4a017",
   "orientation": "any",
   "icons": [
     {
       "src": "assets/icon.jpg",
       "sizes": "any",
-      "type": "image/svg+xml",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ]
