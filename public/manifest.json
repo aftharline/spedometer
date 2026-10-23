@@ -1,0 +1,31 @@
+{
+  "name": "BLACKCROWN RIDE",
+  "short_name": "BCR RIDE",
+  "description": "Super App resmi Black Crown Riders Surabaya — GPS Speedometer, Telemetri IMU, Kompas, Altimeter, AI Scanner, dan lebih.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon.jpg",
+      "sizes": "any",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

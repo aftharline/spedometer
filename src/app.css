@@ -1,0 +1,625 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+@import "@fontsource/rajdhani/latin-400.css";
+@import "@fontsource/rajdhani/latin-500.css";
+@import "@fontsource/rajdhani/latin-600.css";
+@import "@fontsource/rajdhani/latin-700.css";
+@import "@fontsource/bebas-neue/latin-400.css";
+@import "@fontsource/share-tech-mono/latin-400.css";
+@import "@fontsource/exo-2/latin-300.css";
+@import "@fontsource/exo-2/latin-400.css";
+@import "@fontsource/exo-2/latin-600.css";
+@import "@fontsource/exo-2/latin-700.css";
+@import "@fontsource/exo-2/latin-800.css";
+@import "@fontsource/exo-2/latin-900.css";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+@source "../index.html";
+@source "./";
+
+/* ══════════════════════════════════════════════════
+           BCR DESIGN TOKENS
+        ══════════════════════════════════════════════════ */
+        :root {
+            /* Core Brand */
+            --gold:    #d4a017;
+            --gold2:   #f5c842;
+            --gold3:   #7a5c0a;
+            --red:     #cc1122;
+            --red2:    #ff2244;
+            --red3:    #6e0011;
+            --white:   #f0f0f0;
+            --off-wh:  #c8c8c8;
+
+            /* Dark backgrounds */
+            --bg:      #080808;
+            --s1:      #111111;
+            --s2:      #191919;
+            --s3:      #222222;
+            --s4:      #2a2a2a;
+
+            /* Borders */
+            --border:  #2c2c2c;
+            --border2: #3a3a3a;
+            --borderG: rgba(212,160,23,.35);
+            --borderR: rgba(204,17,34,.35);
+
+            /* Text */
+            --text:    #f0f0f0;
+            --muted:   #555555;
+            --muted2:  #888888;
+
+            /* Accent aliases (keep compat) */
+            --neon:    #d4a017;
+            --cyber:   #f5c842;
+            --alert:   #cc1122;
+            --warn:    #ff6600;
+        }
+
+        html{scroll-behavior:smooth}
+        body{
+            background:var(--bg);
+            color:var(--text);
+            font-family:'Rajdhani',sans-serif;
+            -webkit-tap-highlight-color:transparent;
+            overflow:hidden;
+            height:100dvh;
+            width:100vw;
+        }
+        button{user-select:none}
+        ::-webkit-scrollbar{width:2px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:var(--gold);opacity:.3}
+
+        /* ── TYPOGRAPHY ──────────────────────────────────── */
+        .f-bebas{font-family:'Bebas Neue',sans-serif;letter-spacing:2px}
+        .f-rajd{font-family:'Rajdhani',sans-serif}
+        .f-mono{font-family:'Share Tech Mono',monospace}
+        .f-exo{font-family:'Exo 2',sans-serif}
+
+        /* ── BRAND TEXTURE — Carbon Weave ────────────────── */
+        .carbon{
+            background-image:
+                repeating-linear-gradient(45deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 7px),
+                repeating-linear-gradient(-45deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 7px);
+        }
+
+        /* ── HEX BG ──────────────────────────────────────── */
+        .hex-bg{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 4L56 18v28L30 60 4 46V18z' fill='none' stroke='%232c2c2c' stroke-width='0.6'/%3E%3C/svg%3E");background-size:60px 104px}
+
+        /* ── SCANLINES ───────────────────────────────────── */
+        .scanlines::after{
+            content:'';position:absolute;inset:0;
+            background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(0,0,0,.15) 3px,rgba(0,0,0,.15) 4px);
+            pointer-events:none;border-radius:inherit;z-index:1
+        }
+
+        /* ── CLIP PATHS ─────────────────────────────────── */
+        .clip-sm  {clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
+        .clip-md  {clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
+        .clip-lg  {clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+        .clip-tr  {clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%)}
+        .clip-tl  {clip-path:polygon(12px 0,100% 0,100% 100%,0 100%,0 12px)}
+
+        /* ── GOLD GLOW UTILS ─────────────────────────────── */
+        .gold-text {color:var(--gold);text-shadow:0 0 12px rgba(212,160,23,.5)}
+        .gold2-text{color:var(--gold2);text-shadow:0 0 10px rgba(245,200,66,.4)}
+        .red-text  {color:var(--red2);text-shadow:0 0 10px rgba(204,17,34,.5)}
+        .white-text{color:var(--white)}
+
+        /* ── HEADER ──────────────────────────────────────── */
+        .app-header{
+            background:linear-gradient(180deg,rgba(10,10,10,.99),rgba(10,10,10,.94));
+            border-bottom:1px solid var(--border);
+            position:relative;
+        }
+        .app-header::after{
+            content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+            background:linear-gradient(90deg,transparent,var(--gold) 30%,var(--red) 60%,transparent);
+            opacity:.7;
+        }
+        .header-stripe{
+            position:absolute;left:0;top:0;bottom:0;width:3px;
+            background:linear-gradient(180deg,var(--gold),var(--red));
+        }
+
+        /* Crown logo decorative */
+        .crown-badge{
+            display:inline-flex;align-items:center;gap:5px;
+            padding:2px 8px 2px 6px;
+            background:linear-gradient(90deg,rgba(212,160,23,.15),rgba(204,17,34,.08));
+            border:1px solid var(--borderG);
+            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+        }
+
+        /* ── NAV ─────────────────────────────────────────── */
+        .nav-bar{
+            background:rgba(10,10,10,.98);
+            border-top:1px solid var(--border);
+            position:relative;
+        }
+        .nav-bar::before{
+            content:'';position:absolute;top:0;left:0;right:0;height:1px;
+            background:linear-gradient(90deg,transparent,var(--gold),transparent);
+            opacity:.3;
+        }
+        .nav-btn{
+            flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+            padding:8px 4px 6px;gap:3px;color:var(--muted);background:none;border:none;
+            cursor:pointer;position:relative;transition:color .2s;
+        }
+        .nav-btn::after{
+            content:'';position:absolute;top:0;left:20%;right:20%;height:2px;
+            background:linear-gradient(90deg,var(--gold),var(--gold2));
+            transform:scaleX(0);
+            transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+        }
+        .nav-btn.is-active{color:var(--gold)}
+        .nav-btn.is-active::after{transform:scaleX(1)}
+        .nav-btn.is-active-red{color:var(--red2)}
+        .nav-btn.is-active-red::after{background:var(--red);transform:scaleX(1)}
+        .nav-icon{font-size:17px}
+        .nav-label{font-size:8px;font-family:'Exo 2',sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+
+        /* ── BUTTONS ─────────────────────────────────────── */
+        .btn-gold{
+            background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.4);
+            color:var(--gold);font-family:'Exo 2',sans-serif;font-weight:700;
+            letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .18s;
+        }
+        .btn-gold:active{background:rgba(212,160,23,.22);transform:scale(.96)}
+        .btn-fill-gold{
+            background:linear-gradient(135deg,var(--gold),var(--gold2));
+            color:#0a0a0a;font-family:'Exo 2',sans-serif;font-weight:800;
+            letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .18s;
+        }
+        .btn-fill-gold:active{opacity:.85;transform:scale(.96)}
+        .btn-red{
+            background:rgba(204,17,34,.1);border:1px solid rgba(204,17,34,.4);
+            color:var(--red2);font-family:'Exo 2',sans-serif;font-weight:700;
+            letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .18s;
+        }
+        .btn-red:active{background:rgba(204,17,34,.22);transform:scale(.96)}
+
+        /* ── INPUTS ──────────────────────────────────────── */
+        .inp{
+            background:var(--s2);border:1px solid var(--border2);color:var(--text);
+            font-family:'Rajdhani',sans-serif;font-size:15px;padding:11px 14px;
+            width:100%;outline:none;transition:border-color .18s;
+        }
+        .inp:focus{border-color:var(--gold)}
+        .inp::placeholder{color:var(--muted)}
+        .inp[type="date"]{color-scheme:dark}
+        label.inp-label{
+            font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;
+            letter-spacing:2px;text-transform:uppercase;color:var(--muted2);
+            display:block;margin-bottom:5px;
+        }
+
+        /* ── CARDS ───────────────────────────────────────── */
+        .vehicle-card{
+            background:var(--s1);border:1px solid var(--border);position:relative;
+            overflow:hidden;cursor:pointer;transition:border-color .18s,background .18s;
+        }
+        .vehicle-card::before{
+            content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+            background:linear-gradient(180deg,var(--gold),var(--red));
+            opacity:0;transition:opacity .18s;
+        }
+        .vehicle-card:active{border-color:var(--borderG);background:var(--s2)}
+        .vehicle-card:active::before{opacity:1}
+        .log-item{background:var(--s1);border:1px solid var(--border)}
+
+        /* ── STATUS DOTS ─────────────────────────────────── */
+        .dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+        .dot-on{background:var(--gold);box-shadow:0 0 6px var(--gold);animation:blink 2s ease-in-out infinite}
+        .dot-off{background:var(--muted)}
+        .dot-err{background:var(--red2);box-shadow:0 0 6px var(--red2);animation:blink .8s ease-in-out infinite}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+
+        /* ── GAUGE WRAP (Labs) ───────────────────────────── */
+        .gauge-wrap{
+            width:170px;height:85px;
+            border-top-left-radius:85px;border-top-right-radius:85px;
+            border:2px solid var(--border2);border-bottom:0;
+            position:relative;overflow:hidden;
+            background:radial-gradient(ellipse at 50% 100%,rgba(212,160,23,.06),transparent 60%),var(--s2);
+        }
+        .gauge-needle{
+            width:2px;height:74px;
+            background:linear-gradient(to top,var(--gold) 60%,transparent);
+            position:absolute;bottom:0;left:50%;
+            transform-origin:bottom center;
+            transform:translateX(-50%) rotate(0deg);
+            transition:transform .07s linear;
+            box-shadow:0 0 6px var(--gold);
+        }
+        .gauge-needle::after{
+            content:'';position:absolute;bottom:-5px;left:50%;
+            transform:translateX(-50%);width:10px;height:10px;
+            border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);
+        }
+        .gauge-center{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:1px;height:12px;background:rgba(255,255,255,.1)}
+
+        /* ── AUDIO BAR ───────────────────────────────────── */
+        .audio-bar{width:100%;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+        .audio-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2),var(--red));width:0%;transition:width .04s}
+
+        /* ── SPEEDOMETER SVG ─────────────────────────────── */
+        #speedo-svg{filter:drop-shadow(0 0 28px rgba(212,160,23,.25))}
+
+        /* ── OBD TERMINAL ────────────────────────────────── */
+        .obd-term{
+            background:#060400;border:1px solid rgba(212,160,23,.2);
+            font-family:'Share Tech Mono',monospace;font-size:11px;
+            color:var(--gold);line-height:1.7;padding:12px 14px;white-space:pre-line;
+        }
+
+        /* ── MODAL SHEET ─────────────────────────────────── */
+        .modal-sheet{background:var(--s1);border-top:1px solid var(--border2);position:relative}
+        .modal-sheet::before{
+            content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+            background:linear-gradient(90deg,transparent,var(--gold),transparent);
+            opacity:.5;
+        }
+
+        /* ── SENSOR CHIP ─────────────────────────────────── */
+        .sensor-chip{
+            display:inline-flex;align-items:center;gap:5px;padding:4px 9px;
+            background:rgba(212,160,23,.06);border:1px solid rgba(212,160,23,.22);
+            color:var(--gold);font-family:'Share Tech Mono',monospace;font-size:11px;line-height:1;
+            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+        }
+
+        /* ── ANIMATIONS ──────────────────────────────────── */
+        @keyframes slideUp  {from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+        @keyframes fadeIn   {from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes spinCW   {to{transform:rotate(360deg)}}
+        @keyframes spinCCW  {to{transform:rotate(-360deg)}}
+        @keyframes pulseRed {0%{box-shadow:0 0 0 0 rgba(204,17,34,.7)}70%{box-shadow:0 0 0 24px rgba(204,17,34,0)}100%{box-shadow:0 0 0 0 rgba(204,17,34,0)}}
+        @keyframes goldPulse{0%,100%{text-shadow:0 0 10px rgba(212,160,23,.5)}50%{text-shadow:0 0 22px rgba(245,200,66,.9)}}
+        @keyframes hudSweep {to{transform:rotate(360deg)}}
+        @keyframes panelScan{
+            0%,48%{transform:translateX(-120%)}
+            68%{transform:translateX(120%)}
+            100%{transform:translateX(120%)}
+        }
+
+        .slide-up   {animation:slideUp .3s cubic-bezier(.25,.46,.45,.94) forwards}
+        .fade-in    {animation:fadeIn .3s ease forwards}
+        .spin-cw    {animation:spinCW 1.4s linear infinite}
+        .spin-ccw   {animation:spinCCW 1s linear infinite}
+        .btn-sos,.crash-modal-wrap{animation:pulseRed 1.5s infinite}
+
+        /* ── CHECKLIST ───────────────────────────────────── */
+        .check-item{background:var(--s1);border:1px solid var(--border);transition:border-color .18s}
+        .check-item.is-done{border-color:rgba(212,160,23,.2)}
+
+        /* ── MISC ────────────────────────────────────────── */
+        section.hidden{display:none !important}
+        #main-content{scrollbar-width:thin;scrollbar-color:var(--gold) transparent}
+
+        /* ── ROTATION LOCK ───────────────────────────────── */
+        #btn-rot-lock{
+            display:inline-flex;align-items:center;gap:4px;
+            padding:4px 8px;
+            font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;
+            letter-spacing:1.5px;text-transform:uppercase;
+            cursor:pointer;transition:all .18s;position:relative;
+            clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+        }
+        #btn-rot-lock[data-mode="auto"]     {background:rgba(212,160,23,.06);border:1px solid rgba(212,160,23,.22);color:var(--gold)}
+        #btn-rot-lock[data-mode="portrait"] {background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.32);color:var(--gold2)}
+        #btn-rot-lock[data-mode="landscape"]{background:rgba(204,17,34,.08);border:1px solid rgba(204,17,34,.32);color:var(--red2)}
+        #btn-rot-lock:active{transform:scale(.93);opacity:.8}
+
+        /* ══════════════════════════════════════════════════
+           INSTRUMENT CLUSTER — PORTRAIT DEFAULT
+        ══════════════════════════════════════════════════ */
+        #view-dashboard{
+            padding:12px 12px 10px;
+            gap:8px;
+            min-height:calc(100dvh - 140px);
+            position:relative;
+            overflow:hidden;
+            background:
+                radial-gradient(circle at 50% 30%,rgba(212,160,23,.1),transparent 38%),
+                radial-gradient(circle at 85% 80%,rgba(204,17,34,.06),transparent 30%),
+                var(--bg);
+        }
+        #view-dashboard::before{
+            content:'';position:absolute;inset:-40%;pointer-events:none;
+            background:conic-gradient(from 120deg,transparent,rgba(212,160,23,.07),transparent 28%,rgba(204,17,34,.05),transparent 48%);
+            animation:hudSweep 10s linear infinite;opacity:.5;
+        }
+        #ride-3d-layer{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:1;mix-blend-mode:screen}
+        #ride-3d-canvas{width:100%;height:100%;display:block}
+        #dash-status,#geofence-alert,#instrument-cluster,#dash-bottom{position:relative;z-index:2}
+        #instrument-cluster{display:flex;flex-direction:column;flex:1;min-height:0;align-items:center;justify-content:center}
+        #panel-speed{display:flex;flex-direction:column;align-items:center;gap:5px;width:100%;position:relative;isolation:isolate}
+
+        /* G-force and Lean panels hidden in portrait */
+        #panel-gforce,#panel-lean{display:none}
+
+        /* Portrait tele strip */
+        #portrait-tele{display:none;width:100%}
+
+        /* Speedo container */
+        #speedo-container{display:flex;align-items:center;justify-content:center;position:relative}
+
+        /* Rotating ring behind speedo */
+        #speedo-container::before{
+            content:'';position:absolute;
+            width:min(74vw,274px);aspect-ratio:1;border-radius:50%;
+            background:repeating-conic-gradient(from 0deg,rgba(212,160,23,.12) 0 3deg,transparent 3deg 10deg);
+            mask:radial-gradient(circle,transparent 0 57%,#000 58% 64%,transparent 65%);
+            animation:spinCW 20s linear infinite;opacity:.5;
+        }
+
+        /* SVG wrap */
+        .svg-wrap{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .svg-wrap svg{max-width:100%;max-height:100%;width:auto;height:auto}
+
+        /* Instrument panel header */
+        .inst-hdr{display:flex;justify-content:space-between;align-items:center;flex-shrink:0;width:100%}
+        .inst-title{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+
+        /* Panel accent lines */
+        .inst-panel-speed {border-top:2px solid var(--gold)}
+        .inst-panel-gforce{border-top:2px solid var(--red)}
+        .inst-panel-lean  {border-top:2px solid var(--gold2)}
+
+        #panel-speed,#panel-gforce,#panel-lean{
+            backdrop-filter:blur(10px);
+            background:linear-gradient(180deg,rgba(10,10,10,.65),rgba(10,10,10,.4));
+            box-shadow:inset 0 0 24px rgba(212,160,23,.04),0 0 28px rgba(0,0,0,.35);
+        }
+        #panel-speed::after,#panel-gforce::after,#panel-lean::after{
+            content:'';position:absolute;inset:0;pointer-events:none;
+            background:linear-gradient(120deg,transparent 0 42%,rgba(255,255,255,.06) 48%,transparent 56% 100%);
+            transform:translateX(-120%);animation:panelScan 5s ease-in-out infinite;opacity:.4;z-index:-1;
+        }
+
+        /* Bottom dash bar */
+        #dash-bottom{display:flex;flex-direction:column;gap:6px;flex-shrink:0;width:100%}
+
+        /* ── BCR MINI INSTRUMENTS GRID ───────────────────── */
+        #bcr-mini-instruments{
+            display:grid;
+            grid-template-columns:repeat(4,1fr);
+            gap:4px;
+            width:100%;
+        }
+        .mini-inst{
+            background:var(--s1);border:1px solid var(--border);
+            padding:5px 4px;text-align:center;
+            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+        }
+        .mini-inst-val{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--gold)}
+        .mini-inst-lbl{font-family:'Exo 2',sans-serif;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+        /* ── ENV INSTRUMENTS (ALT / TIME — hero tiles) ───── */
+        .env-inst{
+            background:linear-gradient(180deg,rgba(212,160,23,.1),rgba(212,160,23,.03)),var(--s1);
+            border:1px solid rgba(212,160,23,.3);
+            padding:10px 6px;text-align:center;
+            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+        }
+        .env-inst i{font-size:11px;color:var(--gold);opacity:.85}
+        .env-inst-val{
+            font-family:'Share Tech Mono',monospace;font-size:21px;color:var(--gold);
+            text-shadow:0 0 14px rgba(212,160,23,.45);line-height:1.15;
+        }
+        .env-inst-lbl{font-family:'Exo 2',sans-serif;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);margin-top:3px}
+        .env-inst-ls{padding:6px 4px;clip-path:none}
+        .env-inst-ls .env-inst-val{font-size:17px}
+        .env-inst-ls i{font-size:9px}
+
+        /* ── ROUND COMPASS TILES ─────────────────────────── */
+        .compass-inst{
+            grid-column:span 2;
+            display:flex;align-items:center;gap:14px;
+            background:var(--s1);border:1px solid rgba(212,160,23,.3);
+            padding:8px 12px;
+            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+        }
+        .compass-inst .compass-svg{width:92px;height:92px;flex:none}
+        .compass-side{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0}
+        .compass-side-val{font-family:'Exo 2',sans-serif;font-size:17px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gold2);text-shadow:0 0 10px rgba(245,200,66,.35);line-height:1.1}
+        .compass-trip{display:flex;flex-direction:column;align-items:flex-start;margin-top:4px}
+        .compass-tile-ls{
+            display:flex;align-items:center;gap:8px;
+            background:var(--s1);border:1px solid rgba(245,200,66,.25);padding:4px 8px;
+        }
+        .compass-tile-ls .compass-svg{width:48px;height:48px;flex:none}
+
+        /* ── LANDSCAPE-ONLY / PORTRAIT-ONLY CONTROLS ─────── */
+        .landscape-only{display:none !important}
+        #btn-theme-ls{
+            align-items:center;justify-content:center;
+            width:100%;flex:none;padding:11px 0;
+            border-top:1px solid var(--border);
+            background:none;color:var(--gold);cursor:pointer;
+        }
+        #btn-theme-ls:active{background:rgba(212,160,23,.1)}
+        #btn-telemetry-p{display:inline-flex}
+
+        /* ── COMPASS RING ────────────────────────────────── */
+        #compass-ring{
+            display:flex;align-items:center;justify-content:center;
+            gap:4px;
+            font-family:'Share Tech Mono',monospace;font-size:10px;
+            color:var(--muted2);overflow:hidden;
+            white-space:nowrap;
+        }
+
+        /* ── BCR TOURING ─────────────────────────────────── */
+        .ride-card{
+            display:flex;align-items:center;gap:10px;
+            background:var(--s1);border:1px solid var(--border);
+            padding:12px 14px;cursor:pointer;position:relative;overflow:hidden;
+            transition:border-color .18s,background .18s;
+        }
+        .ride-card:active{border-color:var(--borderG);background:var(--s2)}
+        .ride-card-accent{
+            position:absolute;left:0;top:0;bottom:0;width:3px;
+            background:linear-gradient(180deg,var(--gold),var(--red));opacity:.6;
+        }
+        .ride-stats{
+            display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px;
+            font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--gold2);
+        }
+        .ride-stats i{font-size:8px;color:var(--muted);margin-right:3px}
+        .ride-map{height:220px;background:var(--s2);border:1px solid var(--border2);position:relative;z-index:1}
+        .ride-map .leaflet-container{background:var(--s2)}
+        .ride-map .leaflet-control-attribution{background:rgba(0,0,0,.55);color:var(--muted2);font-size:8px}
+        .ride-map .leaflet-control-attribution a{color:var(--gold)}
+        .split-row{
+            display:flex;align-items:center;justify-content:space-between;gap:8px;
+            background:var(--s2);border:1px solid var(--border);padding:7px 10px;
+        }
+        .split-row.split-fast{border-color:rgba(212,160,23,.45)}
+        .split-row.split-slow{border-color:rgba(204,17,34,.35)}
+        #btn-rec{
+            display:inline-flex;align-items:center;gap:5px;
+            padding:4px 10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;
+            letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+            color:var(--red2);background:rgba(204,17,34,.1);border:1px solid rgba(204,17,34,.4);
+            clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+        }
+        #btn-rec.recording{animation:recPulse 1.6s ease-in-out infinite}
+        #btn-rec .rec-meta{display:inline-flex;align-items:baseline;gap:4px;font-family:'Share Tech Mono',monospace;text-transform:none;letter-spacing:0}
+        @keyframes recPulse{0%,100%{box-shadow:0 0 0 0 rgba(204,17,34,.45)}50%{box-shadow:0 0 0 6px rgba(204,17,34,0)}}
+
+        #btn-master{
+            display:inline-flex;align-items:center;gap:5px;
+            padding:4px 10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;
+            letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+            color:var(--muted2);background:var(--s2);border:1px solid var(--border2);
+            clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+        }
+        #btn-master.all-on{
+            color:var(--gold2);background:rgba(212,160,23,.12);border-color:rgba(212,160,23,.45);
+            animation:masterPulse 1.8s ease-in-out infinite;
+        }
+        @keyframes masterPulse{0%,100%{box-shadow:0 0 0 0 rgba(212,160,23,.4)}50%{box-shadow:0 0 0 6px rgba(212,160,23,0)}}
+
+        /* ══════════════════════════════════════════════════
+           LIGHT MODE (minimal — BCR is always dark)
+        ══════════════════════════════════════════════════ */
+        [data-theme="light"]{
+            --gold:#8a6000;--gold2:#b08000;
+            --red:#990011;--red2:#cc1122;
+            --bg:#f0ece4;--s1:#e8e4dc;--s2:#dedad2;--s3:#d2cec6;
+            --border:#c0bbb0;--border2:#aca7a0;
+            --text:#0a0a0a;--muted:#888070;--muted2:#666055;
+            color-scheme:light;
+        }
+        [data-theme="light"] body{color-scheme:light}
+        [data-theme="light"] .inp[type="date"]{color-scheme:light}
+        [data-theme="light"] .hex-bg{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 4L56 18v28L30 60 4 46V18z' fill='none' stroke='%23c0bbb0' stroke-width='0.6'/%3E%3C/svg%3E")}
+        [data-theme="light"] .obd-term{background:#f8f5e8;border-color:rgba(140,96,0,.3);color:#8a6000}
+        [data-theme="light"] .app-header{background:linear-gradient(180deg,rgba(240,236,228,.98),rgba(232,228,220,.95))}
+        [data-theme="light"] .nav-bar{background:rgba(240,236,228,.98)}
+        [data-theme="light"] #view-dashboard{background:radial-gradient(circle at 50% 30%,rgba(138,96,0,.1),transparent 38%),var(--bg)}
+        [data-theme="light"] #speedo-svg{filter:drop-shadow(0 0 16px rgba(138,96,0,.2))}
+
+        /* ══════════════════════════════════════════════════
+           LANDSCAPE — FULL SCREEN + 3-PANEL CLUSTER
+        ══════════════════════════════════════════════════ */
+        @media (orientation:landscape){
+            #app{max-width:100% !important;flex-direction:row !important}
+            .app-header{display:none !important}
+            .nav-bar{
+                width:54px !important;height:100dvh !important;
+                flex-direction:column !important;flex:none !important;
+                border-top:none !important;border-right:1px solid var(--border) !important;
+                order:-1;
+                padding-top:max(6px,env(safe-area-inset-top)) !important;
+                padding-bottom:max(6px,env(safe-area-inset-bottom)) !important;
+            }
+            .nav-bar::before{top:0;bottom:0;left:auto;right:0;width:1px;height:100%;background:linear-gradient(180deg,transparent,var(--gold),transparent);opacity:.2}
+            .nav-btn{flex:1 !important;width:100% !important;padding:6px 0 !important}
+            .nav-label{display:none !important}
+            .nav-btn::after{top:20% !important;bottom:20% !important;left:0 !important;right:auto !important;width:2px !important;height:auto !important;transform:scaleY(0) !important;transition:transform .25s cubic-bezier(.34,1.56,.64,1) !important}
+            .nav-btn.is-active::after,.nav-btn.is-active-red::after{transform:scaleY(1) !important}
+            #main-content{flex:1 !important;overflow-y:auto !important;overflow-x:hidden !important;height:100dvh !important}
+            #view-dashboard{padding:6px 8px 6px 8px !important;gap:5px !important;height:100dvh !important;min-height:unset !important;overflow:hidden !important}
+            #instrument-cluster{flex-direction:row !important;align-items:stretch !important;justify-content:stretch !important;flex:1 !important;gap:6px !important;min-height:0 !important}
+            #panel-speed,#panel-gforce,#panel-lean{flex:1 !important;display:flex !important;flex-direction:column !important;gap:5px !important;min-width:0 !important;padding:8px !important;position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(10,10,10,.6),rgba(10,10,10,.38));border:1px solid var(--border2)}
+            #panel-speed {clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%)}
+            #panel-lean  {clip-path:polygon(10px 0,100% 0,100% 100%,0 100%,0 10px)}
+            #speedo-container{flex:1 !important;min-height:0 !important;width:100% !important;display:flex !important;align-items:center !important;justify-content:center !important;overflow:hidden !important}
+            #speedo-container #speedo-svg{max-width:100% !important;max-height:100% !important;width:auto !important;height:auto !important}
+            .portrait-only{display:none !important}
+            #dash-bottom{flex-direction:row !important;align-items:center !important;gap:6px !important;flex-shrink:0 !important}
+            #ls-stats{flex:1 !important;display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:4px !important}
+            #ls-sos{flex:none !important;white-space:nowrap;padding:7px 16px !important;font-size:10px !important;letter-spacing:2px !important}
+            #ls-stats > div{padding:4px !important}
+            #ls-stats .stat-num{font-size:14px !important}
+            #ls-stats .stat-lbl{font-size:8px !important}
+            #bcr-mini-instruments{display:none !important}
+            .landscape-only{display:flex !important}
+            #btn-telemetry-p{display:none !important}
+        }
+
+        /* ── FORCE PORTRAIT ──────────────────────────────── */
+        @media (orientation: landscape) {
+            body.force-portrait #app{width:100vh !important;height:100vw !important;max-width:none !important;position:absolute !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) rotate(-90deg) !important;transform-origin:center center !important;flex-direction:column !important}
+        }
+        @media (orientation: portrait) {
+            body.force-portrait #app{max-width:28rem !important;flex-direction:column !important}
+        }
+        body.force-portrait .app-header{display:flex !important}
+        body.force-portrait .nav-bar{width:100% !important;height:auto !important;flex-direction:row !important;flex:none !important;border-top:1px solid var(--border) !important;border-right:none !important;order:0 !important;padding-top:0 !important;padding-bottom:env(safe-area-inset-bottom) !important}
+        body.force-portrait .nav-bar::before{top:0 !important;bottom:auto !important;left:0 !important;right:0 !important;width:100% !important;height:1px !important;background:linear-gradient(90deg,transparent,var(--gold),transparent) !important;opacity:.3 !important}
+        body.force-portrait .nav-btn{flex:1 !important;width:auto !important;flex-direction:column !important;padding:8px 4px 6px !important}
+        body.force-portrait .nav-label{display:flex !important}
+        body.force-portrait .nav-btn::after{top:0 !important;bottom:auto !important;left:20% !important;right:20% !important;width:auto !important;height:2px !important;transform:scaleX(0) !important;transition:transform .25s cubic-bezier(.34,1.56,.64,1) !important}
+        body.force-portrait .nav-btn.is-active::after,.nav-btn.is-active-red::after{transform:scaleX(1) !important}
+        body.force-portrait #main-content{flex:1 !important;overflow-y:auto !important;overflow-x:hidden !important;height:auto !important}
+        body.force-portrait #view-dashboard{padding:12px 12px 10px !important;gap:8px !important;height:auto !important;min-height:calc(100% - 140px) !important;overflow:hidden !important}
+        body.force-portrait #instrument-cluster{flex-direction:column !important;align-items:center !important;justify-content:center !important;flex:unset !important;gap:unset !important}
+        body.force-portrait #panel-gforce,body.force-portrait #panel-lean{display:none !important}
+        body.force-portrait #panel-speed{flex:unset !important;display:flex !important;flex-direction:column !important;padding:0 !important;gap:5px !important;min-width:unset !important;background:transparent !important;border:none !important;clip-path:unset !important}
+        body.force-portrait #speedo-container{flex:unset !important;min-height:unset !important;width:auto !important}
+        body.force-portrait .portrait-only{display:grid !important}
+        body.force-portrait #dash-bottom{flex-direction:column !important;gap:6px !important}
+        body.force-portrait #ls-stats{flex:unset !important;display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:8px !important}
+        body.force-portrait #ls-sos{flex:unset !important;white-space:unset !important;padding:12px !important;font-size:13px !important;letter-spacing:3px !important}
+        body.force-portrait #ls-stats > div{padding:6px 4px !important}
+        body.force-portrait #ls-stats .stat-num{font-size:15px !important}
+        body.force-portrait #ls-stats .stat-lbl{font-size:8px !important}
+        body.force-portrait .landscape-only{display:none !important}
+        body.force-portrait #btn-telemetry-p{display:inline-flex !important}
+
+        /* ── FORCE LANDSCAPE ─────────────────────────────── */
+        @media (orientation: portrait) {
+            body.force-landscape #app{width:100vh !important;height:100vw !important;max-width:none !important;position:absolute !important;top:50% !important;left:50% !important;transform:translate(-50%,-50%) rotate(90deg) !important;transform-origin:center center !important;flex-direction:row !important}
+        }
+        @media (orientation: landscape) {
+            body.force-landscape #app{max-width:100% !important;flex-direction:row !important}
+        }
+        body.force-landscape .app-header{display:none !important}
+        body.force-landscape .nav-bar{width:54px !important;height:100% !important;flex-direction:column !important;flex:none !important;border-top:none !important;border-right:1px solid var(--border) !important;order:-1 !important;padding-top:max(6px,env(safe-area-inset-top)) !important;padding-bottom:max(6px,env(safe-area-inset-bottom)) !important}
+        body.force-landscape .nav-btn{flex:1 !important;width:100% !important;flex-direction:column !important;padding:6px 0 !important}
+        body.force-landscape .nav-label{display:none !important}
+        body.force-landscape .nav-btn::after{top:20% !important;bottom:20% !important;left:0 !important;right:auto !important;width:2px !important;height:auto !important;transform:scaleY(0) !important;transition:transform .25s cubic-bezier(.34,1.56,.64,1) !important}
+        body.force-landscape .nav-btn.is-active::after,.body.force-landscape .nav-btn.is-active-red::after{transform:scaleY(1) !important}
+        body.force-landscape #main-content{flex:1 !important;overflow-y:auto !important;overflow-x:hidden !important;height:100% !important}
+        body.force-landscape #view-dashboard{padding:6px 8px !important;gap:5px !important;height:100% !important;min-height:unset !important;overflow:hidden !important}
+        body.force-landscape #instrument-cluster{flex-direction:row !important;align-items:stretch !important;justify-content:stretch !important;flex:1 !important;gap:6px !important;min-height:0 !important}
+        body.force-landscape #panel-speed,body.force-landscape #panel-gforce,body.force-landscape #panel-lean{flex:1 !important;display:flex !important;flex-direction:column !important;gap:5px !important;min-width:0 !important;padding:8px !important;position:relative !important;overflow:hidden !important;background:linear-gradient(180deg,rgba(10,10,10,.6),rgba(10,10,10,.38)) !important;border:1px solid var(--border2) !important}
+        body.force-landscape #panel-speed{clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%) !important}
+        body.force-landscape #panel-lean{clip-path:polygon(10px 0,100% 0,100% 100%,0 100%,0 10px) !important}
+        body.force-landscape #speedo-container{flex:1 !important;min-height:0 !important;width:100% !important;display:flex !important;align-items:center !important;justify-content:center !important;overflow:hidden !important}
+        body.force-landscape #speedo-container #speedo-svg{max-width:100% !important;max-height:100% !important;width:auto !important;height:auto !important}
+        body.force-landscape .portrait-only{display:none !important}
+        body.force-landscape #dash-bottom{flex-direction:row !important;align-items:center !important;gap:6px !important;flex-shrink:0 !important}
+        body.force-landscape #ls-stats{flex:1 !important;display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:4px !important}
+        body.force-landscape #ls-sos{flex:none !important;white-space:nowrap !important;padding:7px 16px !important;font-size:10px !important;letter-spacing:2px !important}
+        body.force-landscape #ls-stats > div{padding:4px !important}
+        body.force-landscape #ls-stats .stat-num{font-size:14px !important}
+        body.force-landscape #ls-stats .stat-lbl{font-size:8px !important}
+        body.force-landscape #bcr-mini-instruments{display:none !important}
+        body.force-landscape .landscape-only{display:flex !important}
+        body.force-landscape #btn-telemetry-p{display:none !important}
