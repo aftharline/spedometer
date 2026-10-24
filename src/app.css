@@ -905,6 +905,8 @@
             --acc-rgb:200,206,214;--acc2-rgb:0,229,255;
         }
 
+        .btn-sos .sos-lbl-short{display:none}
+
         /* ══════════════════════════════════════════════════
            LANDSCAPE — FULL SCREEN + 3-PANEL CLUSTER
         ══════════════════════════════════════════════════ */
@@ -949,12 +951,22 @@
             #ls-mid #panel-gforce,#ls-mid #panel-lean{flex:1 !important;min-width:0 !important}
             #panel-speed{flex:1 1 0 !important}
             #dash-bottom{flex-wrap:nowrap !important}
-            #dash-bottom #ls-stats{min-width:0 !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important}
-            #dash-bottom #ls-sos{width:auto !important;padding:7px 10px !important;font-size:9px !important}
+            #dash-bottom #ls-stats{min-width:0 !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+            #tile-maxspd{display:none !important}
+            .sos-lbl-full{display:none !important}
+            .btn-sos .sos-lbl-short{display:inline !important}
+            #dash-bottom #ls-sos{width:auto !important;padding:5px 9px !important;font-size:9px !important;letter-spacing:1px !important;gap:5px !important}
             #dash-bottom #btn-livecam,#dash-bottom #btn-rst-max{padding:6px 9px !important;font-size:9px !important;letter-spacing:1px !important;flex-shrink:0 !important}
             /* G-FORCE tetap terlihat walau panel pendek */
-            #panel-gforce .svg-wrap{min-height:120px !important}
+            #panel-gforce .svg-wrap{min-height:100px !important}
             #panel-gforce .svg-wrap svg{max-height:100% !important}
+            #panel-gforce .env-inst-ls{padding:3px 2px !important}
+            #panel-gforce .env-inst-ls .env-inst-val{font-size:14px !important}
+            /* Kompas tidak terpotong */
+            .compass-tile-ls{gap:6px !important;padding:4px 6px !important}
+            .compass-tile-ls .compass-svg{width:36px !important;height:36px !important}
+            #ls-compass{font-size:11px !important}
+            .compass-tile-ls .f-exo{font-size:6px !important;letter-spacing:1px !important}
             /* NAVI landscape: MULAI harus terlihat dalam viewport */
             #navi-mode{overflow-y:auto !important;overscroll-behavior:contain !important}
             #navi-map{min-height:110px !important}
@@ -1031,11 +1043,20 @@
         body.force-landscape #ls-mid #panel-gforce,body.force-landscape #ls-mid #panel-lean{flex:1 !important;min-width:0 !important}
         body.force-landscape #panel-speed{flex:1 1 0 !important}
         body.force-landscape #dash-bottom{flex-wrap:nowrap !important}
-        body.force-landscape #dash-bottom #ls-stats{min-width:0 !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important}
-        body.force-landscape #dash-bottom #ls-sos{width:auto !important;padding:7px 10px !important;font-size:9px !important}
+        body.force-landscape #dash-bottom #ls-stats{min-width:0 !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+        body.force-landscape #tile-maxspd{display:none !important}
+        body.force-landscape .sos-lbl-full{display:none !important}
+        body.force-landscape .btn-sos .sos-lbl-short{display:inline !important}
+        body.force-landscape #dash-bottom #ls-sos{width:auto !important;padding:5px 9px !important;font-size:9px !important;letter-spacing:1px !important;gap:5px !important}
         body.force-landscape #dash-bottom #btn-livecam,body.force-landscape #dash-bottom #btn-rst-max{padding:6px 9px !important;font-size:9px !important;letter-spacing:1px !important;flex-shrink:0 !important}
-        body.force-landscape #panel-gforce .svg-wrap{min-height:120px !important}
+        body.force-landscape #panel-gforce .svg-wrap{min-height:100px !important}
         body.force-landscape #panel-gforce .svg-wrap svg{max-height:100% !important}
+        body.force-landscape #panel-gforce .env-inst-ls{padding:3px 2px !important}
+        body.force-landscape #panel-gforce .env-inst-ls .env-inst-val{font-size:14px !important}
+        body.force-landscape .compass-tile-ls{gap:6px !important;padding:4px 6px !important}
+        body.force-landscape .compass-tile-ls .compass-svg{width:36px !important;height:36px !important}
+        body.force-landscape #ls-compass{font-size:11px !important}
+        body.force-landscape .compass-tile-ls .f-exo{font-size:6px !important;letter-spacing:1px !important}
         body.force-landscape #navi-mode{overflow-y:auto !important;overscroll-behavior:contain !important}
         body.force-landscape #navi-map{min-height:110px !important}
         body.force-landscape #navi-preview{padding:8px 11px !important;max-height:96px !important;overflow:hidden !important}

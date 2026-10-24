@@ -236,6 +236,23 @@
                         <img id="dial-logo" class="dial-logo" alt="">
                     </div>
 
+                    <!-- Acoustic RPM — landscape only, di bawah lingkaran speedo -->
+                    <div class="landscape-only flex-none" style="padding:0 2px;flex-direction:column">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="f-exo font-bold text-[10px] tracking-[2px] uppercase" style="color:var(--muted)">
+                                <i class="fa-solid fa-wave-square mr-1" style="color:var(--gold);font-size:9px"></i>ACOUSTIC RPM
+                            </span>
+                            <button id="btn-audio-ls" onclick="toggleAudioRPM()"
+                                    class="f-exo font-bold text-[10px] px-2 py-0.5 tracking-widest uppercase clip-sm"
+                                    style="background:var(--s2);border:1px solid var(--border2);color:var(--muted2)">MIC</button>
+                        </div>
+                        <div class="audio-bar mb-1"><div id="audio-visual-ls" class="audio-fill"></div></div>
+                        <div class="flex items-baseline justify-center gap-1">
+                            <span class="f-mono gold-text" id="rpm-val-ls" style="font-size:16px">0</span>
+                            <span class="f-rajd text-[10px] uppercase" style="color:var(--muted)">RPM</span>
+                        </div>
+                    </div>
+
                     <!-- Portrait-only compact telemetry strip -->
                     <div id="portrait-tele" class="portrait-only grid grid-cols-3 gap-2 w-full">
                         <div onclick="calibrateLean()" class="flex items-center justify-center gap-2 clip-sm" style="background:rgba(var(--acc-rgb),.06);border:1px solid rgba(var(--acc-rgb),.2);padding:8px;cursor:pointer" title="Tap untuk set 0°">
@@ -294,23 +311,6 @@
 
                     <div class="svg-wrap">
                         <svg id="gf-svg" viewBox="0 0 220 220" preserveAspectRatio="xMidYMid meet"></svg>
-                    </div>
-
-                    <!-- RPM audio strip -->
-                    <div class="flex-none" style="padding:0 2px">
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="f-exo font-bold text-[10px] tracking-[2px] uppercase" style="color:var(--muted)">
-                                <i class="fa-solid fa-wave-square mr-1" style="color:var(--gold);font-size:9px"></i>ACOUSTIC RPM
-                            </span>
-                            <button id="btn-audio-ls" onclick="toggleAudioRPM()"
-                                    class="f-exo font-bold text-[10px] px-2 py-0.5 tracking-widest uppercase clip-sm"
-                                    style="background:var(--s2);border:1px solid var(--border2);color:var(--muted2)">MIC</button>
-                        </div>
-                        <div class="audio-bar mb-1"><div id="audio-visual-ls" class="audio-fill"></div></div>
-                        <div class="flex items-baseline justify-center gap-1">
-                            <span class="f-mono text-xl gold-text" id="rpm-val-ls">0</span>
-                            <span class="f-rajd text-[10px] uppercase" style="color:var(--muted)">RPM</span>
-                        </div>
                     </div>
 
                     <!-- Vibration in landscape -->
@@ -443,7 +443,7 @@
                         <div class="f-mono stat-num gold-text" style="font-size:15px" id="val-lng">—</div>
                         <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:8px">LNG</div>
                     </div>
-                    <div class="text-center clip-sm" style="background:var(--s1);border:1px solid var(--border);padding:6px 4px">
+                    <div id="tile-maxspd" class="text-center clip-sm" style="background:var(--s1);border:1px solid var(--border);padding:6px 4px">
                         <div class="f-mono stat-num" style="color:var(--gold2);font-size:15px" id="val-maxspd">0</div>
                         <div class="f-exo font-bold stat-lbl tracking-widest uppercase mt-0.5" style="color:var(--muted);font-size:8px">MAX KM/H</div>
                     </div>
@@ -455,7 +455,7 @@
                 <button id="ls-sos" onclick="triggerSOS()"
                         class="btn-sos w-full flex items-center justify-center gap-2 f-exo font-black tracking-[3px] uppercase clip-md"
                         style="background:var(--red);color:#fff;padding:11px;font-size:13px">
-                    <i class="fa-solid fa-triangle-exclamation"></i>DARURAT SOS
+                    <i class="fa-solid fa-triangle-exclamation"></i><span class="sos-lbl-full">DARURAT SOS</span><span class="sos-lbl-short">SOS</span>
                 </button>
             </div>
 
