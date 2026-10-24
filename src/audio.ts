@@ -4,7 +4,7 @@ import { showToast } from './toast';
 import { $opt } from './util';
 
 const AUDIO_ON =
-  'background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.4);color:var(--gold);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
+  'background:rgba(var(--acc-rgb),.12);border:1px solid rgba(var(--acc-rgb),.4);color:var(--gold);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
 const AUDIO_OFF =
   'background:var(--s2);border:1px solid var(--border2);color:var(--muted2);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
 

@@ -8,7 +8,7 @@
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#080808">
     <link rel="icon" href="./assets/icon-192.png" type="image/png">
-    <script>(function(){const t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+    <script>(function(){const s=localStorage.getItem('theme');const ok=['bcr','panigale','ninja','r1m','repsol','ecstar','apex','motogp','roadrace','fast','bcr-light'];document.documentElement.setAttribute('data-theme',s==='dark'||!s?'bcr':s==='light'?'bcr-light':ok.includes(s)?s:'bcr');})();</script>
 </head>
 
 <body class="flex justify-center items-stretch">
@@ -20,6 +20,7 @@
         <div class="header-stripe"></div>
         <div class="pl-4">
             <div class="flex items-center gap-2">
+                <img id="brand-logo" class="brand-logo" alt="">
                 <h1 class="f-bebas text-2xl" style="letter-spacing:4px">BLACK<span class="gold-text">CROWN</span></h1>
                 <div class="crown-badge">
                     <i class="fa-solid fa-crown text-[8px] gold-text"></i>
@@ -30,8 +31,8 @@
         </div>
         <div class="flex items-center gap-2">
             <span class="dot dot-off" id="gps-dot"></span>
-            <button id="btn-theme" onclick="toggleTheme()" aria-label="Ganti tema" class="w-9 h-9 flex items-center justify-center clip-sm active:scale-90" style="background:var(--s2);border:1px solid var(--border2)">
-                <i class="fa-solid fa-sun text-xs gold-text"></i>
+            <button id="btn-theme" onclick="openThemePicker()" aria-label="Ganti tema" class="w-9 h-9 flex items-center justify-center clip-sm active:scale-90" style="background:var(--s2);border:1px solid var(--border2)">
+                <span class="w-3 h-3 rounded-full" style="background:linear-gradient(135deg,var(--gold),var(--gold2))"></span>
             </button>
             <button id="btn-settings" aria-label="Pengaturan" class="w-9 h-9 flex items-center justify-center clip-sm active:scale-90" style="background:var(--s2);border:1px solid var(--border2)">
                 <i class="fa-solid fa-sliders text-xs gold-text"></i>
@@ -62,7 +63,7 @@
                 <i class="fa-solid fa-chevron-left text-[10px]"></i>Kembali ke Garasi
             </button>
             <div class="vehicle-card clip-tr p-4 flex items-center gap-4">
-                <div id="detail-icon" class="w-12 h-12 flex items-center justify-center text-xl flex-shrink-0 clip-sm" style="background:rgba(212,160,23,.07);border:1px solid rgba(212,160,23,.2)"></div>
+                <div id="detail-icon" class="w-12 h-12 flex items-center justify-center text-xl flex-shrink-0 clip-sm" style="background:rgba(var(--acc-rgb),.07);border:1px solid rgba(var(--acc-rgb),.2)"></div>
                 <div class="flex-1 min-w-0">
                     <h2 id="detail-name" class="f-exo font-black text-base uppercase tracking-wider leading-none">—</h2>
                     <p id="detail-brand" class="f-rajd text-xs tracking-widest uppercase mt-1" style="color:var(--muted2)">—</p>
@@ -105,6 +106,11 @@
                     <span class="f-rajd text-sm tracking-widest uppercase whitespace-nowrap" id="gps-status" style="color:var(--muted2)">MENCARI GPS…</span>
                 </div>
                 <div class="flex items-center gap-2 flex-wrap justify-end">
+                    <div id="dash-mode" class="flex clip-sm">
+                        <button id="mode-speedo" onclick="switchDashboardMode('speedo')" class="dash-mode-btn is-on">SPEEDO</button>
+                        <button id="mode-navi" onclick="switchDashboardMode('navi')" class="dash-mode-btn">NAVI</button>
+                        <button id="mode-navi-mini" onclick="switchDashboardMode('navi-mini')" class="dash-mode-btn">NAVI MINI</button>
+                    </div>
                     <span class="sensor-chip" id="sensor-chip"><i class="fa-solid fa-satellite-dish text-[9px]"></i>IDLE</span>
                     <span class="f-mono text-[11px]" id="gps-acc" style="color:var(--muted)">ACC: --</span>
                     <button id="btn-master" onclick="toggleMasterSensors()" aria-label="Aktifkan semua sensor">
@@ -117,12 +123,18 @@
                         <i id="rot-lock-icon" class="fa-solid fa-rotate text-[10px]"></i>
                         <span id="rot-lock-label">AUTO</span>
                     </button>
+                    <button id="btn-photo" onclick="pickPhotos(true)" aria-label="Foto ride">
+                        <i class="fa-solid fa-camera text-[10px]"></i><span>FOTO</span>
+                    </button>
+                    <button id="btn-livecam" onclick="toggleLiveCam()" aria-label="Kamera live">
+                        <i class="fa-solid fa-video text-[10px]"></i><span>CAM</span>
+                    </button>
                     <button onclick="resetMaxSpeed()" class="f-exo font-bold text-[11px] px-2 py-1 tracking-widest uppercase" style="background:var(--s2);border:1px solid var(--border);color:var(--muted2)">RST MAX</button>
                 </div>
             </div>
 
             <!-- Geofence alert -->
-            <div id="geofence-alert" class="hidden flex-none p-2 text-center f-exo font-bold text-[10px] tracking-widest uppercase" style="background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.35);color:var(--gold)">
+            <div id="geofence-alert" class="hidden flex-none p-2 text-center f-exo font-bold text-[10px] tracking-widest uppercase" style="background:rgba(var(--acc-rgb),.08);border:1px solid rgba(var(--acc-rgb),.35);color:var(--gold)">
                 <i class="fa-solid fa-building-columns mr-1"></i>ZONA SAMSAT TERDETEKSI — CEK PAJAK!
             </div>
 
@@ -151,10 +163,10 @@
                             <defs>
                                 <!-- Main gradient: slow=gold → medium=white → fast=red -->
                                 <linearGradient id="sgFill" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%"   stop-color="#d4a017"/>
-                                    <stop offset="40%"  stop-color="#f5c842"/>
+                                    <stop offset="0%"   stop-color="var(--gold)"/>
+                                    <stop offset="40%"  stop-color="var(--gold2)"/>
                                     <stop offset="75%"  stop-color="#ffffff"/>
-                                    <stop offset="100%" stop-color="#cc1122"/>
+                                    <stop offset="100%" stop-color="var(--red)"/>
                                 </linearGradient>
                                 <!-- Gold radial for inner dial -->
                                 <radialGradient id="dialBg" cx="50%" cy="50%" r="50%">
@@ -181,7 +193,7 @@
                             <circle cx="134" cy="134" r="124" fill="none" stroke="#1a1a1a" stroke-width="5" stroke-dasharray="2 4"/>
 
                             <!-- Gold accent outer ring segments -->
-                            <circle cx="134" cy="134" r="120" fill="none" stroke="rgba(212,160,23,.12)" stroke-width="2"/>
+                            <circle cx="134" cy="134" r="120" fill="none" stroke="rgba(var(--acc-rgb),.12)" stroke-width="2"/>
 
                             <!-- LED Segmented Gauge Track -->
                             <path id="sg-track" fill="none" stroke="#222222" stroke-width="14" stroke-linecap="butt" stroke-dasharray="3 3.5"/>
@@ -199,36 +211,42 @@
                             <circle cx="134" cy="134" r="83" fill="none" stroke="#222" stroke-width="2.5" stroke-dasharray="1 10"/>
 
                             <!-- Subtle gold inner ring -->
-                            <circle cx="134" cy="134" r="80" fill="none" stroke="rgba(212,160,23,.08)" stroke-width="1"/>
+                            <circle cx="134" cy="134" r="80" fill="none" stroke="rgba(var(--acc-rgb),.08)" stroke-width="1"/>
 
                             <!-- Speed Value -->
-                            <text id="sg-value" x="134" y="122" text-anchor="middle" font-family="Bebas Neue,sans-serif" font-size="72" fill="#d4a017" filter="url(#sgGlowStrong)" letter-spacing="-1">0</text>
+                            <text id="sg-value" x="134" y="122" text-anchor="middle" font-family="Bebas Neue,sans-serif" font-size="96" fill="var(--gold)" filter="url(#sgGlowStrong)" letter-spacing="-2">0</text>
 
                             <!-- KM/H Badge -->
-                            <g transform="translate(134,158)">
-                                <rect x="-28" y="-11" width="56" height="18" fill="#1a1a1a" rx="9" stroke="rgba(212,160,23,.3)" stroke-width="1"/>
-                                <text x="0" y="-0.5" text-anchor="middle" font-family="Exo 2" font-size="10" fill="#d4a017" font-weight="800" letter-spacing="4">KM/H</text>
+                            <g transform="translate(134,164)">
+                                <rect x="-34" y="-13" width="68" height="22" fill="#1a1a1a" rx="11" stroke="rgba(var(--acc-rgb),.3)" stroke-width="1"/>
+                                <text x="0" y="4.5" text-anchor="middle" font-family="Exo 2" font-size="13" fill="var(--gold)" font-weight="800" letter-spacing="5">KM/H</text>
                             </g>
 
                             <!-- Max Speed -->
-                            <text id="sg-max" x="134" y="183" text-anchor="middle" font-family="Share Tech Mono" font-size="12" fill="#555">MAX 0</text>
+                            <text id="sg-max" x="134" y="192" text-anchor="middle" font-family="Share Tech Mono" font-size="15" fill="#666">MAX 0</text>
 
                             <!-- BCR Crown watermark -->
-                            <text x="134" y="200" text-anchor="middle" font-family="Exo 2" font-size="8" fill="rgba(212,160,23,.25)" font-weight="700" letter-spacing="3">BCR SURABAYA</text>
+                            <text id="sg-watermark" class="sg-watermark" x="134" y="209" text-anchor="middle" font-family="Exo 2" font-size="10" fill="rgba(var(--acc-rgb),.28)" font-weight="700" letter-spacing="4">BCR SURABAYA</text>
                         </svg>
+                        <img id="dial-logo" class="dial-logo" alt="">
                     </div>
 
                     <!-- Portrait-only compact telemetry strip -->
-                    <div id="portrait-tele" class="portrait-only grid grid-cols-2 gap-2 w-full">
-                        <div onclick="calibrateLean()" class="flex items-center justify-center gap-2 clip-sm" style="background:rgba(212,160,23,.06);border:1px solid rgba(212,160,23,.2);padding:8px;cursor:pointer" title="Tap untuk set 0°">
+                    <div id="portrait-tele" class="portrait-only grid grid-cols-3 gap-2 w-full">
+                        <div onclick="calibrateLean()" class="flex items-center justify-center gap-2 clip-sm" style="background:rgba(var(--acc-rgb),.06);border:1px solid rgba(var(--acc-rgb),.2);padding:8px;cursor:pointer" title="Tap untuk set 0°">
                             <i class="fa-solid fa-motorcycle text-sm gold-text"></i>
                             <span class="f-mono text-2xl gold-text" id="lean-val-p">0</span>
                             <span class="f-rajd text-[11px] uppercase" style="color:var(--muted)">° LEAN</span>
                         </div>
-                        <div class="flex items-center justify-center gap-2 clip-sm" style="background:rgba(204,17,34,.06);border:1px solid rgba(204,17,34,.2);padding:8px">
+                        <div class="flex items-center justify-center gap-2 clip-sm" style="background:rgba(var(--alr-rgb),.06);border:1px solid rgba(var(--alr-rgb),.2);padding:8px">
                             <i class="fa-solid fa-circle-notch text-sm red-text"></i>
                             <span class="f-mono text-2xl red-text" id="gforce-val-p">1.0</span>
                             <span class="f-rajd text-[11px] uppercase" style="color:var(--muted)">G-FORCE</span>
+                        </div>
+                        <div class="flex items-center justify-center gap-2 clip-sm" style="background:rgba(var(--acc-rgb),.05);border:1px solid rgba(var(--acc-rgb),.18);padding:8px">
+                            <i class="fa-solid fa-heart-pulse text-sm gold-text"></i>
+                            <span class="f-mono text-2xl gold-text" id="vib-val-p">0</span>
+                            <span class="f-rajd text-[11px] uppercase" style="color:var(--muted)">VIB</span>
                         </div>
                     </div>
 
@@ -290,6 +308,19 @@
                         </div>
                     </div>
 
+                    <!-- Vibration in landscape -->
+                    <div class="flex-none grid grid-cols-2 gap-2 items-center clip-sm" style="background:rgba(var(--acc-rgb),.05);border:1px solid rgba(var(--acc-rgb),.18);padding:6px 8px">
+                        <div class="flex items-baseline justify-center gap-1">
+                            <i class="fa-solid fa-heart-pulse text-[10px]" style="color:var(--gold)"></i>
+                            <span class="f-mono text-xl gold-text" id="vib-val-ls">0</span>
+                            <span class="f-rajd text-[10px] uppercase" style="color:var(--muted)">VIB</span>
+                        </div>
+                        <div class="flex items-baseline justify-center gap-1">
+                            <span class="f-mono text-sm" style="color:var(--muted2)" id="vib-hz-ls">—</span>
+                            <span class="f-rajd text-[10px] uppercase" style="color:var(--muted)">HZ</span>
+                        </div>
+                    </div>
+
                     <!-- Altitude & Clock in landscape -->
                     <div class="grid grid-cols-2 gap-2 mt-1">
                         <div class="env-inst env-inst-ls">
@@ -320,7 +351,7 @@
 
                     <!-- Trip & bearing in lean panel -->
                     <div class="grid grid-cols-2 gap-2 mt-1">
-                        <div class="mini-inst" style="clip-path:none;border-color:rgba(245,200,66,.25)">
+                        <div class="mini-inst" style="clip-path:none;border-color:rgba(var(--acc2-rgb),.25)">
                             <div class="mini-inst-val" id="ls-trip">0.0</div>
                             <div class="mini-inst-lbl">TRIP km</div>
                         </div>
@@ -335,6 +366,61 @@
                 </div><!-- /#panel-lean -->
 
             </div><!-- /#instrument-cluster -->
+
+            <!-- ── NAVI MODE (Google Maps style) ────────── -->
+            <div id="navi-mode" class="hidden">
+                <div id="navi-search-wrap">
+                    <div class="flex gap-2">
+                        <input type="text" id="navi-q" placeholder="Cari tujuan…" class="inp clip-sm flex-1 text-sm" autocomplete="off" oninput="naviSearchInput()">
+                        <button onclick="naviCenterMe()" aria-label="Lokasi saya" class="w-11 flex-shrink-0 flex items-center justify-center clip-sm" style="background:var(--s2);border:1px solid var(--border2)">
+                            <i class="fa-solid fa-crosshairs gold-text text-sm"></i>
+                        </button>
+                    </div>
+                    <div id="navi-favs" class="flex flex-wrap gap-1.5 mt-2"></div>
+                    <div id="navi-results" class="navi-results"></div>
+                </div>
+
+                <div id="navi-map">
+                    <div id="navi-rotor"></div>
+                    <span class="navi-attr">© OpenStreetMap</span>
+                    <article id="navi-junction" class="hidden">
+                        <div class="nj-icon"></div>
+                        <div class="nj-main"></div>
+                    </article>
+                    <button id="navi-recenter" class="hidden" onclick="naviCenterMe()" aria-label="Pusatkan peta">
+                        <i class="fa-solid fa-crosshairs gold-text"></i><span>PUSATKAN</span>
+                    </button>
+                </div>
+
+                <div id="navi-banner" class="hidden">
+                    <div class="nb-icon-wrap"><i id="nb-icon" class="fa-solid fa-arrow-up"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <div id="nb-dist" class="f-mono text-xl gold-text leading-none">—</div>
+                            <span id="nb-limit" class="hidden">—</span>
+                        </div>
+                        <div id="nb-instruction" class="f-exo font-bold text-[11px] uppercase tracking-wider truncate" style="color:var(--text)">—</div>
+                    </div>
+                    <button onclick="naviStop()" aria-label="Stop navigasi" class="w-9 h-9 flex-shrink-0 flex items-center justify-center clip-sm" style="background:rgba(var(--alr-rgb),.15);border:1px solid rgba(var(--alr-rgb),.4)">
+                        <i class="fa-solid fa-xmark red-text text-sm"></i>
+                    </button>
+                </div>
+
+                <div id="navi-preview" class="hidden navi-card"></div>
+
+                <div id="navi-eta" class="hidden navi-card f-mono text-xs" style="color:var(--gold2)"></div>
+
+                <div id="navi-next" class="hidden navi-next navi-card"></div>
+
+                <div id="navi-actions" class="hidden grid grid-cols-2 gap-2">
+                    <button onclick="naviStart()" class="btn-fill-gold clip-sm py-3 text-xs flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play text-[10px]"></i>MULAI
+                    </button>
+                    <button onclick="naviOpenGMaps()" class="btn-gold clip-sm py-3 text-xs flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-google text-[10px]"></i>GMAPS
+                    </button>
+                </div>
+            </div>
 
             <!-- ── BOTTOM: STATS + SOS ──────────────────── -->
             <div id="dash-bottom">
@@ -434,6 +520,16 @@
 
             <div id="rd-map" class="ride-map clip-tr"></div>
 
+            <div id="rd-photos" class="clip-tr p-4" style="background:var(--s1);border:1px solid var(--border2)">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="f-exo font-bold text-xs tracking-[3px] uppercase" style="color:var(--gold)">
+                        <i class="fa-solid fa-camera mr-1"></i>FOTO RIDE
+                    </h3>
+                    <button onclick="pickPhotos(false, pageRideStart())" class="f-exo font-bold text-[10px] px-2.5 py-1 tracking-widest uppercase clip-sm" style="background:var(--s2);border:1px solid var(--border2);color:var(--gold2)">+ FOTO</button>
+                </div>
+                <div id="rd-photos-strip" class="rd-photo-strip"></div>
+            </div>
+
             <div class="clip-tr p-4" style="background:var(--s1);border:1px solid var(--border2)">
                 <h3 class="f-exo font-bold text-xs tracking-[3px] uppercase mb-2" style="color:var(--gold)">
                     <i class="fa-solid fa-chart-line mr-1"></i>PROFIL KECEPATAN
@@ -461,7 +557,7 @@
         <!-- ═══ LABS ═══════════════════════════════════════ -->
         <section id="view-labs" class="hidden p-5 space-y-4 fade-in">
             <div class="flex items-center gap-3 mb-1">
-                <div class="w-9 h-9 flex items-center justify-center clip-sm" style="background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.25)">
+                <div class="w-9 h-9 flex items-center justify-center clip-sm" style="background:rgba(var(--acc-rgb),.08);border:1px solid rgba(var(--acc-rgb),.25)">
                     <i class="fa-solid fa-flask text-sm gold-text"></i>
                 </div>
                 <div>
@@ -493,10 +589,31 @@
                         </div>
                     </div>
                     <div class="flex flex-col items-center gap-2">
-                        <div class="relative w-20 h-20 flex items-center justify-center scanlines clip-md" style="background:rgba(204,17,34,.05);border:2px solid rgba(204,17,34,.3)">
+                        <div class="relative w-20 h-20 flex items-center justify-center scanlines clip-md" style="background:rgba(var(--alr-rgb),.05);border:2px solid rgba(var(--alr-rgb),.3)">
                             <span class="f-mono text-2xl font-bold red-text" id="gforce-val">1.0</span>
                         </div>
                         <span class="f-rajd text-[10px] tracking-widest uppercase" style="color:var(--muted)">G-FORCE</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vibration Health -->
+            <div class="p-4 space-y-3 clip-tr" style="background:var(--s1);border:1px solid rgba(var(--acc-rgb),.28)">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-heart-pulse gold-text text-sm"></i>
+                        <h3 class="f-exo font-bold text-xs tracking-[3px] uppercase">Vibration Health</h3>
+                    </div>
+                    <span class="f-mono text-[11px]" style="color:var(--muted2)" id="vib-hz">— Hz</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative w-20 h-20 flex items-center justify-center scanlines clip-md" style="background:rgba(var(--acc-rgb),.05);border:2px solid rgba(var(--acc-rgb),.3)">
+                        <span class="f-mono text-3xl font-bold gold-text" id="vib-val">0</span>
+                    </div>
+                    <div class="flex-1 space-y-2 min-w-0">
+                        <div class="audio-bar"><div id="vib-bar" class="audio-fill" style="width:0%"></div></div>
+                        <p class="f-rajd text-[11px] leading-snug" style="color:var(--muted2)" id="vib-note">Mulai telemetri untuk memantau getaran mesin</p>
+                        <p class="f-rajd text-[10px] tracking-widest uppercase" style="color:var(--muted)">Dominan: <span id="vib-band">—</span></p>
                     </div>
                 </div>
             </div>
@@ -545,7 +662,7 @@
                         <div class="f-exo font-bold text-[9px] tracking-widest uppercase mt-1" style="color:var(--muted)">TRIP KM</div>
                     </div>
                 </div>
-                <button onclick="resetTrip()" class="w-full py-2 f-exo font-bold text-xs tracking-widest uppercase clip-sm" style="background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.25);color:var(--gold)">
+                <button onclick="resetTrip()" class="w-full py-2 f-exo font-bold text-xs tracking-widest uppercase clip-sm" style="background:rgba(var(--acc-rgb),.08);border:1px solid rgba(var(--acc-rgb),.25);color:var(--gold)">
                     RESET TRIP COUNTER
                 </button>
             </div>
@@ -592,11 +709,35 @@
             <i class="nav-icon fa-solid fa-flask"></i><span class="nav-label">Labs</span>
         </button>
         <button onclick="switchView('checklist')" id="nav-checklist" class="nav-btn"><i class="nav-icon fa-solid fa-list-check"></i><span class="nav-label">Gear</span></button>
-        <button id="btn-theme-ls" onclick="toggleTheme()" aria-label="Ganti tema" class="landscape-only"><i class="fa-solid fa-sun text-xs gold-text"></i></button>
+        <button id="btn-theme-ls" onclick="openThemePicker()" aria-label="Ganti tema" class="landscape-only"><span class="w-3 h-3 rounded-full" style="background:linear-gradient(135deg,var(--gold),var(--gold2))"></span></button>
     </nav>
 
     <!-- ── OVERLAYS ─────────────────────────────────────── -->
     <div id="modal-overlay" class="hidden absolute inset-0 z-40" style="background:rgba(0,0,0,.85);backdrop-filter:blur(4px)" onclick="overlayTap(event)"></div>
+
+    <!-- Live camera PIP -->
+    <div id="livecam-box" class="hidden">
+        <video id="livecam-video" autoplay playsinline muted></video>
+        <div class="lc-top">
+            <span class="lc-rec"><i class="fa-solid fa-circle-dot"></i>LIVE</span>
+            <button onclick="snapLivePhoto()" aria-label="Jepret dari kamera live" class="lc-btn"><i class="fa-solid fa-camera"></i></button>
+            <button onclick="stopLiveCam()" aria-label="Tutup kamera live" class="lc-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <!-- Foto fullscreen ala Strava -->
+    <div id="modal-photo" class="hidden fixed inset-0 z-50 photo-modal">
+        <div class="pv-top">
+            <button onclick="closePhotoModal()" aria-label="Tutup foto" class="pv-btn"><i class="fa-solid fa-xmark"></i></button>
+            <div id="pv-stats" class="f-mono text-xs" style="color:var(--text)"></div>
+            <button onclick="sharePhoto()" aria-label="Bagikan foto" class="pv-btn"><i class="fa-solid fa-share-nodes"></i></button>
+        </div>
+        <button id="pv-prev" class="pv-btn pv-arrow" onclick="photoNext(-1)" aria-label="Sebelumnya"><i class="fa-solid fa-chevron-left"></i></button>
+        <button id="pv-next" class="pv-btn pv-arrow pv-r" onclick="photoNext(1)" aria-label="Selanjutnya"><i class="fa-solid fa-chevron-right"></i></button>
+        <img id="pv-img" class="pv-img" alt="foto ride">
+        <div id="pv-thumbs" class="pv-thumbs"></div>
+    </div>
+    <input id="photo-input" type="file" accept="image/*" multiple class="hidden">
 
     <div id="loading-overlay" class="hidden absolute inset-0 z-[60] flex flex-col items-center justify-center gap-6" style="background:rgba(8,8,8,.96)">
         <div class="relative w-20 h-20">
@@ -612,14 +753,14 @@
 
     <div id="custom-confirm" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10/12 max-w-sm z-[65] clip-lg" style="background:var(--s1);border:1px solid var(--border2)">
         <div class="p-6">
-            <div class="w-10 h-10 flex items-center justify-center mb-4 clip-sm" style="background:rgba(204,17,34,.1);border:1px solid rgba(204,17,34,.3)">
+            <div class="w-10 h-10 flex items-center justify-center mb-4 clip-sm" style="background:rgba(var(--alr-rgb),.1);border:1px solid rgba(var(--alr-rgb),.3)">
                 <i class="fa-solid fa-triangle-exclamation text-xs red-text"></i>
             </div>
             <h3 id="cc-title" class="f-exo font-black text-lg uppercase tracking-wider mb-2">Konfirmasi</h3>
             <p  id="cc-msg"   class="f-rajd text-sm mb-6" style="color:var(--muted2)">Pesan detail.</p>
             <div class="flex gap-3">
                 <button id="cc-no"  class="flex-1 py-3 f-exo font-bold text-xs tracking-widest uppercase clip-sm" style="background:var(--s2);border:1px solid var(--border2)">BATAL</button>
-                <button id="cc-yes" class="flex-1 py-3 f-exo font-bold text-xs tracking-widest uppercase clip-sm red-text" style="background:rgba(204,17,34,.2);border:1px solid rgba(204,17,34,.4)">HAPUS</button>
+                <button id="cc-yes" class="flex-1 py-3 f-exo font-bold text-xs tracking-widest uppercase clip-sm red-text" style="background:rgba(var(--alr-rgb),.2);border:1px solid rgba(var(--alr-rgb),.4)">HAPUS</button>
             </div>
         </div>
     </div>
@@ -633,6 +774,16 @@
     </div>
 
     <!-- ── MODALS ────────────────────────────────────────── -->
+    <div id="modal-theme" class="hidden absolute bottom-0 left-0 right-0 z-50 slide-up clip-tl modal-sheet">
+        <div class="p-6" style="padding-top:28px">
+            <div class="flex justify-between items-start mb-5">
+                <div><h3 class="f-exo font-black text-lg uppercase tracking-[3px]">Livery</h3>
+                <p class="f-rajd text-[10px] tracking-widest uppercase mt-1" style="color:var(--muted2)">Pick your racing theme</p></div>
+                <button onclick="closeModal('modal-theme')" aria-label="Tutup ganti tema" class="w-8 h-8 flex items-center justify-center clip-sm" style="background:var(--s2);border:1px solid var(--border2)"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+            <div id="theme-grid" class="grid grid-cols-2 gap-2"></div>
+        </div>
+    </div>
     <div id="modal-add-vehicle" class="hidden absolute bottom-0 left-0 right-0 z-50 slide-up clip-tl modal-sheet">
         <div class="p-6" style="padding-top:28px">
             <div class="flex justify-between items-start mb-6">
@@ -643,7 +794,7 @@
                 <div>
                     <label class="inp-label">Jenis Kendaraan</label>
                     <div class="grid grid-cols-2 gap-3">
-                        <label id="lbl-motor" class="flex items-center justify-center gap-2 p-3 cursor-pointer clip-sm" style="background:var(--s2);border:1px solid rgba(212,160,23,.4)">
+                        <label id="lbl-motor" class="flex items-center justify-center gap-2 p-3 cursor-pointer clip-sm" style="background:var(--s2);border:1px solid rgba(var(--acc-rgb),.4)">
                             <input type="radio" name="v_type" value="motor" class="hidden" checked onchange="updateTypeUI()">
                             <i class="fa-solid fa-motorcycle gold-text"></i><span class="f-exo font-bold text-xs tracking-widest uppercase gold-text">MOTOR</span>
                         </label>
@@ -702,6 +853,19 @@
          style="background:var(--gold);color:#0a0a0a;transform:translateX(-50%) translateY(-60px);opacity:0;transition:transform .3s,opacity .3s"></div>
 
 </div><!-- /#app -->
+
+<!-- ═══ SPLASH — boot screen per livery ════════════ -->
+    <div id="splash" aria-label="Memuat BCRide">
+        <div class="splash-stripes" aria-hidden="true"></div>
+        <div class="splash-core">
+            <img id="splash-logo" class="splash-logo" alt="BCR">
+            <div id="splash-word" class="splash-word">BLACK<span>CROWN</span></div>
+            <p class="splash-sub" aria-hidden="true">BLACK CROWN RIDERS · SURABAYA</p>
+            <p id="splash-tag" class="splash-tag">ENJOY YOUR RIDE</p>
+            <div class="splash-rev" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <p class="splash-lbl" aria-hidden="true"><span id="splash-theme">LIVERY — CROWN GOLD</span></p>
+        </div>
+    </div>
 
 <script type="module" src="/src/main.ts"></script>
 </body>

@@ -81,10 +81,10 @@ export function updateSensorChip(label: string, type = 'idle'): void {
   const chip = $opt('sensor-chip');
   if (!chip) return;
   const colors: Record<string, string> = {
-    idle: 'background:rgba(212,160,23,.06);border:1px solid rgba(212,160,23,.22);color:var(--gold);',
-    good: 'background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.4);color:var(--gold2);',
+    idle: 'background:rgba(var(--acc-rgb),.06);border:1px solid rgba(var(--acc-rgb),.22);color:var(--gold);',
+    good: 'background:rgba(var(--acc-rgb),.12);border:1px solid rgba(var(--acc-rgb),.4);color:var(--gold2);',
     warn: 'background:rgba(255,102,0,.1);border:1px solid rgba(255,102,0,.32);color:var(--warn);',
-    alert: 'background:rgba(204,17,34,.1);border:1px solid rgba(204,17,34,.34);color:var(--red2);',
+    alert: 'background:rgba(var(--alr-rgb),.1);border:1px solid rgba(var(--alr-rgb),.34);color:var(--red2);',
   };
   chip.setAttribute('style', colors[type] || colors.idle);
   chip.innerHTML = `<i class="fa-solid fa-satellite-dish text-[8px]"></i>${escapeHTML(label)}`;

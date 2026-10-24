@@ -1,30 +1,14 @@
 import { isAudioActive, stopAudioRPM, toggleAudioRPM } from './audio';
 import { dbAction } from './db';
 import { closeModal, showConfirm } from './modals';
+import { clearStripKey, deletePhotosByRide, renderStrip } from './ride-photos';
 import { appState } from './state';
 import { isGpsActive, isTelemetryActive, startSpeedometer, stopSpeedometer, stopTelemetry, toggleTelemetry } from './telemetry';
 import { showToast } from './toast';
 import type { ChecklistItem, LogEntry, Vehicle, VehicleType } from './types';
 import { $id, $opt, escapeHTML } from './util';
 
-export function applyTheme(t: string): void {
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('theme', t);
-  document.querySelector('meta[name="theme-color"]')
-    ?.setAttribute('content', t === 'light' ? '#f0ece4' : '#080808');
-  ['btn-theme', 'btn-theme-ls'].forEach(id => {
-    const btn = $opt(id);
-    if (!btn) return;
-    btn.innerHTML =
-      t === 'light'
-        ? '<i class="fa-solid fa-moon text-xs" style="color:var(--gold)"></i>'
-        : '<i class="fa-solid fa-sun text-xs gold-text"></i>';
-  });
-}
-
-export function toggleTheme(): void {
-  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-}
+/* theme logic lives in themes.ts */
 
 /* ── MASTER SENSOR BUTTON ───────────────────────────── */
 export const allSensorsOn = (): boolean => isGpsActive() && isTelemetryActive() && isAudioActive();
@@ -57,7 +41,7 @@ export function updateTypeUI(): void {
   const checked = document.querySelector('input[name="v_type"]:checked') as HTMLInputElement | null;
   if (!checked) return;
   const isMo = checked.value === 'motor';
-  const activeStyle = 'background:var(--s2);border:1px solid rgba(212,160,23,.4);';
+  const activeStyle = 'background:var(--s2);border:1px solid rgba(var(--acc-rgb),.4);';
   const idleStyle = 'background:var(--s2);border:1px solid var(--border2);';
   ['motor', 'mobil'].forEach(t => {
     const lbl = $opt('lbl-' + t);
@@ -109,6 +93,7 @@ export function switchView(view: string): void {
   if (view === 'ride-detail') destroyRideMap();
   if (view === 'garage') void loadVehicles();
   if (view === 'checklist') void loadChecklist();
+  if (view !== 'ride-detail') clearStripKey();
 }
 
 export async function loadVehicles(): Promise<void> {
@@ -129,7 +114,7 @@ export async function loadVehicles(): Promise<void> {
       const c = document.createElement('div');
       c.className = 'vehicle-card clip-tr p-4 flex items-center gap-4';
       c.onclick = () => openVehicleDetail(v.id, v.name, v.brand, type);
-      c.innerHTML = `<div class="flex-shrink-0 w-12 h-12 flex items-center justify-center text-xl clip-sm" style="background:rgba(212,160,23,.07);border:1px solid rgba(212,160,23,.18)"><i class="fa-solid ${isM ? 'fa-motorcycle' : 'fa-car'} gold-text"></i></div>
+      c.innerHTML = `<div class="flex-shrink-0 w-12 h-12 flex items-center justify-center text-xl clip-sm" style="background:rgba(var(--acc-rgb),.07);border:1px solid rgba(var(--acc-rgb),.18)"><i class="fa-solid ${isM ? 'fa-motorcycle' : 'fa-car'} gold-text"></i></div>
               <div class="flex-1 min-w-0"><h3 class="f-exo font-black text-base uppercase tracking-wide leading-none">${escapeHTML(v.name)}</h3>
               <p class="f-rajd text-xs tracking-widest uppercase mt-1" style="color:var(--muted2)">${escapeHTML(v.brand)} · ${type.toUpperCase()}</p></div>
               <i class="fa-solid fa-chevron-right text-sm gold-text opacity-40 flex-shrink-0"></i>`;
@@ -180,7 +165,7 @@ async function loadLogs(): Promise<void> {
         const ico = svc ? 'fa-wrench' : 'fa-gas-pump';
         const badge =
           !svc && l.eff
-            ? `<span class="f-mono text-[8px] px-1.5 py-0.5" style="background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.2);color:var(--gold)">${l.eff} KM/L</span>`
+            ? `<span class="f-mono text-[8px] px-1.5 py-0.5" style="background:rgba(var(--acc-rgb),.1);border:1px solid rgba(var(--acc-rgb),.2);color:var(--gold)">${l.eff} KM/L</span>`
             : '';
         const lbl = svc ? escapeHTML(l.parts) : `ISI BENSIN ${escapeHTML(l.liter)}L`;
         return `<div class="log-item clip-tr p-3 flex items-center gap-3">
@@ -307,7 +292,7 @@ export async function loadChecklist(): Promise<void> {
       .map(it => {
         const id = Number(it.id);
         return `<div class="check-item clip-tr p-3 flex items-center gap-3 ${it.done ? 'is-done' : ''}">
-          <button onclick="toggleCheck(${id},${!it.done})" aria-label="${it.done ? 'Tandai belum selesai' : 'Tandai selesai'}" class="w-6 h-6 flex items-center justify-center flex-shrink-0 clip-sm" style="border:1.5px solid ${it.done ? 'var(--gold)' : 'var(--border2)'};background:${it.done ? 'rgba(212,160,23,.12)' : 'transparent'}">
+          <button onclick="toggleCheck(${id},${!it.done})" aria-label="${it.done ? 'Tandai belum selesai' : 'Tandai selesai'}" class="w-6 h-6 flex items-center justify-center flex-shrink-0 clip-sm" style="border:1.5px solid ${it.done ? 'var(--gold)' : 'var(--border2)'};background:${it.done ? 'rgba(var(--acc-rgb),.12)' : 'transparent'}">
             ${it.done ? '<i class="fa-solid fa-check text-[9px] gold-text"></i>' : ''}</button>
           <span class="flex-1 f-rajd text-sm tracking-wide ${it.done ? 'line-through' : ''}" style="color:${it.done ? 'var(--muted)' : 'var(--text)'}">${escapeHTML(it.text)}</span>
           <button onclick="deleteCheck(${id})" aria-label="Hapus item checklist" class="w-7 h-7 flex items-center justify-center" style="color:var(--muted)"><i class="fa-solid fa-xmark text-xs"></i></button></div>`;
@@ -461,10 +446,19 @@ export async function openRideDetail(id: number): Promise<void> {
     renderSpeedChart(ride);
     renderSplits(ride);
     renderRideMap(ride);
+    detailRideStart = ride.start;
+    $id('rd-photos').classList.add('hidden');
+    void renderStrip(ride.start).then(() => $id('rd-photos').classList.remove('hidden'));
   } catch (err) {
     console.error('[RideDetail]', err);
     showToast('Gagal buka ride', 'alert');
   }
+}
+
+let detailRideStart: number | undefined;
+
+export function pageRideStart(): number | undefined {
+  return detailRideStart;
 }
 
 function renderSpeedChart(ride: Ride): void {
@@ -480,7 +474,7 @@ function renderSpeedChart(ride: Ride): void {
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   svg.innerHTML = `
     <line x1="0" y1="${H - 1}" x2="${W}" y2="${H - 1}" stroke="var(--border)" stroke-width="1"/>
-    <polygon points="0,${H} ${poly} ${W},${H}" fill="rgba(212,160,23,.12)"/>
+    <polygon points="0,${H} ${poly} ${W},${H}" fill="rgba(var(--acc-rgb),.12)"/>
     <polyline points="${poly}" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linejoin="round"/>
     <text x="${W - 2}" y="10" text-anchor="end" font-family="Share Tech Mono" font-size="9" fill="var(--muted2)">${Math.round(maxSpd)} km/h</text>`;
 }
@@ -523,7 +517,7 @@ function renderRideMap(ride: Ride): void {
   }).addTo(rideMap);
   leaflet.polyline(
     ride.points.map(p => [p.lat, p.lng] as [number, number]),
-    { color: '#d4a017', weight: 4, opacity: 0.9 },
+    { color: 'var(--gold)', weight: 4, opacity: 0.9 },
   ).addTo(rideMap);
   rideMap.fitBounds(bounds, { padding: [24, 24] });
   setTimeout(() => rideMap?.invalidateSize(), 250);
@@ -538,7 +532,9 @@ export function destroyRideMap(): void {
 
 export async function deleteRide(id: number): Promise<void> {
   showConfirm('Hapus Ride?', 'Ride ini akan dihapus permanen.', 'HAPUS', async () => {
+    const ride = await dbAction<Ride>('rides', 'get', id);
     await dbAction('rides', 'delete', id);
+    if (ride) void deletePhotosByRide(ride.start);
     showToast('Ride dihapus', 'muted');
     switchView('touring');
     void loadRides();
@@ -563,4 +559,40 @@ export function onRecBtnTap(): void {
 
 export function initRecBtn(): void {
   updateRecBtn();
+}
+
+/* ── DASHBOARD MODE (SPEEDO / NAVI / NAVI MINI) ──────── */
+type DashMode = 'speedo' | 'navi' | 'navi-mini';
+let naviHome: HTMLElement | null = null;
+
+export function switchDashboardMode(mode: DashMode): void {
+  const cluster = $id('instrument-cluster') as HTMLElement;
+  const navi = $id('navi-mode');
+  const panelSpeed = $id('panel-speed');
+  if (!cluster || !navi || !panelSpeed) return;
+  if (!naviHome) naviHome = navi.parentElement;
+
+  $id('mode-speedo').classList.toggle('is-on', mode === 'speedo');
+  $id('mode-navi').classList.toggle('is-on', mode === 'navi');
+  $opt('mode-navi-mini')?.classList.toggle('is-on', mode === 'navi-mini');
+
+  if (mode === 'navi-mini') {
+    cluster.style.display = '';
+    panelSpeed.classList.add('navi-embed');
+    navi.classList.add('navi-embedded');
+    panelSpeed.insertBefore(navi, $id('speedo-container'));
+  } else {
+    panelSpeed.classList.remove('navi-embed');
+    navi.classList.remove('navi-embedded');
+    naviHome?.appendChild(navi);
+    cluster.style.display = mode === 'navi' ? 'none' : '';
+  }
+  navi.classList.toggle('hidden', mode === 'speedo');
+
+  if (mode !== 'speedo') {
+    void import('./navi').then(m => {
+      m.initNaviMap();
+      m.invalidateNaviMap();
+    });
+  }
 }

@@ -39,7 +39,7 @@ export function buildSpeedoSVG(): void {
     ln.setAttribute('x2', String(p2.x));
     ln.setAttribute('y2', String(p2.y));
     const isRed = i > 18;
-    ln.setAttribute('stroke', major ? (isRed ? 'rgba(204,17,34,.8)' : 'rgba(212,160,23,.6)') : 'var(--border2)');
+    ln.setAttribute('stroke', major ? (isRed ? 'rgba(var(--alr-rgb),.8)' : 'rgba(var(--acc-rgb),.6)') : 'var(--border2)');
     ln.setAttribute('stroke-width', major ? '2' : '0.8');
     ticks.appendChild(ln);
     if (major) {
@@ -51,8 +51,8 @@ export function buildSpeedoSVG(): void {
       tx.setAttribute('text-anchor', 'middle');
       tx.setAttribute('dominant-baseline', 'middle');
       tx.setAttribute('font-family', 'Share Tech Mono');
-      tx.setAttribute('font-size', '10');
-      tx.setAttribute('fill', isRed ? 'rgba(204,17,34,.7)' : 'var(--muted)');
+      tx.setAttribute('font-size', '11.5');
+      tx.setAttribute('fill', isRed ? 'rgba(var(--alr-rgb),.7)' : 'var(--muted)');
       tx.textContent = String(spd);
       ticks.appendChild(tx);
     }
@@ -83,9 +83,9 @@ function animateSpeedo(): void {
         needle.setAttribute('cx', String(p.x));
         needle.setAttribute('cy', String(p.y));
         needle.style.opacity = '1';
-        if (c > SG.MAX * 0.75) needle.setAttribute('fill', '#cc1122');
+        if (c > SG.MAX * 0.75) needle.setAttribute('fill', 'var(--red)');
         else if (c > SG.MAX * 0.5) needle.setAttribute('fill', '#ffffff');
-        else needle.setAttribute('fill', '#d4a017');
+        else needle.setAttribute('fill', 'var(--gold)');
       }
     } else {
       fill.style.opacity = '0';
@@ -94,7 +94,10 @@ function animateSpeedo(): void {
   }
 
   const valEl = $opt('sg-value');
-  if (valEl) valEl.textContent = String(Math.round(c));
+  if (valEl) {
+    valEl.textContent = String(Math.round(c));
+    valEl.classList.toggle('is-hot', c >= 80); // blink + breath at highway pace
+  }
 
   if (c > maxSpeed) {
     maxSpeed = c;
@@ -145,7 +148,7 @@ export function buildGForceSVG(): void {
       <filter id="gfGlow"><feGaussianBlur stdDeviation="3" result="b"/>
         <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       <radialGradient id="gfBg" cx="50%" cy="50%" r="50%">
-        <stop offset="0%"   stop-color="rgba(204,17,34,0.07)"/>
+        <stop offset="0%"   stop-color="rgba(var(--alr-rgb),0.07)"/>
         <stop offset="100%" stop-color="transparent"/>
       </radialGradient>`;
   svg.appendChild(defs);
@@ -267,11 +270,11 @@ export function buildLeanSVG(): void {
     p.setAttribute('d', arcPath(LS.CX, LS.CY, LS.R, s, e));
     svg.appendChild(p);
   };
-  addZone(150, 216, '#cc1122', 0.3);
-  addZone(324, 390, '#cc1122', 0.3);
+  addZone(150, 216, 'var(--red)', 0.3);
+  addZone(324, 390, 'var(--red)', 0.3);
   addZone(216, 240, '#ff6600', 0.25);
   addZone(300, 324, '#ff6600', 0.25);
-  addZone(240, 300, '#d4a017', 0.2);
+  addZone(240, 300, 'var(--gold)', 0.2);
 
   const track = svgE('path', { fill: 'none', stroke: 'var(--s3)', 'stroke-width': '14', 'stroke-linecap': 'round', opacity: '.35' });
   track.setAttribute('d', arcPath(LS.CX, LS.CY, LS.R, LS.START, LS.START + LS.SWEEP));
@@ -291,7 +294,7 @@ export function buildLeanSVG(): void {
     const p2 = polarXY(LS.CX, LS.CY, rOut, gaugeAng);
     svg.appendChild(svgE('line', {
       x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y,
-      stroke: major ? 'rgba(212,160,23,.6)' : 'var(--border2)',
+      stroke: major ? 'rgba(var(--acc-rgb),.6)' : 'var(--border2)',
       'stroke-width': major ? '1.8' : '0.8',
     }));
     if (major) {
@@ -395,7 +398,7 @@ export function buildCompassSVG(): void {
     svg.dataset.built = '1';
 
     svg.appendChild(svgE('circle', { cx: 60, cy: 60, r: 58, fill: 'var(--s1)', stroke: 'var(--border2)', 'stroke-width': '1' }));
-    svg.appendChild(svgE('circle', { cx: 60, cy: 60, r: 54, fill: 'none', stroke: 'rgba(212,160,23,.35)', 'stroke-width': '2' }));
+    svg.appendChild(svgE('circle', { cx: 60, cy: 60, r: 54, fill: 'none', stroke: 'rgba(var(--acc-rgb),.35)', 'stroke-width': '2' }));
 
     const rose = svgE('g', { class: 'compass-rose' });
     for (let d = 0; d < 360; d += 15) {
@@ -404,7 +407,7 @@ export function buildCompassSVG(): void {
       const p2 = polarXY(60, 60, 51, d);
       rose.appendChild(svgE('line', {
         x1: p1.x.toFixed(1), y1: p1.y.toFixed(1), x2: p2.x.toFixed(1), y2: p2.y.toFixed(1),
-        stroke: major ? 'rgba(212,160,23,.8)' : 'var(--muted)',
+        stroke: major ? 'rgba(var(--acc-rgb),.8)' : 'var(--muted)',
         'stroke-width': major ? '1.6' : '0.7',
       }));
     }

@@ -6,6 +6,16 @@
 @import "@fontsource/rajdhani/latin-700.css";
 @import "@fontsource/bebas-neue/latin-400.css";
 @import "@fontsource/share-tech-mono/latin-400.css";
+@import "@fontsource/saira/latin-600.css";
+@import "@fontsource/saira/latin-700.css";
+@import "@fontsource/saira/latin-600-italic.css";
+@import "@fontsource/saira-condensed/latin-800.css";
+@import "@fontsource/chakra-petch/latin-600.css";
+@import "@fontsource/chakra-petch/latin-700.css";
+@import "@fontsource/teko/latin-500.css";
+@import "@fontsource/teko/latin-600.css";
+@import "@fontsource/orbitron/latin-500.css";
+@import "@fontsource/orbitron/latin-600.css";
 @import "@fontsource/exo-2/latin-300.css";
 @import "@fontsource/exo-2/latin-400.css";
 @import "@fontsource/exo-2/latin-600.css";
@@ -20,13 +30,17 @@
            BCR DESIGN TOKENS
         ══════════════════════════════════════════════════ */
         :root {
+            /* Accent channels (theme-overridable) */
+            --acc-rgb:  212,160,23;   /* primary accent */
+            --acc2-rgb: 245,200,66;   /* bright accent  */
+            --alr-rgb:  204,17,34;    /* alert          */
+
             /* Core Brand */
-            --gold:    #d4a017;
-            --gold2:   #f5c842;
-            --gold3:   #7a5c0a;
-            --red:     #cc1122;
+            --gold:    rgb(var(--acc-rgb));
+            --gold2:   rgb(var(--acc2-rgb));
+            --gold3:   rgba(var(--acc-rgb),.45);
+            --red:     rgb(var(--alr-rgb));
             --red2:    #ff2244;
-            --red3:    #6e0011;
             --white:   #f0f0f0;
             --off-wh:  #c8c8c8;
 
@@ -40,8 +54,8 @@
             /* Borders */
             --border:  #2c2c2c;
             --border2: #3a3a3a;
-            --borderG: rgba(212,160,23,.35);
-            --borderR: rgba(204,17,34,.35);
+            --borderG: rgba(var(--acc-rgb),.35);
+            --borderR: rgba(var(--alr-rgb),.35);
 
             /* Text */
             --text:    #f0f0f0;
@@ -49,9 +63,9 @@
             --muted2:  #888888;
 
             /* Accent aliases (keep compat) */
-            --neon:    #d4a017;
-            --cyber:   #f5c842;
-            --alert:   #cc1122;
+            --neon:    var(--gold);
+            --cyber:   var(--gold2);
+            --alert:   var(--red);
             --warn:    #ff6600;
         }
 
@@ -70,11 +84,11 @@
         ::-webkit-scrollbar-track{background:transparent}
         ::-webkit-scrollbar-thumb{background:var(--gold);opacity:.3}
 
-        /* ── TYPOGRAPHY ──────────────────────────────────── */
-        .f-bebas{font-family:'Bebas Neue',sans-serif;letter-spacing:2px}
+        /* ── TYPOGRAPHY — display family is per-livery ───── */
+        .f-bebas{font-family:var(--f-display,'Bebas Neue'),sans-serif;letter-spacing:var(--ls-display,2px)}
         .f-rajd{font-family:'Rajdhani',sans-serif}
         .f-mono{font-family:'Share Tech Mono',monospace}
-        .f-exo{font-family:'Exo 2',sans-serif}
+        .f-exo{font-family:var(--f-ui,'Exo 2'),sans-serif}
 
         /* ── BRAND TEXTURE — Carbon Weave ────────────────── */
         .carbon{
@@ -93,18 +107,39 @@
             pointer-events:none;border-radius:inherit;z-index:1
         }
 
-        /* ── CLIP PATHS ─────────────────────────────────── */
-        .clip-sm  {clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
-        .clip-md  {clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
-        .clip-lg  {clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
-        .clip-tr  {clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%)}
-        .clip-tl  {clip-path:polygon(12px 0,100% 0,100% 100%,0 100%,0 12px)}
+        /* ── CLIP PATHS — per-livery shape language ──────── */
+        .clip-sm  {clip-path:var(--clip-sm,polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px)))}
+        .clip-md  {clip-path:var(--clip-md,polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px)))}
+        .clip-lg  {clip-path:var(--clip-lg,polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px)))}
+        .clip-tr  {clip-path:var(--clip-tr,polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%))}
+        .clip-tl  {clip-path:var(--clip-tl,polygon(12px 0,100% 0,100% 100%,0 100%,0 12px))}
 
         /* ── GOLD GLOW UTILS ─────────────────────────────── */
-        .gold-text {color:var(--gold);text-shadow:0 0 12px rgba(212,160,23,.5)}
-        .gold2-text{color:var(--gold2);text-shadow:0 0 10px rgba(245,200,66,.4)}
-        .red-text  {color:var(--red2);text-shadow:0 0 10px rgba(204,17,34,.5)}
+        .gold-text {color:var(--gold);text-shadow:0 0 12px rgba(var(--acc-rgb),.5)}
+        .gold2-text{color:var(--gold2);text-shadow:0 0 10px rgba(var(--acc2-rgb),.4)}
+        .red-text  {color:var(--red2);text-shadow:0 0 10px rgba(var(--alr-rgb),.5)}
         .white-text{color:var(--white)}
+
+        /* ── BROWSER SURFACES ─────────────────────────────── */
+        ::selection{background:rgba(var(--acc-rgb),.35)}
+        :focus-visible{outline:2px solid rgba(var(--acc-rgb),.75);outline-offset:2px}
+
+        /* ── THEME PICKER ─────────────────────────────────── */
+        .theme-sw{width:30px;height:30px;border-radius:9999px;flex-shrink:0;box-shadow:inset 0 0 0 2px rgba(0,0,0,.35),0 2px 6px rgba(0,0,0,.45)}
+        .theme-card{
+            display:flex;align-items:center;gap:10px;text-align:left;
+            padding:10px;border:1px solid var(--border2);background:var(--s1);
+            clip-path:var(--clip-sm);
+            cursor:pointer;min-width:0;transition:border-color .15s,transform .12s;
+        }
+        .theme-card:active{transform:scale(.97)}
+        .theme-card.is-on{
+            border-color:var(--gold2);
+            background:linear-gradient(135deg,rgba(var(--acc-rgb),.14),rgba(var(--acc-rgb),.04)),var(--s1);
+        }
+
+        /* Club title keeps its own mark — liveries own the instruments */
+        .app-header h1{font-family:'Bebas Neue',sans-serif;letter-spacing:4px}
 
         /* ── HEADER ──────────────────────────────────────── */
         .app-header{
@@ -126,9 +161,9 @@
         .crown-badge{
             display:inline-flex;align-items:center;gap:5px;
             padding:2px 8px 2px 6px;
-            background:linear-gradient(90deg,rgba(212,160,23,.15),rgba(204,17,34,.08));
+            background:linear-gradient(90deg,rgba(var(--acc-rgb),.15),rgba(var(--alr-rgb),.08));
             border:1px solid var(--borderG);
-            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+            clip-path:var(--clip-sm);
         }
 
         /* ── NAV ─────────────────────────────────────────── */
@@ -162,11 +197,11 @@
 
         /* ── BUTTONS ─────────────────────────────────────── */
         .btn-gold{
-            background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.4);
+            background:rgba(var(--acc-rgb),.1);border:1px solid rgba(var(--acc-rgb),.4);
             color:var(--gold);font-family:'Exo 2',sans-serif;font-weight:700;
             letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .18s;
         }
-        .btn-gold:active{background:rgba(212,160,23,.22);transform:scale(.96)}
+        .btn-gold:active{background:rgba(var(--acc-rgb),.22);transform:scale(.96)}
         .btn-fill-gold{
             background:linear-gradient(135deg,var(--gold),var(--gold2));
             color:#0a0a0a;font-family:'Exo 2',sans-serif;font-weight:800;
@@ -174,11 +209,11 @@
         }
         .btn-fill-gold:active{opacity:.85;transform:scale(.96)}
         .btn-red{
-            background:rgba(204,17,34,.1);border:1px solid rgba(204,17,34,.4);
+            background:rgba(var(--alr-rgb),.1);border:1px solid rgba(var(--alr-rgb),.4);
             color:var(--red2);font-family:'Exo 2',sans-serif;font-weight:700;
             letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .18s;
         }
-        .btn-red:active{background:rgba(204,17,34,.22);transform:scale(.96)}
+        .btn-red:active{background:rgba(var(--alr-rgb),.22);transform:scale(.96)}
 
         /* ── INPUTS ──────────────────────────────────────── */
         .inp{
@@ -222,7 +257,7 @@
             border-top-left-radius:85px;border-top-right-radius:85px;
             border:2px solid var(--border2);border-bottom:0;
             position:relative;overflow:hidden;
-            background:radial-gradient(ellipse at 50% 100%,rgba(212,160,23,.06),transparent 60%),var(--s2);
+            background:radial-gradient(ellipse at 50% 100%,rgba(var(--acc-rgb),.06),transparent 60%),var(--s2);
         }
         .gauge-needle{
             width:2px;height:74px;
@@ -245,18 +280,25 @@
         .audio-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2),var(--red));width:0%;transition:width .04s}
 
         /* ── SPEEDOMETER SVG ─────────────────────────────── */
-        #speedo-svg{filter:drop-shadow(0 0 28px rgba(212,160,23,.25))}
+        #speedo-svg{filter:drop-shadow(0 0 28px rgba(var(--acc-rgb),.25))}
+        /* Cranked dial (94px speed, bigger badge) + glow filters need spill room;
+           overflow hidden shaved the outer glow and KM/H badge edges */
+        #speedo-svg{overflow:visible}
+        /* High-speed warning: digits blink + glow breathes */
+        @keyframes hot-blink{0%,100%{opacity:1}50%{opacity:.45}}
+        @keyframes hot-breath{0%,100%{filter:url(#sgGlowStrong) brightness(1)}50%{filter:url(#sgGlowStrong) brightness(1.45)}}
+        #sg-value.is-hot{animation:hot-blink .8s step-end infinite,hot-breath 1.6s ease-in-out infinite}
 
         /* ── OBD TERMINAL ────────────────────────────────── */
         .obd-term{
-            background:#060400;border:1px solid rgba(212,160,23,.2);
+            background:#060400;border:1px solid rgba(var(--acc-rgb),.2);
             font-family:'Share Tech Mono',monospace;font-size:11px;
             color:var(--gold);line-height:1.7;padding:12px 14px;white-space:pre-line;
         }
 
         /* ── MODAL SHEET ─────────────────────────────────── */
         .modal-sheet{background:var(--s1);border-top:1px solid var(--border2);position:relative}
-        .modal-sheet::before{
+        #modal-theme{max-height:88dvh;overflow-y:auto}        .modal-sheet::before{
             content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
             background:linear-gradient(90deg,transparent,var(--gold),transparent);
             opacity:.5;
@@ -265,9 +307,9 @@
         /* ── SENSOR CHIP ─────────────────────────────────── */
         .sensor-chip{
             display:inline-flex;align-items:center;gap:5px;padding:4px 9px;
-            background:rgba(212,160,23,.06);border:1px solid rgba(212,160,23,.22);
+            background:rgba(var(--acc-rgb),.06);border:1px solid rgba(var(--acc-rgb),.22);
             color:var(--gold);font-family:'Share Tech Mono',monospace;font-size:11px;line-height:1;
-            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+            clip-path:var(--clip-sm);
         }
 
         /* ── ANIMATIONS ──────────────────────────────────── */
@@ -275,8 +317,8 @@
         @keyframes fadeIn   {from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
         @keyframes spinCW   {to{transform:rotate(360deg)}}
         @keyframes spinCCW  {to{transform:rotate(-360deg)}}
-        @keyframes pulseRed {0%{box-shadow:0 0 0 0 rgba(204,17,34,.7)}70%{box-shadow:0 0 0 24px rgba(204,17,34,0)}100%{box-shadow:0 0 0 0 rgba(204,17,34,0)}}
-        @keyframes goldPulse{0%,100%{text-shadow:0 0 10px rgba(212,160,23,.5)}50%{text-shadow:0 0 22px rgba(245,200,66,.9)}}
+        @keyframes pulseRed {0%{box-shadow:0 0 0 0 rgba(var(--alr-rgb),.7)}70%{box-shadow:0 0 0 24px rgba(var(--alr-rgb),0)}100%{box-shadow:0 0 0 0 rgba(var(--alr-rgb),0)}}
+        @keyframes goldPulse{0%,100%{text-shadow:0 0 10px rgba(var(--acc-rgb),.5)}50%{text-shadow:0 0 22px rgba(var(--acc2-rgb),.9)}}
         @keyframes hudSweep {to{transform:rotate(360deg)}}
         @keyframes panelScan{
             0%,48%{transform:translateX(-120%)}
@@ -292,7 +334,7 @@
 
         /* ── CHECKLIST ───────────────────────────────────── */
         .check-item{background:var(--s1);border:1px solid var(--border);transition:border-color .18s}
-        .check-item.is-done{border-color:rgba(212,160,23,.2)}
+        .check-item.is-done{border-color:rgba(var(--acc-rgb),.2)}
 
         /* ── MISC ────────────────────────────────────────── */
         section.hidden{display:none !important}
@@ -305,11 +347,11 @@
             font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;
             letter-spacing:1.5px;text-transform:uppercase;
             cursor:pointer;transition:all .18s;position:relative;
-            clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+            clip-path:var(--clip-sm);
         }
-        #btn-rot-lock[data-mode="auto"]     {background:rgba(212,160,23,.06);border:1px solid rgba(212,160,23,.22);color:var(--gold)}
-        #btn-rot-lock[data-mode="portrait"] {background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.32);color:var(--gold2)}
-        #btn-rot-lock[data-mode="landscape"]{background:rgba(204,17,34,.08);border:1px solid rgba(204,17,34,.32);color:var(--red2)}
+        #btn-rot-lock[data-mode="auto"]     {background:rgba(var(--acc-rgb),.06);border:1px solid rgba(var(--acc-rgb),.22);color:var(--gold)}
+        #btn-rot-lock[data-mode="portrait"] {background:rgba(var(--acc2-rgb),.08);border:1px solid rgba(var(--acc2-rgb),.32);color:var(--gold2)}
+        #btn-rot-lock[data-mode="landscape"]{background:rgba(var(--alr-rgb),.08);border:1px solid rgba(var(--alr-rgb),.32);color:var(--red2)}
         #btn-rot-lock:active{transform:scale(.93);opacity:.8}
 
         /* ══════════════════════════════════════════════════
@@ -322,13 +364,13 @@
             position:relative;
             overflow:hidden;
             background:
-                radial-gradient(circle at 50% 30%,rgba(212,160,23,.1),transparent 38%),
-                radial-gradient(circle at 85% 80%,rgba(204,17,34,.06),transparent 30%),
+                radial-gradient(circle at 50% 30%,rgba(var(--acc-rgb),.1),transparent 38%),
+                radial-gradient(circle at 85% 80%,rgba(var(--alr-rgb),.06),transparent 30%),
                 var(--bg);
         }
         #view-dashboard::before{
             content:'';position:absolute;inset:-40%;pointer-events:none;
-            background:conic-gradient(from 120deg,transparent,rgba(212,160,23,.07),transparent 28%,rgba(204,17,34,.05),transparent 48%);
+            background:conic-gradient(from 120deg,transparent,rgba(var(--acc-rgb),.07),transparent 28%,rgba(var(--alr-rgb),.05),transparent 48%);
             animation:hudSweep 10s linear infinite;opacity:.5;
         }
         #ride-3d-layer{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:1;mix-blend-mode:screen}
@@ -350,7 +392,7 @@
         #speedo-container::before{
             content:'';position:absolute;
             width:min(74vw,274px);aspect-ratio:1;border-radius:50%;
-            background:repeating-conic-gradient(from 0deg,rgba(212,160,23,.12) 0 3deg,transparent 3deg 10deg);
+            background:repeating-conic-gradient(from 0deg,rgba(var(--acc-rgb),.12) 0 3deg,transparent 3deg 10deg);
             mask:radial-gradient(circle,transparent 0 57%,#000 58% 64%,transparent 65%);
             animation:spinCW 20s linear infinite;opacity:.5;
         }
@@ -371,7 +413,7 @@
         #panel-speed,#panel-gforce,#panel-lean{
             backdrop-filter:blur(10px);
             background:linear-gradient(180deg,rgba(10,10,10,.65),rgba(10,10,10,.4));
-            box-shadow:inset 0 0 24px rgba(212,160,23,.04),0 0 28px rgba(0,0,0,.35);
+            box-shadow:inset 0 0 24px rgba(var(--acc-rgb),.04),0 0 28px rgba(0,0,0,.35);
         }
         #panel-speed::after,#panel-gforce::after,#panel-lean::after{
             content:'';position:absolute;inset:0;pointer-events:none;
@@ -392,22 +434,22 @@
         .mini-inst{
             background:var(--s1);border:1px solid var(--border);
             padding:5px 4px;text-align:center;
-            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+            clip-path:var(--clip-sm);
         }
         .mini-inst-val{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--gold)}
         .mini-inst-lbl{font-family:'Exo 2',sans-serif;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:2px}
 
         /* ── ENV INSTRUMENTS (ALT / TIME — hero tiles) ───── */
         .env-inst{
-            background:linear-gradient(180deg,rgba(212,160,23,.1),rgba(212,160,23,.03)),var(--s1);
-            border:1px solid rgba(212,160,23,.3);
+            background:linear-gradient(180deg,rgba(var(--acc-rgb),.1),rgba(var(--acc-rgb),.03)),var(--s1);
+            border:1px solid rgba(var(--acc-rgb),.3);
             padding:10px 6px;text-align:center;
-            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+            clip-path:var(--clip-sm);
         }
         .env-inst i{font-size:11px;color:var(--gold);opacity:.85}
         .env-inst-val{
             font-family:'Share Tech Mono',monospace;font-size:21px;color:var(--gold);
-            text-shadow:0 0 14px rgba(212,160,23,.45);line-height:1.15;
+            text-shadow:0 0 14px rgba(var(--acc-rgb),.45);line-height:1.15;
         }
         .env-inst-lbl{font-family:'Exo 2',sans-serif;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);margin-top:3px}
         .env-inst-ls{padding:6px 4px;clip-path:none}
@@ -418,17 +460,17 @@
         .compass-inst{
             grid-column:span 2;
             display:flex;align-items:center;gap:14px;
-            background:var(--s1);border:1px solid rgba(212,160,23,.3);
+            background:var(--s1);border:1px solid rgba(var(--acc-rgb),.3);
             padding:8px 12px;
-            clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+            clip-path:var(--clip-sm);
         }
         .compass-inst .compass-svg{width:92px;height:92px;flex:none}
         .compass-side{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0}
-        .compass-side-val{font-family:'Exo 2',sans-serif;font-size:17px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gold2);text-shadow:0 0 10px rgba(245,200,66,.35);line-height:1.1}
+        .compass-side-val{font-family:'Exo 2',sans-serif;font-size:17px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gold2);text-shadow:0 0 10px rgba(var(--acc2-rgb),.35);line-height:1.1}
         .compass-trip{display:flex;flex-direction:column;align-items:flex-start;margin-top:4px}
         .compass-tile-ls{
             display:flex;align-items:center;gap:8px;
-            background:var(--s1);border:1px solid rgba(245,200,66,.25);padding:4px 8px;
+            background:var(--s1);border:1px solid rgba(var(--acc2-rgb),.25);padding:4px 8px;
         }
         .compass-tile-ls .compass-svg{width:48px;height:48px;flex:none}
 
@@ -440,7 +482,7 @@
             border-top:1px solid var(--border);
             background:none;color:var(--gold);cursor:pointer;
         }
-        #btn-theme-ls:active{background:rgba(212,160,23,.1)}
+        #btn-theme-ls:active{background:rgba(var(--acc-rgb),.1)}
         #btn-telemetry-p{display:inline-flex}
 
         /* ── COMPASS RING ────────────────────────────────── */
@@ -477,51 +519,391 @@
             display:flex;align-items:center;justify-content:space-between;gap:8px;
             background:var(--s2);border:1px solid var(--border);padding:7px 10px;
         }
-        .split-row.split-fast{border-color:rgba(212,160,23,.45)}
-        .split-row.split-slow{border-color:rgba(204,17,34,.35)}
+        .split-row.split-fast{border-color:rgba(var(--acc-rgb),.45)}
+        .split-row.split-slow{border-color:rgba(var(--alr-rgb),.35)}
         #btn-rec{
             display:inline-flex;align-items:center;gap:5px;
             padding:4px 10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;
             letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
-            color:var(--red2);background:rgba(204,17,34,.1);border:1px solid rgba(204,17,34,.4);
-            clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+            color:var(--red2);background:rgba(var(--alr-rgb),.1);border:1px solid rgba(var(--alr-rgb),.4);
+            clip-path:var(--clip-sm);
         }
         #btn-rec.recording{animation:recPulse 1.6s ease-in-out infinite}
         #btn-rec .rec-meta{display:inline-flex;align-items:baseline;gap:4px;font-family:'Share Tech Mono',monospace;text-transform:none;letter-spacing:0}
-        @keyframes recPulse{0%,100%{box-shadow:0 0 0 0 rgba(204,17,34,.45)}50%{box-shadow:0 0 0 6px rgba(204,17,34,0)}}
+        @keyframes recPulse{0%,100%{box-shadow:0 0 0 0 rgba(var(--alr-rgb),.45)}50%{box-shadow:0 0 0 6px rgba(var(--alr-rgb),0)}}
+
+        #btn-photo,#btn-rot-lock{
+            display:inline-flex;align-items:center;gap:5px;
+            padding:4px 10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;
+            letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+            color:var(--muted2);background:var(--s2);border:1px solid var(--border2);
+            clip-path:var(--clip-sm);
+        }
+        #btn-rec.recording ~ #btn-rot-lock ~ #btn-photo{color:var(--gold);background:rgba(var(--acc-rgb),.08);border-color:rgba(var(--acc-rgb),.35)}
 
         #btn-master{
             display:inline-flex;align-items:center;gap:5px;
             padding:4px 10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;
             letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
             color:var(--muted2);background:var(--s2);border:1px solid var(--border2);
-            clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+            clip-path:var(--clip-sm);
         }
         #btn-master.all-on{
-            color:var(--gold2);background:rgba(212,160,23,.12);border-color:rgba(212,160,23,.45);
+            color:var(--gold2);background:rgba(var(--acc-rgb),.12);border-color:rgba(var(--acc-rgb),.45);
             animation:masterPulse 1.8s ease-in-out infinite;
         }
-        @keyframes masterPulse{0%,100%{box-shadow:0 0 0 0 rgba(212,160,23,.4)}50%{box-shadow:0 0 0 6px rgba(212,160,23,0)}}
+        @keyframes masterPulse{0%,100%{box-shadow:0 0 0 0 rgba(var(--acc-rgb),.4)}50%{box-shadow:0 0 0 6px rgba(var(--acc-rgb),0)}}
+
+        /* ── DASHBOARD MODE TOGGLE ────────────────────────── */
+        #dash-mode{background:var(--s2);border:1px solid var(--border2)}
+        .dash-mode-btn{
+            padding:3px 9px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;
+            letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);background:none;border:none;cursor:pointer;
+        }
+        .dash-mode-btn.is-on{color:#0a0a0a;background:linear-gradient(135deg,var(--gold),var(--gold2))}
+
+        /* ── NAVI MODE ────────────────────────────────────── */
+        #navi-mode:not(.hidden){display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;width:100%;position:relative;z-index:2}
+        /* NAVI MINI: navi replaces only the speedo box inside #panel-speed */
+        #panel-speed.navi-embed #speedo-container{display:none !important}
+        #navi-mode.navi-embedded{flex:1;min-height:220px;gap:4px}
+        #navi-mode.navi-embedded #navi-map{min-height:120px}
+        #navi-banner.hidden,#navi-preview.hidden,#navi-eta.hidden,#navi-actions.hidden,#navi-search-wrap.hidden{display:none !important}
+        #navi-search-wrap{flex-shrink:0;position:relative;z-index:1000}
+        #navi-q{padding:9px 12px}
+        .navi-results{position:absolute;left:0;right:0;top:100%;margin-top:4px;z-index:1000}
+        .navi-result{
+            display:flex;align-items:center;gap:8px;padding:9px 12px;
+            background:var(--s1);border:1px solid var(--border);border-bottom:none;cursor:pointer;
+            font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--text);
+        }
+        .navi-result:last-child{border-bottom:1px solid var(--border)}
+        .navi-result:active{background:var(--s2)}
+        .navi-result i{color:var(--gold);font-size:11px}
+        .fav-chip{
+            display:inline-flex;align-items:center;gap:5px;padding:4px 10px;cursor:pointer;
+            font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+            color:var(--gold);background:rgba(var(--acc-rgb),.07);border:1px solid rgba(var(--acc-rgb),.25);
+            clip-path:var(--clip-sm);
+        }
+        .fav-chip i{font-size:8px}
+        #navi-map{flex:1;min-height:160px;background:var(--s2);border:1px solid var(--border2);position:relative;z-index:1;overflow:hidden}
+        #navi-rotor{position:absolute;inset:0}
+        #navi-rotor.is-rotating{transform:rotate(var(--rot,0deg)) scale(1.45);transform-origin:50% 50%;transition:transform .55s ease}
+        .navi-attr{position:absolute;right:2px;bottom:14px;z-index:500;background:rgba(0,0,0,.55);color:var(--muted2);font-size:8px;padding:2px 5px;pointer-events:none}
+        .navi-attr a{color:var(--gold)}
+        #navi-map .leaflet-control-attribution{background:rgba(0,0,0,.55);color:var(--muted2);font-size:8px}
+        #navi-map .leaflet-control-attribution a{color:var(--gold)}
+        /* Junction approach card */
+        #navi-junction{
+            position:absolute;left:10px;right:10px;top:10px;z-index:550;display:flex;align-items:center;gap:12px;
+            padding:10px 14px;background:rgba(8,8,8,.9);border:1px solid rgba(var(--acc-rgb),.5);
+            clip-path:var(--clip-sm);box-shadow:0 6px 20px rgba(0,0,0,.55);
+        }
+        #navi-junction.hidden{display:none}
+        .nj-icon{width:56px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:34px;color:var(--gold);background:rgba(var(--acc-rgb),.1);border:1px solid rgba(var(--acc-rgb),.4);clip-path:var(--clip-sm)}
+        .nj-main{min-width:0;display:flex;flex-direction:column;gap:3px}
+        .nj-dist{font-size:26px;color:var(--gold);line-height:1}
+        .nj-road{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .nj-lanes{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted2)}
+        #nb-limit{
+            display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;flex-shrink:0;
+            padding:0 6px;border-radius:999px;background:var(--red2);color:#fff;font-family:'Share Tech Mono',monospace;
+            font-size:15px;font-weight:700;border:2px solid #fff;
+        }
+        #nb-limit.hidden{display:none}
+        .navi-card{
+            flex-shrink:0;padding:9px 12px;background:var(--s1);border:1px solid var(--border2);
+            clip-path:var(--clip-sm);
+        }
+        #navi-next{
+            display:flex;align-items:center;gap:9px;padding:6px 12px;font-size:11px;
+            color:var(--muted2);text-transform:uppercase;letter-spacing:1px;text-align:left;flex-wrap:nowrap;overflow:hidden;
+            white-space:nowrap;
+        }
+        #navi-next i{color:var(--gold);font-size:13px;flex-shrink:0}
+        #navi-next span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        #navi-recenter{
+            position:absolute;right:10px;bottom:14px;z-index:600;display:flex;align-items:center;gap:6px;
+            padding:7px 12px;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+            color:var(--gold);background:rgba(10,10,10,.85);border:1px solid rgba(var(--acc-rgb),.5);
+            clip-path:var(--clip-sm);box-shadow:0 4px 14px rgba(0,0,0,.5);cursor:pointer;
+        }
+        #navi-recenter.hidden{display:none}
+        /* ── Photo ride (Strava-style) ── */
+        .rd-photo-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+        .rd-photo-strip::-webkit-scrollbar{display:none}
+        .rd-photo-thumb{height:64px;width:96px;object-fit:cover;flex-shrink:0;cursor:pointer;border:1px solid var(--border2);opacity:.9;transition:opacity .15s,transform .15s}
+        .rd-photo-thumb:active{transform:scale(.94)}
+        #rd-photos{margin-top:16px}
+        .photo-modal{background:#050505;display:flex;flex-direction:column;z-index:60}
+        .photo-modal.hidden{display:none}
+        .pv-top{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(180deg,rgba(0,0,0,.72),transparent)}
+        #pv-stats{flex:1;text-align:center;letter-spacing:2px}
+        .pv-btn{width:40px;height:40px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--gold);background:rgba(10,10,10,.6);border:1px solid rgba(var(--acc-rgb),.35);clip-path:var(--clip-sm);cursor:pointer;font-size:15px}
+        .pv-arrow{position:absolute;top:50%;left:10px;transform:translateY(-50%);z-index:5}
+        .pv-arrow.pv-r{left:auto;right:10px}
+        .pv-img{flex:1;min-height:0;width:100%;object-fit:contain}
+        .pv-thumbs{display:flex;gap:6px;padding:10px 12px;background:rgba(8,8,8,.88);border-top:1px solid var(--border2);overflow-x:auto;scrollbar-width:none}
+        .pv-thumbs::-webkit-scrollbar{display:none}
+        .pv-thumb{height:46px;width:70px;object-fit:cover;flex-shrink:0;cursor:pointer;opacity:.5;border:1px solid var(--border2)}
+        .pv-thumb.pv-active{opacity:1;border-color:rgba(var(--acc-rgb),.65);outline:1px solid rgba(var(--acc-rgb),.5)}
+        /* ── Live camera PIP ── */
+        #livecam-box{
+            position:fixed;right:10px;bottom:86px;z-index:45;width:108px;aspect-ratio:3/4;
+            background:#000;border:1px solid rgba(var(--acc-rgb),.5);clip-path:var(--clip-sm);
+            box-shadow:0 6px 22px rgba(0,0,0,.6);overflow:hidden;
+        }
+        #livecam-box.hidden{display:none}
+        #livecam-box video{width:100%;height:100%;object-fit:cover;display:block}
+        .lc-top{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:4px;padding:4px;background:linear-gradient(180deg,rgba(0,0,0,.65),transparent)}
+        .lc-rec{display:inline-flex;align-items:center;gap:3px;font-family:'Exo 2',sans-serif;font-size:7px;font-weight:800;letter-spacing:1.5px;color:var(--gold);flex:1}
+        .lc-btn{width:22px;height:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--gold);background:rgba(10,10,10,.55);border:1px solid rgba(var(--acc-rgb),.35);clip-path:var(--clip-sm);cursor:pointer;font-size:9px}
+        #btn-livecam.lc-on{color:var(--gold2);background:rgba(var(--acc2-rgb),.1);border-color:rgba(var(--acc2-rgb),.45)}
+        .navi-preview-main{display:flex;flex-direction:column;gap:2px}
+        #navi-banner{
+            flex-shrink:0;display:flex;align-items:center;gap:12px;padding:10px 12px;
+            background:linear-gradient(135deg,rgba(var(--acc-rgb),.14),rgba(var(--acc-rgb),.04)),var(--s1);
+            border:1px solid rgba(var(--acc-rgb),.4);
+            clip-path:var(--clip-sm);
+        }
+        .nb-icon-wrap{
+            width:42px;height:42px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+            background:rgba(var(--acc-rgb),.12);border:1px solid rgba(var(--acc-rgb),.4);
+            clip-path:var(--clip-sm);
+        }
+        .nb-icon-wrap i{font-size:18px;color:var(--gold2)}
+        .navi-pin{color:var(--red2);font-size:26px;filter:drop-shadow(0 0 6px rgba(var(--alr-rgb),.6))}
 
         /* ══════════════════════════════════════════════════
-           LIGHT MODE (minimal — BCR is always dark)
+           CIRCUIT DAY (light) — minimal
         ══════════════════════════════════════════════════ */
-        [data-theme="light"]{
-            --gold:#8a6000;--gold2:#b08000;
-            --red:#990011;--red2:#cc1122;
+        [data-theme="bcr-light"]{
+            --acc-rgb:138,96,0;--acc2-rgb:176,128,0;--alr-rgb:153,0,17;
+            --gold:#8a6000;--gold2:#b08000;--red2:#cc1122;
             --bg:#f0ece4;--s1:#e8e4dc;--s2:#dedad2;--s3:#d2cec6;
             --border:#c0bbb0;--border2:#aca7a0;
             --text:#0a0a0a;--muted:#888070;--muted2:#666055;
             color-scheme:light;
         }
-        [data-theme="light"] body{color-scheme:light}
-        [data-theme="light"] .inp[type="date"]{color-scheme:light}
-        [data-theme="light"] .hex-bg{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 4L56 18v28L30 60 4 46V18z' fill='none' stroke='%23c0bbb0' stroke-width='0.6'/%3E%3C/svg%3E")}
-        [data-theme="light"] .obd-term{background:#f8f5e8;border-color:rgba(140,96,0,.3);color:#8a6000}
-        [data-theme="light"] .app-header{background:linear-gradient(180deg,rgba(240,236,228,.98),rgba(232,228,220,.95))}
-        [data-theme="light"] .nav-bar{background:rgba(240,236,228,.98)}
-        [data-theme="light"] #view-dashboard{background:radial-gradient(circle at 50% 30%,rgba(138,96,0,.1),transparent 38%),var(--bg)}
-        [data-theme="light"] #speedo-svg{filter:drop-shadow(0 0 16px rgba(138,96,0,.2))}
+        [data-theme="bcr-light"] body{color-scheme:light}
+        [data-theme="bcr-light"] .inp[type="date"]{color-scheme:light}
+        [data-theme="bcr-light"] .hex-bg{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 4L56 18v28L30 60 4 46V18z' fill='none' stroke='%23c0bbb0' stroke-width='0.6'/%3E%3C/svg%3E")}
+        [data-theme="bcr-light"] .obd-term{background:#f8f5e8;border-color:rgba(140,96,0,.3);color:#8a6000}
+        [data-theme="bcr-light"] .app-header{background:linear-gradient(180deg,rgba(240,236,228,.98),rgba(232,228,220,.95))}
+        [data-theme="bcr-light"] .nav-bar{background:rgba(240,236,228,.98)}
+        [data-theme="bcr-light"] #view-dashboard{background:radial-gradient(circle at 50% 30%,rgba(138,96,0,.1),transparent 38%),var(--bg)}
+        [data-theme="bcr-light"] #speedo-svg{filter:drop-shadow(0 0 16px rgba(138,96,0,.2))}
+        [data-theme="bcr-light"] .carbon{background-image:none}
+
+        /* ══════════════════════════════════════════════════
+           LIVERY IDENTITY SYSTEM
+           Each livery owns color + geometry (clip language) +
+           display typeface + texture + signature details.
+           ══════════════════════════════════════════════════ */
+
+        /* Speedo SVG follows the livery display face */
+        #sg-value{font-family:var(--f-display,'Bebas Neue'),sans-serif;font-size:var(--sg-size,72px);font-weight:var(--sg-weight,400);font-style:var(--sg-italic,normal);letter-spacing:var(--ls-display,2px);transform:skewX(var(--sg-skew,0deg))}
+        #sg-ticks text,#sg-max{font-family:'Share Tech Mono',monospace}
+        svg.compass-svg text{font-family:'Exo 2',sans-serif}
+
+        /* Brand head marks (header / dial watermark / picker) */
+        .brand-logo{opacity:0;height:14px;max-width:64px;object-fit:contain;filter:var(--logo-filter,none);transition:opacity .25s}
+        .brand-logo.is-shown{opacity:1}
+        #dial-logo{position:absolute;left:50%;bottom:16.5%;transform:translateX(-50%);opacity:0;height:20px;max-width:124px;object-fit:contain;filter:var(--logo-filter,none);transition:opacity .25s}
+        #dial-logo.is-shown{opacity:1}
+        @media (orientation:landscape){body:not(.force-portrait) #dial-logo{height:16px;bottom:21%;max-width:100px}}
+        body.force-landscape #dial-logo{display:inline-block !important;height:16px !important;bottom:21% !important;max-width:100px !important}
+        body.force-portrait #dial-logo{display:inline-block !important}
+        .theme-logo{display:block;height:18px;max-width:84px;flex-shrink:0;object-fit:contain;filter:var(--logo-filter,none)}
+
+        /* ── LIVERY: Crown Gold (home) — carbon & chamfer, pas ── */
+
+        /* ── LIVERY: Panigale — "curva rossa": italic sweep, full curves ── */
+        [data-theme="panigale"]{
+            --clip-sm:inset(0 round 12px);--clip-md:inset(0 round 16px);--clip-lg:inset(0 round 22px);
+            --clip-tr:inset(0 round 16px);--clip-tl:inset(0 round 16px);
+            --f-display:'Saira';--ls-display:0px;--sg-weight:600;--sg-italic:italic;
+            --logo-filter:drop-shadow(0 2px 10px rgba(230,54,38,.4));
+        }
+        [data-theme="panigale"] #app{background-image:radial-gradient(ellipse at 20% 110%,rgba(var(--acc-rgb),.14),transparent 55%)}
+        [data-theme="panigale"] .header-stripe{background:linear-gradient(180deg,var(--gold) 0 55%,#e8f5ee 55% 70%,#3a76d2 70%)}
+        [data-theme="panigale"] .app-header::after{background:linear-gradient(90deg,transparent,var(--gold) 55%,transparent);}
+        [data-theme="panigale"] .nav-btn::after{border-radius:3px;height:3px}
+
+        /* ── LIVERY: Ninja — "katana": double-bevel blades, techno face ── */
+        [data-theme="ninja"]{
+            --clip-sm:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px);
+            --clip-md:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - 16px),calc(100% - 16px) 100%,16px 100%,0 calc(100% - 16px),0 16px);
+            --clip-lg:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% calc(100% - 20px),calc(100% - 20px) 100%,20px 100%,0 calc(100% - 20px),0 20px);
+            --clip-tr:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%);
+            --clip-tl:polygon(14px 0,100% 0,100% 100%,0 100%,0 14px);
+            --f-display:'Chakra Petch';--f-ui:'Chakra Petch';--ls-display:1px;--sg-weight:700;
+            --logo-filter:drop-shadow(0 1px 8px rgba(150,240,100,.3));
+        }
+        [data-theme="ninja"] #app{background-image:repeating-linear-gradient(105deg,rgba(var(--acc-rgb),.05) 0 2px,transparent 2px 18px)}
+        [data-theme="ninja"] .header-stripe{background:linear-gradient(180deg,transparent 20%,var(--gold) 20% 70%,transparent 70%)}
+        [data-theme="ninja"] .app-header{border-bottom:none}
+        [data-theme="ninja"] .app-header::after{height:3px;bottom:-3px;transform:skewX(-30deg);background:linear-gradient(90deg,transparent,var(--gold) 40%,var(--gold2) 60%,transparent)}
+        [data-theme="ninja"] .nav-btn::after{height:3px}
+        [data-theme="ninja"] .nav-btn{background:none !important;border-right:none}
+        [data-theme="ninja"] .btn{
+            box-shadow:inset 0 1px 0 rgba(0,0,0,.6),0 0 0 1px rgba(0,0,0,.5);
+        }
+        [data-theme="ninja"] .btn-gold{background:linear-gradient(180deg,rgba(var(--acc-rgb),.16),rgba(var(--acc-rgb),.06));box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+        [data-theme="ninja"] .btn-fill-gold{box-shadow:inset 0 1px 0 rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.6),0 3px 0 0 rgba(0,0,0,.45)}
+        [data-theme="ninja"] .btn-fill-gold:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.6)}
+
+        /* ── LIVERY: R1M — "fork slash": italic tempo, speed-cut slants ── */
+        [data-theme="r1m"]{
+            --clip-sm:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);
+            --clip-md:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);
+            --clip-lg:polygon(16px 0,100% 0,calc(100% - 16px) 100%,0 100%);
+            --clip-tr:polygon(0 0,100% 0,calc(100% - 14px) 100%,0 100%);
+            --clip-tl:polygon(14px 0,100% 0,100% 100%,0 100%);
+            --f-display:'Saira';--ls-display:.5px;--sg-weight:600;--sg-italic:italic;
+            --logo-filter:drop-shadow(0 1px 8px rgba(140,186,255,.35));
+        }
+        [data-theme="r1m"] #app{background-image:repeating-linear-gradient(60deg,rgba(var(--acc-rgb),.05) 0 1px,transparent 1px 14px)}
+        [data-theme="r1m"] .header-stripe{background:linear-gradient(180deg,transparent 30%,var(--gold) 30%,var(--gold2) 70%,transparent 70%)}
+        [data-theme="r1m"] .app-header::after{background:linear-gradient(90deg,transparent 20%,var(--gold) 70%,transparent)}
+        [data-theme="r1m"] .nav-btn::after{height:3px;left:50%;right:auto;width:18px;margin-left:-9px;border-radius:2px}
+        [data-theme="r1m"] .btn-fill-gold{color:#f2f6ff;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none}
+
+        /* ── LIVERY: Repsol — "block stripes": pills + fairing bands ── */
+        [data-theme="repsol"]{
+            --clip-sm:inset(0 round 8px);--clip-md:inset(0 round 10px);--clip-lg:inset(0 round 14px);
+            --clip-tr:inset(0 round 10px);--clip-tl:inset(0 round 10px);
+            --f-display:'Teko';--ls-display:2px;--sg-weight:600;
+            --logo-filter:brightness(1.1);
+        }
+        [data-theme="repsol"] #app{background-image:repeating-linear-gradient(115deg,rgba(var(--acc-rgb),.055) 0 14px,transparent 14px 38px,rgba(var(--acc2-rgb),.04) 38px 44px,transparent 44px 68px)}
+        [data-theme="repsol"] .header-stripe{width:4px;background:linear-gradient(180deg,var(--gold) 0 42%,var(--gold2) 42% 72%,#f5f4f4 72% 78%,var(--alr-rgb) 78%)}
+        [data-theme="repsol"] .app-header::after{background:linear-gradient(90deg,transparent,var(--gold) 30%,var(--gold2) 55%,transparent)}
+        [data-theme="repsol"] .nav-btn::after{background:linear-gradient(90deg,var(--gold) 0 55%,var(--gold2) 55%)}
+        [data-theme="repsol"] .btn-fill-gold{color:#fff;background:linear-gradient(180deg,var(--gold),var(--gold))}
+        [data-theme="repsol"] .dash-mode-btn.is-on{color:#fff}
+
+        /* ── LIVERY: Ecstar — "metalic settle": soft squares, silver shine ── */
+        [data-theme="ecstar"]{
+            --clip-sm:inset(0 round 6px);--clip-md:inset(0 round 9px);--clip-lg:inset(0 round 12px);
+            --clip-tr:inset(0 round 9px);--clip-tl:inset(0 round 9px);
+            --f-display:'Saira';--ls-display:1px;--sg-weight:700;
+            --logo-filter:drop-shadow(0 1px 6px rgba(255,255,255,.28)) brightness(1.35);
+        }
+        [data-theme="ecstar"] #app{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 4L56 18v28L30 60 4 46V18z' fill='none' stroke='%231c2a4a' stroke-width='0.7'/%3E%3C/svg%3E")}
+        [data-theme="ecstar"] .header-stripe{background:linear-gradient(180deg,var(--gold2),var(--gold))}
+        [data-theme="ecstar"] .app-header::after{background:linear-gradient(90deg,transparent,var(--gold2) 35%,var(--gold) 75%,transparent);opacity:.85}
+        [data-theme="ecstar"] .nav-btn::after{height:2px;background:linear-gradient(90deg,var(--gold2),var(--gold))}
+        [data-theme="ecstar"] .btn-fill-gold{color:#fff;background:linear-gradient(135deg,var(--gold) 30%,var(--gold2))}
+        [data-theme="ecstar"] .dash-mode-btn.is-on{color:#fff}
+        [data-theme="ecstar"] .env-inst-val{color:var(--gold2)}
+
+        /* ── LIVERY: Apex — "redline razor": hairline slivers, blueprint grid ── */
+        [data-theme="apex"]{
+            --clip-sm:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%);
+            --clip-md:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);
+            --clip-lg:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);
+            --clip-tr:polygon(0 0,100% 0,calc(100% - 12px) 100%,0 100%);
+            --clip-tl:polygon(12px 0,100% 0,100% 100%,0 100%);
+            --f-display:'Bebas Neue';--ls-display:4px;--sg-skew:-8deg;--sg-weight:400;
+            --logo-filter:drop-shadow(0 1px 8px rgba(225,6,0,.45));
+        }
+        [data-theme="apex"] #app{background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 1px,transparent 1px 64px)}
+        [data-theme="apex"] .header-stripe{width:2px;background:var(--gold)}
+        [data-theme="apex"] .app-header::after{height:1px;background:linear-gradient(90deg,transparent 10%,var(--gold) 45%,transparent 80%)}
+        [data-theme="apex"] .nav-btn::after{height:2px;background:var(--gold2)}
+        [data-theme="apex"] .btn-gold{background:none;border:1px solid rgba(var(--acc-rgb),.55)}
+        [data-theme="apex"] .btn-red{background:none}
+        [data-theme="apex"] .inst-panel-speed{border-top-width:1px}
+        [data-theme="apex"] .inst-panel-gforce{border-top-width:1px}
+        [data-theme="apex"] .inst-panel-lean{border-top-width:1px}
+
+        /* ── LIVERY: MotoGP — "podium": champagne volumes, condensed 900 ── */
+        [data-theme="motogp"]{
+            --clip-sm:inset(0 round 14px);--clip-md:inset(0 round 18px);--clip-lg:inset(0 round 24px);
+            --clip-tr:inset(0 round 18px);--clip-tl:inset(0 round 18px);
+            --f-display:'Saira Condensed';--ls-display:1px;--sg-weight:800;
+            --logo-filter:drop-shadow(0 2px 12px rgba(245,200,66,.35));
+        }
+        [data-theme="motogp"] #app{background-image:radial-gradient(ellipse at 85% -10%,rgba(var(--acc2-rgb),.12),transparent 42%)}
+        [data-theme="motogp"] .header-stripe{width:4px;background:linear-gradient(180deg,var(--gold2),var(--gold))}
+        [data-theme="motogp"] .app-header::after{background:linear-gradient(90deg,transparent,var(--gold2) 40%,var(--gold) 70%,transparent)}
+        [data-theme="motogp"] .nav-btn::after{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--gold2),var(--gold))}
+        [data-theme="motogp"] .btn-fill-gold{color:#fff;background:linear-gradient(160deg,var(--gold2) 0%,var(--gold) 70%)}
+        [data-theme="motogp"] .dash-mode-btn.is-on{color:#fff}
+
+        /* ── LIVERY: Road Race Legend — "asfalt lokal": soft street grid ── */
+        [data-theme="roadrace"]{
+            --clip-sm:inset(0 round 6px);--clip-md:inset(0 round 8px);--clip-lg:inset(0 round 10px);
+            --clip-tr:inset(0 round 8px);--clip-tl:inset(0 round 8px);
+            --f-display:'Rajdhani';--ls-display:2px;--sg-weight:700;
+            --logo-filter:none;
+        }
+        [data-theme="roadrace"] #app{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='42'%3E%3Crect width='21' height='21' fill='rgba(255,61,110,.05)'/%3E%3Crect x='21' width='21' height='21' fill='rgba(56,189,248,.05)'/%3E%3Crect y='21' x='21' width='21' height='21' fill='rgba(255,61,110,.05)'/%3E%3C/svg%3E")}
+        [data-theme="roadrace"] .header-stripe{width:4px;background:linear-gradient(180deg,var(--gold) 0 50%,var(--gold2) 50%)}
+        [data-theme="roadrace"] .app-header::after{background:linear-gradient(90deg,transparent,var(--gold) 35%,var(--gold2) 65%,transparent)}
+        [data-theme="roadrace"] .nav-btn::after{height:3px;border-radius:3px}
+        [data-theme="roadrace"] .btn-fill-gold{color:#fff;background:linear-gradient(135deg,var(--gold) 40%,var(--gold2))}
+        [data-theme="roadrace"] .dash-mode-btn.is-on{color:#fff}
+
+        /* ── LIVERY: Fast — "nitro chrome scan": glass pills + scanlines ── */
+        [data-theme="fast"]{
+            --clip-sm:inset(0 round 999px);
+            --clip-md:inset(0 round 18px);--clip-lg:inset(0 round 26px);
+            --clip-tr:inset(0 round 18px);--clip-tl:inset(0 round 18px);
+            --f-display:'Orbitron';--ls-display:0px;--sg-weight:600;--sg-size:48px;
+            --logo-filter:brightness(1.25) drop-shadow(0 0 10px rgba(0,229,255,.5));
+        }
+        [data-theme="fast"] #app{
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 4L56 18v28L30 60 4 46V18z' fill='none' stroke='%23121d26' stroke-width='0.7'/%3E%3C/svg%3E"),radial-gradient(ellipse at 50% 115%,rgba(0,229,255,.1),transparent 55%);
+        }
+        [data-theme="fast"] #app::after{
+            content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
+            background:repeating-linear-gradient(to bottom,transparent 0 3px,rgba(0,0,0,.12) 3px 4px);
+            border-radius:inherit;
+        }
+        [data-theme="fast"] .header-stripe{background:linear-gradient(180deg,transparent 25%,var(--gold2) 25% 75%,transparent 75%)}
+        [data-theme="fast"] .app-header::after{height:2px;background:linear-gradient(90deg,transparent,var(--gold2) 50%,transparent);box-shadow:0 0 14px rgba(0,229,255,.4)}
+        [data-theme="fast"] .nav-btn::after{height:3px;border-radius:3px;background:var(--gold2);box-shadow:0 0 10px rgba(0,229,255,.45)}
+        [data-theme="fast"] .btn-gold{background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.45);color:var(--gold2);box-shadow:0 0 14px rgba(0,229,255,.12) inset}
+        [data-theme="fast"] .btn-fill-gold{background:linear-gradient(135deg,rgba(var(--acc-rgb),.25),rgba(0,229,255,.25));color:#e9fdff;border:1px solid rgba(0,229,255,.55);box-shadow:0 0 18px rgba(0,229,255,.18)}
+        [data-theme="fast"] .dash-mode-btn.is-on{color:#062028;background:var(--gold2)}
+
+        /* ── LIVERY: Circuit Day (light) — ivory soft chamfer ── */
+        [data-theme="bcr-light"]{
+            --clip-sm:inset(0 round 10px);--clip-md:inset(0 round 12px);--clip-lg:inset(0 round 16px);
+            --clip-tr:inset(0 round 12px);--clip-tl:inset(0 round 12px);
+        }
+
+        /* ── LIVERY ACCENT COLORS (original channels) ────── */
+        [data-theme="panigale"]{
+            --acc-rgb:212,34,17;--acc2-rgb:255,112,80;
+        }
+        [data-theme="ninja"]{
+            --acc-rgb:94,194,50;--acc2-rgb:150,240,100;
+        }
+        [data-theme="r1m"]{
+            --acc-rgb:55,118,255;--acc2-rgb:140,186,255;
+        }
+        [data-theme="repsol"]{
+            --acc-rgb:255,122,0;--acc2-rgb:255,199,44;
+        }
+        [data-theme="ecstar"]{
+            --acc-rgb:0,77,187;--acc2-rgb:205,214,224;
+        }
+        [data-theme="apex"]{
+            --acc-rgb:225,6,0;--acc2-rgb:235,235,238;
+        }
+        [data-theme="motogp"]{
+            --acc-rgb:225,10,60;--acc2-rgb:245,200,66;
+        }
+        [data-theme="roadrace"]{
+            --acc-rgb:255,61,110;--acc2-rgb:56,189,248;
+        }
+        [data-theme="fast"]{
+            --acc-rgb:200,206,214;--acc2-rgb:0,229,255;
+        }
 
         /* ══════════════════════════════════════════════════
            LANDSCAPE — FULL SCREEN + 3-PANEL CLUSTER
@@ -546,9 +928,9 @@
             #view-dashboard{padding:6px 8px 6px 8px !important;gap:5px !important;height:100dvh !important;min-height:unset !important;overflow:hidden !important}
             #instrument-cluster{flex-direction:row !important;align-items:stretch !important;justify-content:stretch !important;flex:1 !important;gap:6px !important;min-height:0 !important}
             #panel-speed,#panel-gforce,#panel-lean{flex:1 !important;display:flex !important;flex-direction:column !important;gap:5px !important;min-width:0 !important;padding:8px !important;position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(10,10,10,.6),rgba(10,10,10,.38));border:1px solid var(--border2)}
-            #panel-speed {clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%)}
-            #panel-lean  {clip-path:polygon(10px 0,100% 0,100% 100%,0 100%,0 10px)}
-            #speedo-container{flex:1 !important;min-height:0 !important;width:100% !important;display:flex !important;align-items:center !important;justify-content:center !important;overflow:hidden !important}
+            #panel-speed {clip-path:var(--clip-tr)}
+            #panel-lean  {clip-path:var(--clip-tl)}
+            #speedo-container{flex:1 !important;min-height:0 !important;width:100% !important;display:flex !important;align-items:center !important;justify-content:center !important;overflow:visible !important}
             #speedo-container #speedo-svg{max-width:100% !important;max-height:100% !important;width:auto !important;height:auto !important}
             .portrait-only{display:none !important}
             #dash-bottom{flex-direction:row !important;align-items:center !important;gap:6px !important;flex-shrink:0 !important}
@@ -609,9 +991,9 @@
         body.force-landscape #view-dashboard{padding:6px 8px !important;gap:5px !important;height:100% !important;min-height:unset !important;overflow:hidden !important}
         body.force-landscape #instrument-cluster{flex-direction:row !important;align-items:stretch !important;justify-content:stretch !important;flex:1 !important;gap:6px !important;min-height:0 !important}
         body.force-landscape #panel-speed,body.force-landscape #panel-gforce,body.force-landscape #panel-lean{flex:1 !important;display:flex !important;flex-direction:column !important;gap:5px !important;min-width:0 !important;padding:8px !important;position:relative !important;overflow:hidden !important;background:linear-gradient(180deg,rgba(10,10,10,.6),rgba(10,10,10,.38)) !important;border:1px solid var(--border2) !important}
-        body.force-landscape #panel-speed{clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%) !important}
-        body.force-landscape #panel-lean{clip-path:polygon(10px 0,100% 0,100% 100%,0 100%,0 10px) !important}
-        body.force-landscape #speedo-container{flex:1 !important;min-height:0 !important;width:100% !important;display:flex !important;align-items:center !important;justify-content:center !important;overflow:hidden !important}
+        body.force-landscape #panel-speed{clip-path:var(--clip-tr) !important}
+        body.force-landscape #panel-lean{clip-path:var(--clip-tl) !important}
+        body.force-landscape #speedo-container{flex:1 !important;min-height:0 !important;width:100% !important;display:flex !important;align-items:center !important;justify-content:center !important;overflow:visible !important}
         body.force-landscape #speedo-container #speedo-svg{max-width:100% !important;max-height:100% !important;width:auto !important;height:auto !important}
         body.force-landscape .portrait-only{display:none !important}
         body.force-landscape #dash-bottom{flex-direction:row !important;align-items:center !important;gap:6px !important;flex-shrink:0 !important}
@@ -623,3 +1005,48 @@
         body.force-landscape #bcr-mini-instruments{display:none !important}
         body.force-landscape .landscape-only{display:flex !important}
         body.force-landscape #btn-telemetry-p{display:none !important}
+
+        /* ══ SPLASH BOOT ══ */
+        #splash{
+            position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;
+            background:
+                radial-gradient(1200px 500px at 50% 120%, rgba(var(--acc-rgb),.14), transparent 60%),
+                linear-gradient(180deg,rgba(var(--acc-rgb),.05),transparent 40%),var(--bg);
+            overflow:hidden;transition:opacity .55s ease,transform .65s ease;
+        }
+        #splash.is-done{opacity:0;transform:scale(1.05);pointer-events:none}
+        .splash-stripes{
+            position:absolute;inset:-20%;background:repeating-linear-gradient(-45deg,transparent 0 26px,rgba(var(--acc-rgb),.05) 26px 34px);
+            animation:splashSweep 9s linear infinite;
+        }
+        @keyframes splashSweep{to{transform:translate(88px,88px)}}
+        .splash-core{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;text-align:center}
+        .splash-logo{width:132px;height:132px;object-fit:contain;filter:var(--logo-filter,none);
+            animation:logoIn .85s cubic-bezier(.2,1.4,.3,1) both,logoBreath 2.6s ease-in-out .9s infinite}
+        @keyframes logoIn{from{opacity:0;transform:scale(.55) rotate(-8deg);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
+        @keyframes logoBreath{0%,100%{filter:var(--logo-filter,none) drop-shadow(0 0 0 transparent)}50%{filter:var(--logo-filter,none) drop-shadow(0 0 26px rgba(var(--acc-rgb),.55))}}
+        .splash-word{
+            font-family:'Exo 2',sans-serif;font-size:34px;font-weight:900;letter-spacing:2px;color:var(--text);
+            display:flex;align-items:baseline;animation:fadeUp .6s .25s both;
+        }
+        .splash-word span{color:var(--gold);margin-left:2px}
+        .splash-sub{font-family:'Rajdhani',sans-serif;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--muted2);animation:fadeUp .6s .4s both}
+        .splash-tag{
+            font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:3px;color:var(--gold);
+            padding:7px 16px;background:rgba(var(--acc-rgb),.08);border:1px solid rgba(var(--acc-rgb),.35);clip-path:var(--clip-sm);
+            animation:fadeUp .6s .55s both,fadeStay 1.8s 1.1s infinite;
+        }
+        @keyframes fadeStay{50%{border-color:rgba(var(--acc-rgb),.75);color:var(--gold2)}}
+        .splash-rev{display:flex;gap:4px;animation:fadeUp .6s .7s both}
+        .splash-rev i{width:14px;height:6px;background:var(--border2);animation:revUp 1.5s infinite}
+        .splash-rev i:nth-child(1){animation-delay:.0s}.splash-rev i:nth-child(2){animation-delay:.12s}
+        .splash-rev i:nth-child(3){animation-delay:.24s}.splash-rev i:nth-child(4){animation-delay:.36s}
+        .splash-rev i:nth-child(5){animation-delay:.48s}.splash-rev i:nth-child(6){animation-delay:.6s}
+        .splash-rev i:nth-child(7){animation-delay:.72s;background:rgba(var(--alr-rgb),.8)}
+        .splash-rev i:nth-child(8){animation-delay:.84s;background:rgba(var(--alr-rgb),.85)}
+        .splash-rev i:nth-child(9){animation-delay:.96s;background:rgba(var(--alr-rgb),.9)}
+        .splash-rev i:nth-child(10){animation-delay:1.08s;background:rgba(var(--alr-rgb),1)}
+        @keyframes revUp{0%,100%{opacity:.25}18%{opacity:1}}
+        .splash-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--muted2);animation:fadeUp .6s .85s both}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+        body.force-portrait #splash,body.force-landscape #splash{inset:0;z-index:80}

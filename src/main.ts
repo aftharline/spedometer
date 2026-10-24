@@ -3,16 +3,19 @@ import { registerSW } from 'virtual:pwa-register';
 
 import { toggleAudioRPM } from './audio';
 import { DB_NAME, initDB } from './db';
-import { buildCompassSVG, buildGForceSVG, buildLeanSVG, buildSpeedoSVG, resetMaxSpeed, updateGForceMeter } from './gauges';
+import { buildCompassSVG, buildGForceSVG, buildLeanSVG, buildSpeedoSVG, resetMaxSpeed, setSpeedoArc, updateGForceMeter } from './gauges';
 import { resetTrip } from './hud';
-import { closeAllModals, closeModal, openModal, overlayTap } from './modals';
+import { closeModal, closeAllModals, openModal, overlayTap, showConfirm } from './modals';
 import { connectOBD2 } from './obd';
+import { naviCenterMe, naviOpenGMaps, naviPickDest, naviSearchInput, naviStart, naviStop, naviUseFav } from './navi';
 import { processAIOdometer, triggerAiScanner } from './ocr';
+import { closePhotoModal, openPhotoModal, photoNext, pickPhotos, sharePhoto } from './ride-photos';
+import { snapLivePhoto, stopLiveCam, toggleLiveCam } from './livecam';
 import { calibrateLean, cancelCrash, cycleRotLock, toggleTelemetry, triggerSOS } from './telemetry';
+import { applyTheme, openThemePicker, pickTheme } from './themes';
 import { showToast } from './toast';
 import {
   addCheckItem,
-  applyTheme,
   confirmClearChecklist,
   deleteCheck,
   deleteCurrentRide,
@@ -21,11 +24,12 @@ import {
   openRideDetail,
   onRecBtnTap,
   openVehicleDetail,
+  pageRideStart,
   shareCurrentRide,
+  switchDashboardMode,
   switchView,
   toggleCheck,
   toggleMasterSensors,
-  toggleTheme,
   updateMasterBtn,
   updateTypeUI,
 } from './ui';
@@ -40,8 +44,16 @@ function recoverDB(): void {
 }
 
 Object.assign(window, {
-  toggleTheme,
   switchView,
+  setSpeedoArc,
+  closePhotoModal,
+  openPhotoModal,
+  photoNext,
+  pickPhotos,
+  sharePhoto,
+  toggleLiveCam,
+  stopLiveCam,
+  snapLivePhoto,
   openModal,
   closeModal,
   closeAllModals,
@@ -69,10 +81,21 @@ Object.assign(window, {
   openRideDetail,
   shareCurrentRide,
   deleteCurrentRide,
+  switchDashboardMode,
+  naviSearchInput,
+  naviPickDest,
+  naviUseFav,
+  naviStart,
+  naviStop,
+  naviOpenGMaps,
+  naviCenterMe,
+  openThemePicker,
+  pickTheme,
   recoverDB,
 });
 
 window.addEventListener('load', async () => {
+  const t0 = Date.now();
   buildSpeedoSVG();
   buildGForceSVG();
   buildLeanSVG();
@@ -80,17 +103,18 @@ window.addEventListener('load', async () => {
   initRecBtn();
   updateMasterBtn();
   updateGForceMeter(1, 0, 0);
-  applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'bcr');
 
   try {
     await initDB();
   } catch (err) {
     console.error('[DB]', err);
+    await hideSplash(t0);
     const main = document.getElementById('main-content');
     if (main) {
       main.innerHTML = `
           <div class="flex flex-col items-center justify-center gap-5 p-8 h-full">
-            <div class="w-16 h-16 flex items-center justify-center clip-md" style="background:rgba(204,17,34,.1);border:1px solid rgba(204,17,34,.35)"><i class="fa-solid fa-database text-2xl red-text"></i></div>
+            <div class="w-16 h-16 flex items-center justify-center clip-md" style="background:rgba(var(--alr-rgb),.1);border:1px solid rgba(var(--alr-rgb),.35)"><i class="fa-solid fa-database text-2xl red-text"></i></div>
             <div class="text-center"><p class="f-exo font-black text-lg uppercase tracking-widest red-text">Database Error</p>
             <p class="f-mono text-xs mt-2" style="color:var(--muted2)">${(err as Error).message || 'IndexedDB tidak tersedia'}</p></div>
             <button onclick="recoverDB()" class="btn-fill-gold clip-sm px-6 py-3 text-xs tracking-[3px]">RESET & PERBAIKI DB</button></div>`;
@@ -98,6 +122,18 @@ window.addEventListener('load', async () => {
     return;
   }
 
+  await hideSplash(t0);
   switchView('garage');
   registerSW({ immediate: true });
 });
+
+/* Sweep tachometer di splash berjalan penuh walau DB siap cepat. */
+async function hideSplash(t0: number): Promise<void> {
+  const min = 2100;
+  await new Promise(r => setTimeout(r, Math.max(0, min - (Date.now() - t0))));
+  try { await document.fonts.ready; } catch { /* font API tidak ada */ }
+  const s = document.getElementById('splash');
+  if (!s) return;
+  s.classList.add('is-done');
+  setTimeout(() => s.remove(), 700);
+}

@@ -1,5 +1,5 @@
 export const DB_NAME = 'BCRideDB';
-export const DB_VERSION = 6;
+export const DB_VERSION = 7;
 
 let db: IDBDatabase | null = null;
 
@@ -22,6 +22,13 @@ export function initDB(): Promise<IDBDatabase> {
         const rs = database.createObjectStore('rides', { keyPath: 'id', autoIncrement: true });
         rs.createIndex('startTime', 'start', { unique: false });
         rs.createIndex('vehicleId', 'vehicleId', { unique: false });
+      }
+      if (!database.objectStoreNames.contains('photos')) {
+        const ps = database.createObjectStore('photos', { keyPath: 'id', autoIncrement: true });
+        ps.createIndex('rideKey', 'rideKey', { unique: false });
+      } else {
+        const ps = tx.objectStore('photos');
+        if (!ps.indexNames.contains('rideKey')) ps.createIndex('rideKey', 'rideKey', { unique: false });
       }
     };
     req.onsuccess = e => {

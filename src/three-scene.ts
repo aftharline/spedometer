@@ -2,6 +2,9 @@ import * as THREE from 'three';
 
 let started = false;
 
+const accentRGB = (): string => getComputedStyle(document.documentElement).getPropertyValue('--acc-rgb').trim() || '212,160,23';
+const alertRGB = (): string => getComputedStyle(document.documentElement).getPropertyValue('--alr-rgb').trim() || '204,17,34';
+
 export function initThreeScene(): void {
   if (started) return;
   const canvas3d = document.getElementById('ride-3d-canvas') as HTMLCanvasElement | null;
@@ -103,6 +106,24 @@ export function initThreeScene(): void {
   const mat2 = new THREE.PointsMaterial({ color: 0xcc1122, size: 0.018, transparent: true, opacity: 0.35 });
   const particles2 = new THREE.Points(geo2, mat2);
   scene.add(particles2);
+
+  const retint = (): void => {
+    const acc = new THREE.Color(`rgb(${accentRGB()})`);
+    const alr = new THREE.Color(`rgb(${alertRGB()})`);
+    key.color.copy(acc);
+    fill.color.copy(acc);
+    rim.color.copy(alr);
+    centerMat.color.copy(acc);
+    goldMat.color.copy(acc);
+    goldMat.emissive.copy(acc);
+    particleMat.color.copy(acc);
+    edgeMat.color.copy(alr);
+    redMat.color.copy(alr);
+    redMat.emissive.copy(alr);
+    mat2.color.copy(alr);
+  };
+  retint();
+  window.addEventListener('themechange', retint);
 
   let state = { speed: 0, lean: 0, g: 1, gx: 0, gy: 0, heading: 0 };
   window.addEventListener('ride3d:update', e => {

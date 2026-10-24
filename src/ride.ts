@@ -1,10 +1,12 @@
 import { dbAction } from './db';
 import { elevationGain, haversineMeters } from './geo';
 import { showConfirm } from './modals';
+import { deletePhotosByRide, setPhotoRideKey } from './ride-photos';
 import { appState } from './state';
 import { showToast } from './toast';
 import type { Ride, RidePoint } from './types';
 import { $opt } from './util';
+import { vibPeak, vibReset } from './vibration';
 
 const PAUSE_AFTER_SEC = 90;
 const RESUME_KMH = 3;
@@ -23,6 +25,7 @@ let lastSampleAt = 0;
 let stillSince: number | null = null;
 let autosaveTimer: ReturnType<typeof setInterval> | null = null;
 let tickTimer: ReturnType<typeof setInterval> | null = null;
+let photoKey: number | null = null;
 
 export const isRecording = (): boolean => recording;
 export const isPaused = (): boolean => paused;
@@ -42,6 +45,9 @@ export async function startRecording(): Promise<void> {
   distM = 0;
   lastSampleAt = 0;
   stillSince = null;
+  vibReset();
+  photoKey = null;
+  setPhotoRideKey(null);
   updateRecBtn();
   showToast('REKAM DIMULAI — BCR TOURING', 'gold2');
   tickTimer = setInterval(updateRecLive, 1000);
@@ -62,7 +68,7 @@ export function stopRecording(discard = false): void {
   }
   showConfirm('Hentikan Rekam?', `Ride ${(distM / 1000).toFixed(1)} km akan disimpan ke BCR Touring.`, 'SIMPAN', async () => {
     const ride = buildRide();
-    teardown();
+    teardown(true);
     try {
       await dbAction('rides', 'add', ride);
       showToast(`Ride tersimpan — ${ride.distKm.toFixed(1)} km`, 'gold2');
@@ -74,7 +80,7 @@ export function stopRecording(discard = false): void {
   });
 }
 
-function teardown(): void {
+function teardown(keepPhotos = false): void {
   recording = false;
   paused = false;
   points = [];
@@ -87,6 +93,10 @@ function teardown(): void {
   autosaveTimer = null;
   updateRecBtn();
   void dbAction('rides', 'delete', -1).catch(() => {});
+  if (!keepPhotos) {
+    if (photoKey !== null) void deletePhotosByRide(photoKey);
+    setPhotoRideKey(null);
+  }
 }
 
 function buildRide(): Ride {
@@ -109,6 +119,7 @@ function buildRide(): Ride {
     avgKmh: moving > 0 ? Math.round((distKm / (moving / 3600)) * 10) / 10 : 0,
     maxKmh: Math.round(maxKmh),
     gainM: elevationGain(points),
+    vibMax: Math.round(vibPeak()),
     points,
   };
 }
@@ -152,6 +163,10 @@ export function feedRidePoint(p: RidePoint): void {
   if (due && moved) {
     points.push(p);
     lastSampleAt = p.t;
+    if (points.length === 1) {
+      photoKey = p.t;
+      setPhotoRideKey(p.t);
+    }
     if (points.length > MAX_POINTS) points = points.filter((_, i) => i % 2 === 0 || i === points.length - 1);
   }
   updateRecLive();

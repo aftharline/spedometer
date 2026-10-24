@@ -21,11 +21,13 @@ import {
   updateCompassDisplays,
   updateSensorChip,
 } from './hud';
-import { appState, updateRideState } from './state';
+import { appState, rideState, updateRideState } from './state';
 import { feedRidePoint } from './ride';
+import { feedNaviPoint } from './navi';
 import { showToast } from './toast';
 import type { GpsPoint } from './types';
 import { $id, $opt } from './util';
+import { pushVibrationSample, vibReset } from './vibration';
 
 let geoWatchId: number | null = null;
 let wakeLock: any = null;
@@ -102,6 +104,7 @@ function processGpsPosition(pos: GeolocationPosition): void {
 
   const displayHeading = gpsFilteredSpeed > 5 ? lastHeading : (compassHeading ?? lastHeading);
   updateCompassDisplays(displayHeading);
+  feedNaviPoint(point.lat, point.lng);
   feedRidePoint({ lat: point.lat, lng: point.lng, t: now, alt: c.altitude, spd: gpsFilteredSpeed });
   updateRideState({
     speed: gpsFilteredSpeed,
@@ -171,7 +174,7 @@ export function triggerSOS(): void {
 }
 
 const TELE_ON =
-  'background:rgba(204,17,34,.12);border:1px solid rgba(204,17,34,.4);color:var(--red2);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
+  'background:rgba(var(--alr-rgb),.12);border:1px solid rgba(var(--alr-rgb),.4);color:var(--red2);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
 const TELE_OFF =
   'background:var(--s2);border:1px solid var(--border2);color:var(--muted2);font-family:"Exo 2",sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;';
 
@@ -237,7 +240,65 @@ let fusedLean = 0;
 let filteredG = 1;
 let filteredGx = 0;
 let filteredGy = 0;
-let lastCrashPeakAt = 0;
+
+/* ── CRASH GATE — impact alone ≠ crash (speedbump/pothole ring the same
+   bell). Arm on a hard hit while moving, then confirm: a secondary hit,
+   a sustained scrub, or a GPS speed collapse. Confirm ⇒ SOS modal. */
+interface CrashArm {
+  at: number;
+  speed0: number;
+  hits: number;
+  lastHitAt: number;
+  lastSpeedAt: number;
+  lowSpeed: number;
+}
+const CRASH_IMPACT_G = 2.6;
+const CRASH_MIN_SPEED_KMH = 8;
+const CRASH_WINDOW_MS = 3200;
+const CRASH_REARM_MS = 25000;
+let crashArm: CrashArm | null = null;
+let crashCooldownUntil = 0;
+
+function confirmCrash(): void {
+  crashArm = null;
+  crashCooldownUntil = Date.now() + CRASH_REARM_MS;
+  triggerAutoCrash();
+}
+
+function noteCrashImpact(medG: number): void {
+  const now = Date.now();
+
+  // Wall-level hit while riding fast needs no confirmation.
+  if (medG >= 5.5 && rideState.speed >= 20) { confirmCrash(); return; }
+  if (crashTimer || now < crashCooldownUntil) return;
+
+  const spd = rideState.speed;
+  if (!crashArm) {
+    if (medG >= CRASH_IMPACT_G && spd >= CRASH_MIN_SPEED_KMH) {
+      crashArm = { at: now, speed0: spd, hits: 1, lastHitAt: now, lastSpeedAt: now, lowSpeed: 0 };
+    }
+    return;
+  }
+
+  if (now - crashArm.at > CRASH_WINDOW_MS) { crashArm = null; return; } // lone bump, ride went on
+
+  // 1 — secondary impact shortly after the first (bike → ground/rider)
+  if (medG >= 2.2 && now - crashArm.at >= 150 && now - crashArm.lastHitAt >= 120) confirmCrash();
+
+  // 2 — shake keeps landing (slide / scrub)
+  if (medG >= CRASH_IMPACT_G) {
+    crashArm.hits = now - crashArm.lastHitAt >= 120 ? crashArm.hits + 1 : crashArm.hits;
+    crashArm.lastHitAt = now;
+    if (crashArm.hits >= 4) confirmCrash();
+  }
+
+  // 3 — GPS speed collapses after the impact (skid stop)
+  if (crashArm && spd <= Math.max(3, crashArm.speed0 * 0.55) && now - crashArm.lastSpeedAt >= 600) {
+    crashArm.lastSpeedAt = now;
+    crashArm.lowSpeed++;
+    if (crashArm.lowSpeed >= 2) confirmCrash();
+  }
+}
 
 const G_BUF_SIZE = 5;
 const gBuffer = Array(G_BUF_SIZE).fill(1.0);
@@ -302,12 +363,12 @@ function handleMotion(e: DeviceMotionEvent): void {
   if (labsG) labsG.textContent = filteredG.toFixed(1);
   updateGForceMeter(filteredG, filteredGx, filteredGy);
   updateRideState({ g: filteredG, gx: filteredGx, gy: filteredGy });
+  pushVibrationSample((acc.x || 0) / 9.81, (acc.y || 0) / 9.81, (acc.z || 0) / 9.81, Date.now());
   if (Date.now() - lastOrientAt > 500) {
     const motionLean = leanFromAcceleration(acc);
     if (motionLean !== null) applyLeanAngle(motionLean, 'MOTION');
   }
-  if (rawG > 3.6 && filteredG > 2.8) lastCrashPeakAt = Date.now();
-  if (filteredG > 4.0 && Date.now() - lastCrashPeakAt < 500 && !crashTimer) triggerAutoCrash();
+  noteCrashImpact(medG);
 }
 
 function handleOrient(e: DeviceOrientationEvent): void {
@@ -354,6 +415,8 @@ function startTelemetry(): void {
   filteredG = 1;
   filteredGx = 0;
   filteredGy = 0;
+  vibReset();
+  crashArm = null;
   updateTelemetryBtns(true);
   const strip = $opt('portrait-tele');
   if (strip) (strip as HTMLElement).style.display = 'grid';
@@ -380,7 +443,9 @@ export function stopTelemetry(): void {
   filteredGy = 0;
   updateGForceMeter(1, 0, 0);
   updateLeanGauge(0);
-  updateRideState({ lean: 0, g: 1, gx: 0, gy: 0, sensor: 'IDLE' });
+  vibReset();
+  crashArm = null;
+  updateRideState({ lean: 0, g: 1, gx: 0, gy: 0, vib: 0, sensor: 'IDLE' });
   updateSensorChip(geoWatchId !== null ? 'GPS' : 'IDLE', geoWatchId !== null ? 'good' : 'idle');
 }
 
@@ -421,5 +486,7 @@ function triggerAutoCrash(): void {
 export function cancelCrash(): void {
   if (crashTimer) clearInterval(crashTimer);
   crashTimer = null;
+  crashCooldownUntil = Date.now() + CRASH_REARM_MS;
+  crashArm = null;
   $id('crash-modal').classList.add('hidden');
 }

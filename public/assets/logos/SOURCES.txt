@@ -1,0 +1,14 @@
+Brand logo provenance — all sourced from Wikimedia Commons (PD-textlogo vectorization of official logos),
+fetched 2026-10-24. Trademarks belong to their respective owners; personal use inside this PWA.
+
+logo-panigale.svg   Ducati Motor Holding   https://commons.wikimedia.org/wiki/File:Ducati_red_logo.svg
+logo-r1m.svg        Yamaha Motor Co.       https://commons.wikimedia.org/wiki/File:Yamaha_Motor_2025.svg
+logo-ninja.svg      Kawasaki Motors       https://commons.wikimedia.org/wiki/File:Kawasaki-logo.svg                (recolor #000 -> #f2f2f2 for dark UI)
+logo-repsol.svg     Repsol                 https://commons.wikimedia.org/wiki/File:Repsol_logo.svg                  (recolor wordmark #041e42 -> #f7f7f7 for dark UI)
+logo-ecstar.svg     Suzuki Motor Corp      https://commons.wikimedia.org/wiki/File:Suzuki_logo_2025.svg
+logo-apex.svg       Formula 1              https://commons.wikimedia.org/wiki/File:F1.svg
+logo-motogp.svg     MotoGP (Pentagram 2024)https://commons.wikimedia.org/wiki/File:MotoGP_logo_(2024).svg           (recolor #000 -> #f2f2f2 for dark UI)
+logo-fast.png       Fast & Furious (Universal) https://commons.wikimedia.org/wiki/File:Fast-furious-logo-fast-furious.png
+logo-roadrace.svg   Authored in-repo (geometric mark, no text) — Road Race Legend theme
+logo-bcr.svg        -> BLACK CROWN RIDERS Surabaya (NOT YET INCLUDED: drop your club logo here
+                       as public/assets/logos/logo-bcr.svg — SVG preferred, transparent PNG usable)

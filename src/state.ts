@@ -13,6 +13,7 @@ export const rideState: RideState = {
   g: 1,
   gx: 0,
   gy: 0,
+  vib: 0,
   heading: 0,
   gpsAcc: null,
   sensor: 'IDLE',
