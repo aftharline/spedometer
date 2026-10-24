@@ -134,7 +134,7 @@
                     <button id="btn-livecam" onclick="toggleLiveCam()" aria-label="Kamera live">
                         <i class="fa-solid fa-video text-[10px]"></i><span>CAM</span>
                     </button>
-                    <button onclick="resetMaxSpeed()" class="f-exo font-bold text-[11px] px-2 py-1 tracking-widest uppercase" style="background:var(--s2);border:1px solid var(--border);color:var(--muted2)">RST MAX</button>
+                    <button id="btn-rst-max" onclick="resetMaxSpeed()" class="f-exo font-bold text-[11px] px-2 py-1 tracking-widest uppercase" style="background:var(--s2);border:1px solid var(--border);color:var(--muted2)">RST MAX</button>
                 </div>
             </div>
 
@@ -371,6 +371,11 @@
                 </div><!-- /#panel-lean -->
 
             </div><!-- /#instrument-cluster -->
+
+            <!-- Landscape-only splitter: panel kanan (gforce+lean) + dash-bottom -->
+            <div id="ls-right" class="hidden">
+                <div id="ls-mid"></div>
+            </div>
 
             <!-- ── NAVI MODE (Google Maps style) ────────── -->
             <div id="navi-mode" class="hidden">
@@ -780,6 +785,27 @@
     </div>
 
     <!-- ── MODALS ────────────────────────────────────────── -->
+    <div id="modal-settings" class="hidden absolute bottom-0 left-0 right-0 z-50 slide-up clip-tl modal-sheet">
+        <div class="p-6" style="padding-top:28px;max-height:88dvh;overflow-y:auto">
+            <div class="flex justify-between items-start mb-5">
+                <div><h3 class="f-exo font-black text-lg uppercase tracking-[3px]">BCR Settings</h3>
+                <p class="f-rajd text-[10px] tracking-widest uppercase mt-1" style="color:var(--muted2)">KENDALI FITUR APLIKASI</p></div>
+                <button onclick="closeModal('modal-settings')" aria-label="Tutup pengaturan" class="w-8 h-8 flex items-center justify-center clip-sm" style="background:var(--s2);border:1px solid var(--border2)"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+            <div id="settings-list" class="space-y-2">
+                <button onclick="openThemePicker()" class="set-row"><i class="fa-solid fa-palette set-ico"></i><span class="flex-1 text-left"><b>LIVERY / TEMA</b><small>Ganti identitas warna aplikasi</small></span><i class="fa-solid fa-chevron-right set-chev"></i></button>
+                <button onclick="cycleRotLock()" class="set-row"><i class="fa-solid fa-mobile-screen-button set-ico"></i><span class="flex-1 text-left"><b>ROTASI LAYAR</b><small id="set-rot">Auto</small></span><i class="fa-solid fa-rotate set-chev"></i></button>
+                <button onclick="toggleMasterSensors()" class="set-row"><i class="fa-solid fa-power-off set-ico"></i><span class="flex-1 text-left"><b>SEMUA SENSOR</b><small id="set-sensors">GPS + IMU + Audio</small></span><span class="set-dot" id="set-dot-master"></span></button>
+                <button onclick="toggleTelemetry()" class="set-row"><i class="fa-solid fa-microchip set-ico"></i><span class="flex-1 text-left"><b>TELEMETRI IMU</b><small>G-Force, lean, vibrasi</small></span><span class="set-dot" id="set-dot-tel"></span></button>
+                <button onclick="toggleAudioRPM()" class="set-row"><i class="fa-solid fa-wave-square set-ico"></i><span class="flex-1 text-left"><b>ACOUSTIC RPM</b><small>Deteksi putaran mesin via mic</small></span><span class="set-dot" id="set-dot-audio"></span></button>
+                <button onclick="resetTrip()" class="set-row"><i class="fa-solid fa-route set-ico"></i><span class="flex-1 text-left"><b>TRIP COUNTER</b><small id="set-trip">0.0 km — saat perjalanan</small></span><i class="fa-solid fa-rotate-left set-chev"></i></button>
+                <button onclick="resetMaxSpeed()" class="set-row"><i class="fa-solid fa-gauge-high set-ico"></i><span class="flex-1 text-left"><b>MAX SPEED</b><small id="set-maxspd">0 km/h — kecepatan tertinggi</small></span><i class="fa-solid fa-rotate-left set-chev"></i></button>
+                <button onclick="installApp()" class="set-row"><i class="fa-solid fa-down-to-bracket set-ico"></i><span class="flex-1 text-left"><b>INSTALL APLIKASI</b><small>Tambahkan ke layar utama (PWA)</small></span><i class="fa-solid fa-chevron-right set-chev"></i></button>
+                <button onclick="exportDataCSV()" class="set-row"><i class="fa-solid fa-file-csv set-ico"></i><span class="flex-1 text-left"><b>EKSPOR DATA CSV</b><small>Servis + bahan bakar</small></span><i class="fa-solid fa-download set-chev"></i></button>
+                <button onclick="recoverDB()" class="set-row set-row-danger"><i class="fa-solid fa-database set-ico"></i><span class="flex-1 text-left"><b>RESET DATABASE</b><small>Hapus semua data lokal</small></span><i class="fa-solid fa-triangle-exclamation set-chev"></i></button>
+            </div>
+        </div>
+    </div>
     <div id="modal-theme" class="hidden absolute bottom-0 left-0 right-0 z-50 slide-up clip-tl modal-sheet">
         <div class="p-6" style="padding-top:28px">
             <div class="flex justify-between items-start mb-5">

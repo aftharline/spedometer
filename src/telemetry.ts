@@ -212,6 +212,7 @@ export function cycleRotLock(): void {
   leanBaseline = null;
   fusedLean = 0;
   updateLeanGauge(0);
+  void import('./ui').then(m => m.relayoutDashboard()).catch(() => {});
   const modeLabels = {
     auto: 'Auto — layout mengikuti layar',
     portrait: 'Portrait terkunci 📱',

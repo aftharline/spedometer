@@ -29,6 +29,7 @@ import {
   shareCurrentRide,
   switchDashboardMode,
   switchView,
+  relayoutDashboard,
   toggleCheck,
   toggleMasterSensors,
   updateMasterBtn,
@@ -125,6 +126,7 @@ window.addEventListener('load', async () => {
   }
 
   await hideSplash(t0);
+  relayoutDashboard();
   switchView('garage');
   initInstallPrompt();
   registerSW({ immediate: true });

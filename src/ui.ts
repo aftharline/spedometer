@@ -1,6 +1,6 @@
 import { isAudioActive, stopAudioRPM, toggleAudioRPM } from './audio';
 import { dbAction } from './db';
-import { closeModal, showConfirm } from './modals';
+import { closeModal, openModal, showConfirm } from './modals';
 import { clearStripKey, deletePhotosByRide, renderStrip } from './ride-photos';
 import { appState } from './state';
 import { isGpsActive, isTelemetryActive, startSpeedometer, stopSpeedometer, stopTelemetry, toggleTelemetry } from './telemetry';
@@ -352,7 +352,26 @@ export function confirmClearChecklist(): void {
   });
 }
 
-$id('btn-settings').onclick = () => showToast('BCR Settings — coming soon', 'muted');
+export function refreshSettingsPanel(): void {
+  const rot = $opt('rot-lock-label')?.textContent ?? 'AUTO';
+  const setRot = $opt('set-rot');
+  if (setRot) setRot.textContent = rot === 'AUTO' ? 'Auto' : rot === 'PORT' ? 'Portrait terkunci' : 'Landscape terkunci';
+  const onCls = ['set-dot-master', 'set-dot-tel', 'set-dot-audio'];
+  const states = [allSensorsOn(), isTelemetryActive(), isAudioActive()];
+  onCls.forEach((id, i) => $opt(id)?.classList.toggle('on', states[i]));
+  const trip = $opt('ls-trip')?.textContent ?? '0.0';
+  const setTrip = $opt('set-trip');
+  if (setTrip) setTrip.textContent = `${trip} km — jarak sejak reset terakhir`;
+  const max = $opt('val-maxspd')?.textContent ?? '0';
+  const setMax = $opt('set-maxspd');
+  if (setMax) setMax.textContent = `${max} km/h — kecepatan tertinggi sesi ini`;
+}
+
+$id('btn-settings').onclick = () => {
+  openModal('modal-settings');
+  refreshSettingsPanel();
+};
+$id('modal-settings').addEventListener('click', () => setTimeout(refreshSettingsPanel, 350));
 
 /* ── BCR TOURING ────────────────────────────────────── */
 import leaflet, { type Map as LeafletMap } from 'leaflet';
@@ -565,6 +584,73 @@ export function initRecBtn(): void {
 type DashMode = 'speedo' | 'navi' | 'navi-mini';
 let naviHome: HTMLElement | null = null;
 
+/* ── LANDSCAPE RE-PARENTING ─────────────────────────── */
+type Home = { el: HTMLElement; parent: HTMLElement; next: Node | null };
+const homes = new Map<HTMLElement, Home>();
+
+function capture(el: HTMLElement): void {
+  if (!homes.has(el)) {
+    const parent = el.parentElement;
+    if (parent) homes.set(el, { el, parent, next: el.nextSibling });
+  }
+}
+
+function into(parent: HTMLElement, el: HTMLElement, before?: Node | null): void {
+  capture(el);
+  parent.insertBefore(el, before ?? null);
+}
+
+function restoreAll(): void {
+  homes.forEach(h => h.parent.insertBefore(h.el, h.next));
+}
+
+export const isLandscapeLayout = (): boolean => {
+  const b = document.body.classList;
+  if (b.contains('force-portrait')) return false;
+  if (b.contains('force-landscape')) return true;
+  return window.innerWidth > window.innerHeight;
+};
+
+export function relayoutDashboard(): void {
+  const cluster = $opt('instrument-cluster');
+  const gforce = $opt('panel-gforce') as HTMLElement | null;
+  const lean = $opt('panel-lean') as HTMLElement | null;
+  const bottom = $opt('dash-bottom') as HTMLElement | null;
+  const lsRight = $opt('ls-right') as HTMLElement | null;
+  const lsMid = $opt('ls-mid') as HTMLElement | null;
+  const cam = $opt('btn-livecam') as HTMLElement | null;
+  const rst = $opt('btn-rst-max') as HTMLElement | null;
+  const sos = $opt('ls-sos');
+  if (!cluster || !gforce || !lean || !bottom || !lsRight || !lsMid) return;
+
+  if (isLandscapeLayout()) {
+    into(lsMid, gforce);
+    into(lsMid, lean);
+    into(lsRight, bottom);
+    if (cam && rst && sos) {
+      into(bottom, cam, sos);
+      into(bottom, rst, sos);
+    }
+    into(cluster, lsRight);
+    cluster.classList.add('ls-split');
+    lsRight.classList.remove('hidden');
+  } else {
+    restoreAll();
+    cluster.classList.remove('ls-split');
+    lsRight.classList.add('hidden');
+  }
+}
+
+let relayoutRaf = 0;
+window.addEventListener('resize', () => {
+  if (relayoutRaf) return;
+  relayoutRaf = requestAnimationFrame(() => {
+    relayoutRaf = 0;
+    relayoutDashboard();
+  });
+});
+window.addEventListener('orientationchange', () => setTimeout(relayoutDashboard, 250));
+
 export function switchDashboardMode(mode: DashMode): void {
   const cluster = $id('instrument-cluster') as HTMLElement;
   const navi = $id('navi-mode');
@@ -588,6 +674,13 @@ export function switchDashboardMode(mode: DashMode): void {
     cluster.style.display = mode === 'navi' ? 'none' : '';
   }
   navi.classList.toggle('hidden', mode === 'speedo');
+
+  if (mode === 'navi' && isLandscapeLayout() && naviHome) {
+    const bottom = $opt('dash-bottom') as HTMLElement | null;
+    if (bottom) into(naviHome, bottom);
+  } else {
+    relayoutDashboard();
+  }
 
   if (mode !== 'speedo') {
     void import('./navi').then(m => {
