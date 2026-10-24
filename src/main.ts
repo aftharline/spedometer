@@ -14,6 +14,7 @@ import { snapLivePhoto, stopLiveCam, toggleLiveCam } from './livecam';
 import { calibrateLean, cancelCrash, cycleRotLock, toggleTelemetry, triggerSOS } from './telemetry';
 import { applyTheme, openThemePicker, pickTheme } from './themes';
 import { showToast } from './toast';
+import { initInstallPrompt, installApp } from './pwa-install';
 import {
   addCheckItem,
   confirmClearChecklist,
@@ -49,6 +50,7 @@ Object.assign(window, {
   closePhotoModal,
   openPhotoModal,
   photoNext,
+  installApp,
   pickPhotos,
   sharePhoto,
   toggleLiveCam,
@@ -124,6 +126,7 @@ window.addEventListener('load', async () => {
 
   await hideSplash(t0);
   switchView('garage');
+  initInstallPrompt();
   registerSW({ immediate: true });
 });
 

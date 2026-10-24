@@ -7,6 +7,11 @@
     <meta name="description" content="BLACKCROWN RIDE — Super App resmi Black Crown Riders Surabaya. GPS Speedometer, Telemetri IMU, AI Scanner, dan lebih.">
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#080808">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="BCR RIDE">
+    <link rel="apple-touch-icon" href="./assets/icon-192.png">
     <link rel="icon" href="./assets/icon-192.png" type="image/png">
     <script>(function(){const s=localStorage.getItem('theme');const ok=['bcr','panigale','ninja','r1m','repsol','ecstar','apex','motogp','roadrace','fast','bcr-light'];document.documentElement.setAttribute('data-theme',s==='dark'||!s?'bcr':s==='light'?'bcr-light':ok.includes(s)?s:'bcr');})();</script>
 </head>
@@ -709,6 +714,7 @@
             <i class="nav-icon fa-solid fa-flask"></i><span class="nav-label">Labs</span>
         </button>
         <button onclick="switchView('checklist')" id="nav-checklist" class="nav-btn"><i class="nav-icon fa-solid fa-list-check"></i><span class="nav-label">Gear</span></button>
+        <button id="nav-install" onclick="installApp()" aria-label="Install aplikasi" class="nav-btn"><i class="nav-icon fa-solid fa-down-to-bracket"></i><span class="nav-label">Install</span></button>
         <button id="btn-theme-ls" onclick="openThemePicker()" aria-label="Ganti tema" class="landscape-only"><span class="w-3 h-3 rounded-full" style="background:linear-gradient(135deg,var(--gold),var(--gold2))"></span></button>
     </nav>
 

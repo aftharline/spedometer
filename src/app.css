@@ -1050,3 +1050,7 @@
         .splash-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--muted2);animation:fadeUp .6s .85s both}
         @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
         body.force-portrait #splash,body.force-landscape #splash{inset:0;z-index:80}
+
+/* ── PWA INSTALL BUTTON ──────────────────────────── */
+/* # nav-install: tampil permanen; is-hidden = app sudah terinstall / standalone */
+#nav-install.is-hidden{display:none!important}
