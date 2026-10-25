@@ -111,6 +111,7 @@ export class LeanFilter {
         this.calBuf = [];
         this.aim = 0;
         this.disp = 0;
+        this.calEnd = null; // buka kembali pipeline — kalau tidak, push beku selamanya
       }
       return { tilt, shake };
     }

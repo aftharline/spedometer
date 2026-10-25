@@ -70,6 +70,26 @@ describe('lean filter', () => {
     expect(f.calibratedZero!).toBeLessThan(5);
   });
 
+  it('regresi: pipeline HIDUP kembali setelah jendela kalibrasi selesai', () => {
+    const f = new LeanFilter();
+    f.beginCalibrate(0);
+    const toG = (tiltDeg: number): { x: number; y: number; z: number } => ({
+      x: Math.tan((tiltDeg * Math.PI) / 180),
+      y: 0,
+      z: 1,
+    });
+    // jendela 1,5 s tegak → nol tersimpan
+    for (let i = 0; i < 100; i++) f.feed(toG(0), 0, i * 40);
+    expect(f.calibratedZero).not.toBeNull();
+    // setelah kalibrasi: miring 30° konstan → jarum HARUS bergerak lagi
+    let out = 0;
+    for (let i = 0; i < 150; i++) {
+      const { tilt, shake } = f.feed(toG(30), 0, 2000 + i * 20);
+      out = f.push(tilt, 0.02, shake);
+    }
+    expect(out).toBeGreaterThan(20); // beku = bug lama (calEnd tak di-null-kan)
+  });
+
   it('setelah nol tersimpan 4°, tilt 4° → jarum ~0', () => {
     const f2 = new LeanFilter();
     f2.setSavedZero(4);
