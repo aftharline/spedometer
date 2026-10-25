@@ -1,4 +1,5 @@
 import { headingToCompass } from './geo';
+import { rideState } from './state';
 import { showToast } from './toast';
 import { $opt, escapeHTML } from './util';
 
@@ -93,3 +94,22 @@ export function updateSensorChip(label: string, type = 'idle'): void {
 setInterval(updateClock, 1000);
 updateClock();
 updateTripDisplays();
+
+/* ── SENSE CHIP (NAVI MINI) — dihidupkan event ride3d:update ── */
+export function paintSenseChip(): void {
+  const leanEl = $opt('sc-lean');
+  if (!leanEl) return;
+
+  /* chip: lean | corner | slope */
+  const lv = Math.abs(rideState.lean);
+  leanEl.textContent = `${rideState.lean > 1 ? '+' : rideState.lean < -1 ? '-' : ''}${lv.toFixed(0)}°`;
+  leanEl.style.color = lv >= 25 ? 'var(--red2)' : lv >= 15 ? 'var(--warn)' : 'var(--gold2)';
+  const cnt = $opt('sc-count');
+  if (cnt) cnt.textContent = String(rideState.corners);
+  const sl = $opt('sc-slope');
+  if (sl) {
+    sl.textContent = `${rideState.slope > 0 ? '+' : ''}${rideState.slope.toFixed(1)}°`;
+    sl.style.color = rideState.slope >= 3 ? 'var(--gold2)' : rideState.slope <= -3 ? 'var(--off-wh)' : 'var(--muted2)';
+  }
+
+}

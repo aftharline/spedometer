@@ -23,6 +23,8 @@ export function setPhotoRideKey(startTs: number | null): void {
   recKey = startTs;
 }
 
+export const currentRecKey = (): number | null => recKey;
+
 function loadPhotos(rideKey: number): Promise<RidePhoto[]> {
   return dbAction<RidePhoto[]>('photos', 'getIndex', null, 'rideKey', rideKey).catch(() => []);
 }
@@ -98,6 +100,7 @@ export function pickPhotos(capture: boolean, rideStart?: number): void {
     if (n) {
       showToast(`${n} foto tersimpan`, 'gold2');
       if (stripKey !== null) await renderStrip(stripKey);
+      else if (recKey !== null) await openPhotoModal(recKey, 9999); // langsung terlihat walau di halaman speedo
     }
     if (rideStart !== undefined) setPhotoRideKey(null);
   };

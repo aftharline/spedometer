@@ -24,6 +24,10 @@ export const THEMES: ThemeDef[] = [
   { id: 'motogp',    name: 'MotoGP Podium',   sub: 'MotoGP · podium champagne',   acc: '#e10a3c', acc2: '#f5c842', bg: '#080808', logo: LOGO('motogp.svg'),   tagline: 'RIDE LIKE YOU QUALIFIED POLE' },
   { id: 'roadrace',  name: 'Road Race Legend',sub: 'Sirkuit lokal · sirkuit sky', acc: '#ff3d6e', acc2: '#38bdf8', bg: '#080808', logo: LOGO('roadrace.svg'), tagline: 'EVERY ROAD IS A STORY' },
   { id: 'fast',      name: "Dom's Chrome",    sub: 'Fast & Furious · nitro',      acc: '#c8ced6', acc2: '#00e5ff', bg: '#080808', logo: LOGO('fast.png'),     tagline: 'HOLD ONTO YOUR FILET' },
+  { id: 'ktm',       name: 'KTM Duke',        sub: 'Ready to Race · jingga',      acc: '#ff6600', acc2: '#ffb066', bg: '#0d0d0d', logo: LOGO('ktm.svg'),      tagline: 'READY TO RACE — READY TO FLY' },
+  { id: 'mandalika', name: 'GP Mandalika',    sub: 'Sirkuit Lombok · tropis',     acc: '#00b3a4', acc2: '#f5c842', bg: '#071514', logo: LOGO('mandalika.svg'),tagline: 'THE MARVELOUS ISLAND CIRCUIT' },
+  { id: 'nascar',    name: 'NASCAR Thunder',  sub: 'Stock car · tri-bar',         acc: '#ffd200', acc2: '#1c5fd6', bg: '#101010', logo: LOGO('nascar.svg'),   tagline: 'GENTLEMEN, START YOUR ENGINES' },
+  { id: 'nfs',       name: 'Need for Speed',  sub: 'Street racer · electric cyan',acc: '#00e5ff', acc2: '#7df9ff', bg: '#05080d', logo: LOGO('nfs.svg'),      tagline: 'CHASE THE HORIZON — NO LIMITS' },
   { id: 'bcr-light', name: 'Circuit Day',     sub: 'Mode terang minimal',         acc: '#8a6000', acc2: '#b08000', bg: '#f0ece4', logo: LOGO('bcr.svg'),      tagline: 'GOLDEN HOURS, CLEAN THROTTLE' },
 ];
 

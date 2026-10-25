@@ -5,12 +5,15 @@ import { toggleAudioRPM } from './audio';
 import { DB_NAME, initDB } from './db';
 import { buildCompassSVG, buildGForceSVG, buildLeanSVG, buildSpeedoSVG, resetMaxSpeed, setSpeedoArc, updateGForceMeter } from './gauges';
 import { resetTrip } from './hud';
+import { kitFuelAdd, kitLoadWeather, kitPlan, kitSvcAdd, kitTab, kitUseRoute } from './kit';
 import { closeModal, closeAllModals, openModal, overlayTap, showConfirm } from './modals';
 import { connectOBD2 } from './obd';
-import { naviCenterMe, naviOpenGMaps, naviPickDest, naviSearchInput, naviStart, naviStop, naviUseFav } from './navi';
+import { naviCenterMe, lapCheck, lapReset, lapSetLine, naviOpenGMaps, naviPickDest, naviSearchInput, naviStart, naviStop, naviUseFav } from './navi';
 import { processAIOdometer, triggerAiScanner } from './ocr';
+import { openRideCard, shareRideCard } from './ride-card';
 import { closePhotoModal, openPhotoModal, photoNext, pickPhotos, sharePhoto } from './ride-photos';
 import { snapLivePhoto, stopLiveCam, toggleLiveCam } from './livecam';
+import { initThreeScene } from './three-scene';
 import { calibrateLean, cancelCrash, cycleRotLock, toggleTelemetry, triggerSOS } from './telemetry';
 import { applyTheme, openThemePicker, pickTheme } from './themes';
 import { showToast } from './toast';
@@ -31,6 +34,7 @@ import {
   switchView,
   relayoutDashboard,
   toggleCheck,
+  toggleCrashSensor,
   toggleMasterSensors,
   updateMasterBtn,
   updateTypeUI,
@@ -65,6 +69,7 @@ Object.assign(window, {
   triggerAiScanner,
   processAIOdometer,
   cycleRotLock,
+  toggleCrashSensor,
   resetMaxSpeed,
   calibrateLean,
   toggleTelemetry,
@@ -92,9 +97,20 @@ Object.assign(window, {
   naviStop,
   naviOpenGMaps,
   naviCenterMe,
+  lapSetLine,
+  lapCheck,
+  lapReset,
+  openRideCard,
+  shareRideCard,
   openThemePicker,
   pickTheme,
   recoverDB,
+  kitTab,
+  kitLoadWeather,
+  kitPlan,
+  kitUseRoute,
+  kitFuelAdd,
+  kitSvcAdd,
 });
 
 window.addEventListener('load', async () => {
@@ -104,6 +120,7 @@ window.addEventListener('load', async () => {
   buildLeanSVG();
   buildCompassSVG();
   initRecBtn();
+  initThreeScene();
   updateMasterBtn();
   updateGForceMeter(1, 0, 0);
   applyTheme(document.documentElement.getAttribute('data-theme') || 'bcr');

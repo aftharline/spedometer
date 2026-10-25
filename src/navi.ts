@@ -1,4 +1,5 @@
 import leaflet, { type CircleMarker, type Map as LeafletMap, type Marker, type Polyline } from 'leaflet';
+import { showConfirm } from './modals';
 import {
   cumulativeNodeOffsets,
   courseAhead,
@@ -20,6 +21,7 @@ import {
 } from './navi-math';
 import { appState, rideState } from './state';
 import { showToast } from './toast';
+import { haversineMeters } from './geo';
 import { $id, $opt } from './util';
 
 type NaviMode = 'idle' | 'preview' | 'navigating';
@@ -161,6 +163,10 @@ export function naviUseFav(i: number): void {
   if (fav) void pickDest(fav);
 }
 
+export function naviPointTo(p: { name: string; lat: number; lng: number }): void {
+  void pickDest(p);
+}
+
 async function pickDest(p: FavPlace): Promise<void> {
   if (mode === 'navigating') {
     showToast('Stop navigasi dulu', 'warn');
@@ -183,7 +189,7 @@ function renderFavs(): void {
   el.innerHTML = favs.map((f, i) => `<button class="fav-chip" onclick="naviUseFav(${i})"><i class="fa-solid fa-clock-rotate-left"></i>${f.name.length > 18 ? f.name.slice(0, 18) + '…' : f.name}</button>`).join('');
 }
 
-async function currentPosition(): Promise<LatLng | null> {
+export async function currentPosition(): Promise<LatLng | null> {
   if (appState.currentLat !== null && appState.currentLng !== null) {
     return { lat: appState.currentLat, lng: appState.currentLng };
   }
@@ -463,4 +469,93 @@ function speak(text: string): void {
   } catch {
     /* TTS tidak tersedia */
   }
+}
+
+/* ── LAP TIMER — garis start/finish GPS (GP Mandalika style) ──
+   Tap PASANG GARIS LAP saat berhenti di start/finish; selanjutnya setiap
+   inti GPS melewatinya (< 22 m) lap tertutup, bunyi/TTS + chip berkedip. */
+const LAP_R_M = 22;
+const LAP_REARM_SEC = 15;
+let lapLine: LatLng | null = null;
+let lapStartT: number | null = null;
+let lapCount = 0;
+let bestMs: number | null = null;
+let lastCrossAt = 0;
+let nearLine = false;
+let lapTick: ReturnType<typeof setInterval> | null = null;
+
+/* Param opsional untuk e2e/dev — produksi alarm pakai posisi GPS live. */
+export function lapSetLine(lat?: number, lng?: number): void {
+  const la = lat ?? appState.currentLat;
+  const ln = lng ?? appState.currentLng;
+  if (la === null || ln === null) {
+    showToast('GPS belum terkunci — garis lap gagal', 'warn');
+    return;
+  }
+  lapLine = { lat: la, lng: ln };
+  lapCount = 0;
+  bestMs = null;
+  lapStartT = Date.now();
+  nearLine = true; // pelintir berdiri di garis — jangan dihitung berjalan
+  lastCrossAt = 0;
+  $id('lap-chip').classList.remove('hidden');
+  if (!lapTick) lapTick = setInterval(updateLapChip, 500);
+  updateLapChip();
+  showToast('Garis start/finish LAP dipasang — lintasi garis untuk tiap lap', 'gold2');
+}
+
+export function lapCheck(lat: number, lng: number): void {
+  if (!lapLine || lapStartT === null) return;
+  const inZone = haversineMeters(lapLine, { lat, lng }) < LAP_R_M;
+  if (!nearLine && inZone && Date.now() - lastCrossAt > LAP_REARM_SEC * 1000) closeLap();
+  nearLine = inZone;
+}
+
+function fmtLap(ms: number): string {
+  const t = Math.max(0, ms);
+  const m = Math.floor(t / 60000);
+  const s = Math.floor((t % 60000) / 1000);
+  const d = Math.floor((t % 1000) / 100);
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${d}`;
+}
+
+function closeLap(): void {
+  const now = Date.now();
+  const ms = now - (lapStartT ?? now);
+  lastCrossAt = now;
+  lapCount++;
+  lapStartT = now;
+  const isBest = bestMs === null || ms < bestMs;
+  if (isBest) bestMs = ms;
+  showToast(`LAP ${lapCount} — ${fmtLap(ms)}${isBest ? ' · BEST' : ''}`, 'gold2');
+  const sec = Math.round(ms / 1000);
+  const lbl = `${Math.floor(sec / 60)} menit ${sec % 60} detik`;
+  speak(`Lap ${lapCount}, ${lbl}${isBest ? ', terbaik' : ''}`);
+  updateLapChip();
+}
+
+function updateLapChip(): void {
+  const el = $opt('lap-chip');
+  if (!el) return;
+  const cur = lapStartT !== null ? fmtLap(Date.now() - lapStartT) : '--:--.-';
+  el.innerHTML =
+    `<i class="fa-solid fa-stopwatch"></i><b>LAP ${lapCount + 1}</b> · ${cur}` +
+    (bestMs !== null ? ` <span style="color:var(--gold2)">BEST ${fmtLap(bestMs)}</span>` : '');
+}
+
+export function lapReset(): void {
+  if (!lapLine) {
+    $id('lap-chip').classList.add('hidden');
+    return;
+  }
+  showConfirm('Reset LAP?', 'Garis start/finish dan rekor lap terbaik dihapus.', 'RESET', () => {
+    lapLine = null;
+    lapStartT = null;
+    lapCount = 0;
+    bestMs = null;
+    if (lapTick) clearInterval(lapTick);
+    lapTick = null;
+    $id('lap-chip').classList.add('hidden');
+    showToast('Lap direset', 'muted');
+  });
 }

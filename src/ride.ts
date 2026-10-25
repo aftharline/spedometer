@@ -1,6 +1,8 @@
 import { dbAction } from './db';
+import { cornerReset, cornerStat } from './corners';
 import { elevationGain, haversineMeters } from './geo';
 import { showConfirm } from './modals';
+import { openRideCard } from './ride-card';
 import { deletePhotosByRide, setPhotoRideKey } from './ride-photos';
 import { appState } from './state';
 import { showToast } from './toast';
@@ -45,6 +47,7 @@ export async function startRecording(): Promise<void> {
   distM = 0;
   lastSampleAt = 0;
   stillSince = null;
+  cornerReset();
   vibReset();
   photoKey = null;
   setPhotoRideKey(null);
@@ -72,6 +75,7 @@ export function stopRecording(discard = false): void {
     try {
       await dbAction('rides', 'add', ride);
       showToast(`Ride tersimpan — ${ride.distKm.toFixed(1)} km`, 'gold2');
+      void openRideCard(ride);
       void import('./ui').then(m => m.loadRides());
     } catch (err) {
       console.error('[Ride save]', err);
@@ -120,6 +124,8 @@ function buildRide(): Ride {
     maxKmh: Math.round(maxKmh),
     gainM: elevationGain(points),
     vibMax: Math.round(vibPeak()),
+    corners: cornerStat().count,
+    bankMax: Math.round(cornerStat().maxLean),
     points,
   };
 }
@@ -225,17 +231,24 @@ export function buildGPX(ride: Ride): string {
 }
 
 export function shareGPX(ride: Ride): void {
+  if (!ride.points?.length) {
+    showToast('Ride tanpa titik GPS — GPX kosong', 'warn');
+    return;
+  }
   const blob = new Blob([buildGPX(ride)], { type: 'application/gpx+xml' });
   const fname = ride.name.replace(/[^\w -]/g, '').trim().replace(/ +/g, '_') + '.gpx';
   const file = new File([blob], fname, { type: 'application/gpx+xml' });
-  if (navigator.canShare?.({ files: [file] })) {
-    void navigator.share({ files: [file], title: ride.name }).catch(() => {});
-  } else {
+  const download = (): void => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = fname;
     a.click();
     URL.revokeObjectURL(url);
+  };
+  if (navigator.canShare?.({ files: [file] })) {
+    navigator.share({ files: [file], title: ride.name }).catch(download);
+  } else {
+    download();
   }
 }

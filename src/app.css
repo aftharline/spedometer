@@ -284,10 +284,11 @@
         /* Cranked dial (94px speed, bigger badge) + glow filters need spill room;
            overflow hidden shaved the outer glow and KM/H badge edges */
         #speedo-svg{overflow:visible}
-        /* High-speed warning: digits blink + glow breathes */
-        @keyframes hot-blink{0%,100%{opacity:1}50%{opacity:.45}}
-        @keyframes hot-breath{0%,100%{filter:url(#sgGlowStrong) brightness(1)}50%{filter:url(#sgGlowStrong) brightness(1.45)}}
-        #sg-value.is-hot{animation:hot-blink .8s step-end infinite,hot-breath 1.6s ease-in-out infinite}
+        /* High-speed warning: kedip cepat ke warna flash (merah; putih untuk livery berbasis merah) */
+        @keyframes hotFlash{0%,100%{fill:var(--sg-flash,#ff2020)}50%{fill:var(--gold)}}
+        #sg-value.is-hot{animation:hotFlash .34s step-end infinite}
+        [data-theme="panigale"] #sg-value,[data-theme="apex"] #sg-value,[data-theme="motogp"] #sg-value,
+        [data-theme="repsol"] #sg-value,[data-theme="roadrace"] #sg-value,[data-theme="ktm"] #sg-value{--sg-flash:#f5f5f5}
 
         /* ── OBD TERMINAL ────────────────────────────────── */
         .obd-term{
@@ -330,7 +331,7 @@
         .fade-in    {animation:fadeIn .3s ease forwards}
         .spin-cw    {animation:spinCW 1.4s linear infinite}
         .spin-ccw   {animation:spinCCW 1s linear infinite}
-        .btn-sos,.crash-modal-wrap{animation:pulseRed 1.5s infinite}
+        .btn-sos{animation:pulseRed 1.5s infinite}
 
         /* ── CHECKLIST ───────────────────────────────────── */
         .check-item{background:var(--s1);border:1px solid var(--border);transition:border-color .18s}
@@ -362,6 +363,7 @@
             gap:8px;
             min-height:calc(100dvh - 140px);
             position:relative;
+            z-index:0;
             overflow:hidden;
             background:
                 radial-gradient(circle at 50% 30%,rgba(var(--acc-rgb),.1),transparent 38%),
@@ -373,7 +375,11 @@
             background:conic-gradient(from 120deg,transparent,rgba(var(--acc-rgb),.07),transparent 28%,rgba(var(--alr-rgb),.05),transparent 48%);
             animation:hudSweep 10s linear infinite;opacity:.5;
         }
-        #ride-3d-layer{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:1;mix-blend-mode:screen}
+        /* ── BACKGROUND 3D halaman speedo — di belakang panel, hemat GPU ── */
+        #ride-3d-layer{
+            position:absolute;inset:0;z-index:-1;opacity:.8;pointer-events:none;
+            overflow:hidden;
+        }
         #ride-3d-canvas{width:100%;height:100%;display:block}
         #dash-status,#geofence-alert,#instrument-cluster,#dash-bottom{position:relative;z-index:2}
         #instrument-cluster{display:flex;flex-direction:column;flex:1;min-height:0;align-items:center;justify-content:center}
@@ -568,6 +574,77 @@
         #panel-speed.navi-embed #speedo-container{display:none !important}
         #navi-mode.navi-embedded{flex:1;min-height:220px;gap:4px}
         #navi-mode.navi-embedded #navi-map{min-height:120px}
+
+        /* ── SENSE CHIP mini (di atas peta NAVI MINI) ── */
+        .sense-chip{display:none;align-items:center;gap:10px;padding:7px 10px;flex-shrink:0;
+            background:var(--s1);border:1px solid var(--border2);
+            font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;
+            letter-spacing:1px;text-transform:uppercase;color:var(--muted2)}
+        #navi-mode.navi-embedded>.sense-chip{display:flex}
+        .sense-chip span{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1;gap:1px}
+        .sense-chip b{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--gold2);font-weight:400}
+        .sense-chip small{font-size:7px;letter-spacing:1.5px;color:var(--muted)}
+        .sc-sep{width:1px;align-self:stretch;background:var(--border) !important;flex-direction:row !important}
+
+        /* ── MODE-3 SLOT — pengganti NAVI besar (ala navi-mini embed) ── */
+        #panel-speed.bank-embed{flex:1;min-height:0}
+        #panel-speed.bank-embed #speedo-container{display:none !important}
+        #panel-speed.bank-embed .landscape-only{display:none !important}
+        #panel-speed.bank-embed #bcr-mini-instruments{display:none !important}
+        #banking-mode:not(.hidden){display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;width:100%;position:relative;z-index:2}
+        #kit-tabs{display:flex;gap:4px}
+        .kit-tab{flex:1;text-align:center;background:var(--s1);border:1px solid var(--border);color:var(--muted);
+            font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;padding:7px 2px 5px;
+            clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
+        .kit-tab i{display:block;font-size:13px;margin-bottom:2px;opacity:.75}
+        .kit-tab.is-on{background:rgba(var(--acc-rgb),.14);border-color:var(--gold);color:var(--gold2)}
+        .kit-pane{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:7px;padding-bottom:4px}
+        .kit-inp{background:var(--s1);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;
+            font-size:12px;padding:8px 10px;width:100%;outline:none}
+        .kit-add-row{display:flex;gap:6px;align-items:center}
+        .kit-add-row .kit-inp{flex:1;width:auto}
+        .kit-add-row button{flex:0 0 auto}
+        .kit-w-now{display:flex;align-items:center;gap:12px;background:var(--s1);border:1px solid var(--border);padding:10px 12px}
+        #cw-icon{font-size:34px;color:var(--gold2)}
+        .kit-w-main{flex:1;min-width:0}
+        .kit-w-side{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+        .cw-sub{display:flex;align-items:center;gap:5px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted2)}
+        .kit-warn{display:flex;align-items:center;gap:8px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:600;letter-spacing:.5px;
+            padding:8px 10px;background:rgba(var(--acc-rgb),.08);border:1px solid var(--border);color:var(--gold2)}
+        .kit-warn.hot{background:rgba(var(--alr-rgb),.12);border-color:rgba(var(--alr-rgb),.5);color:var(--alr2,var(--red2))}
+        .kit-warn i{font-size:13px}
+        .cw-hours{display:flex;gap:3px;overflow-x:auto}
+        .cw-hours::-webkit-scrollbar{display:none}
+        .cw-hour{flex:0 0 52px;display:flex;flex-direction:column;align-items:center;gap:3px;
+            font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted2);background:var(--s1);border:1px solid var(--border);padding:7px 2px}
+        .cw-hour i{font-size:14px;color:var(--gold2)}
+        .cw-hour b{font-size:12px;color:var(--text)}
+        .cw-hour.now{border-color:var(--gold);background:rgba(var(--acc-rgb),.1)}
+        .cw-hour em{font-style:normal;font-size:9px;color:var(--muted)}
+        .kp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+        .ktile{background:var(--s1);border:1px solid var(--border);text-align:center;padding:8px 4px;overflow:hidden;
+            font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);white-space:nowrap}
+        .ktile small{display:block;margin-top:2px;font-family:'Exo 2',sans-serif;font-size:8px;font-weight:700;letter-spacing:2px;color:var(--muted)}
+        .ktile.wet{border-color:rgba(var(--alr-rgb),.55)}
+        .ktile i{font-size:13px;color:var(--gold2)}
+        #kb-list{display:flex;flex-direction:column;gap:3px}
+        .kb-row{display:flex;gap:10px;align-items:center;background:var(--s1);border:1px solid var(--border);
+            padding:6px 10px;font-family:'Share Tech Mono',monospace;font-size:11px}
+        .kb-row b{color:var(--gold2)}
+        .kb-row em{font-style:normal;margin-left:auto;color:var(--muted2)}
+        .kb-row.mute{color:var(--muted2);font-size:10px}
+        .kx-row{display:flex;flex-direction:column;gap:3px;background:var(--s1);border:1px solid var(--border);padding:8px 10px}
+        .kx-row>span{font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted2);text-transform:uppercase}
+        .kx-row>b{font-family:'Share Tech Mono',monospace;font-size:13px}
+        .kx-bar{height:4px;background:rgba(255,255,255,.06)}
+        .kx-bar>div{height:100%}
+        /* LAP TIMER chip — inline di NAVI (home fiturnya), slim pill */
+        .lap-chip{display:flex;align-items:center;gap:9px;width:100%;padding:8px 12px;cursor:pointer;
+            background:var(--s1);border:1px solid rgba(var(--acc-rgb),.5);clip-path:var(--clip-sm);
+            font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text)}
+        .lap-chip i{color:var(--gold2);font-size:13px;animation:spinCW 2.4s linear infinite}
+        .lap-chip b{color:var(--gold2);letter-spacing:1px}
+        .lap-chip.hidden{display:none !important}
         #navi-banner.hidden,#navi-preview.hidden,#navi-eta.hidden,#navi-actions.hidden,#navi-search-wrap.hidden{display:none !important}
         #navi-search-wrap{flex-shrink:0;position:relative;z-index:1000}
         #navi-q{padding:9px 12px}
@@ -904,6 +981,84 @@
         [data-theme="fast"]{
             --acc-rgb:200,206,214;--acc2-rgb:0,229,255;
         }
+        [data-theme="ktm"]{
+            --acc-rgb:255,102,0;--acc2-rgb:255,176,102;
+        }
+        [data-theme="mandalika"]{
+            --acc-rgb:0,179,164;--acc2-rgb:245,200,66;
+        }
+        [data-theme="nascar"]{
+            --acc-rgb:255,210,0;--acc2-rgb:28,95,214;
+        }
+        [data-theme="nfs"]{
+            --acc-rgb:0,229,255;--acc2-rgb:125,249,255;
+        }
+
+        /* ── LIVERY: KTM Duke — "ready to race": chamfer runcing, Teko ── */
+        [data-theme="ktm"]{
+            --clip-sm:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
+            --clip-md:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px));
+            --clip-lg:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px));
+            --clip-tr:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%);
+            --clip-tl:polygon(16px 0,100% 0,100% 100%,0 100%,0 16px);
+            --f-display:'Teko';--ls-display:2px;--sg-weight:600;
+            --logo-filter:drop-shadow(0 1px 8px rgba(255,102,0,.45));
+        }
+        [data-theme="ktm"] #app{background-image:repeating-linear-gradient(45deg,rgba(255,102,0,.045) 0 2px,transparent 2px 20px)}
+        [data-theme="ktm"] .header-stripe{background:linear-gradient(180deg,var(--gold) 0 45%,#f5f5f5 45% 58%,var(--alr-rgb) 58%)}
+        [data-theme="ktm"] .app-header::after{background:linear-gradient(90deg,transparent,var(--gold) 45%,transparent)}
+        [data-theme="ktm"] .nav-btn::after{height:3px}
+        [data-theme="ktm"] .btn-fill-gold{color:#fff;background:linear-gradient(135deg,var(--gold),#ff8c33)}
+        [data-theme="ktm"] .dash-mode-btn.is-on{color:#fff}
+
+        /* ── LIVERY: GP Mandalika — "pulau tropis": rounded hangat, teal ── */
+        [data-theme="mandalika"]{
+            --clip-sm:inset(0 round 10px);--clip-md:inset(0 round 14px);--clip-lg:inset(0 round 20px);
+            --clip-tr:inset(0 round 14px);--clip-tl:inset(0 round 14px);
+            --f-display:'Saira Condensed';--ls-display:1px;--sg-weight:800;
+            --logo-filter:drop-shadow(0 1px 8px rgba(0,179,164,.4));
+        }
+        [data-theme="mandalika"] #app{background-image:radial-gradient(ellipse at 15% -10%,rgba(0,179,164,.14),transparent 45%),repeating-linear-gradient(0deg,rgba(0,179,164,.03) 0 2px,transparent 2px 26px)}
+        [data-theme="mandalika"] .header-stripe{background:linear-gradient(180deg,var(--gold2) 0 50%,var(--gold) 50%)}
+        [data-theme="mandalika"] .app-header::after{background:linear-gradient(90deg,transparent,var(--gold) 40%,var(--gold2) 60%,transparent)}
+        [data-theme="mandalika"] .nav-btn::after{height:3px;border-radius:999px}
+        [data-theme="mandalika"] .btn-fill-gold{color:#06231f;background:linear-gradient(135deg,var(--gold2),var(--gold))}
+        [data-theme="mandalika"] .dash-mode-btn.is-on{color:#06231f;background:var(--gold)}
+
+        /* ── LIVERY: NASCAR Thunder — "tri-bar": blok stadium, Chakra ── */
+        [data-theme="nascar"]{
+            --clip-sm:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);
+            --clip-md:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%);
+            --clip-lg:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,0 100%);
+            --clip-tr:polygon(0 0,calc(100% - 20px) 0,100% 100%,0 100%);
+            --clip-tl:polygon(0 0,100% 0,100% 100%,0 100%);
+            --f-display:'Chakra Petch';--ls-display:1px;--sg-weight:700;
+            --logo-filter:drop-shadow(0 1px 8px rgba(255,210,0,.4));
+        }
+        [data-theme="nascar"] #app{background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.028) 0 12px,transparent 12px 24px)}
+        [data-theme="nascar"] .header-stripe{background:linear-gradient(180deg,var(--gold) 0 34%,var(--acc2) 34% 62%,var(--alr-rgb) 62%)}
+        [data-theme="nascar"] .app-header::after{background:linear-gradient(90deg,transparent 12%,var(--gold) 34%,var(--acc2) 50%,var(--alr-rgb) 66%,transparent 88%)}
+        [data-theme="nascar"] .nav-btn::after{height:4px}
+        [data-theme="nascar"] .btn-fill-gold{color:#161616;background:linear-gradient(135deg,var(--gold) 55%,var(--acc2))}
+        [data-theme="nascar"] .dash-mode-btn.is-on{color:#161616;background:var(--gold)}
+
+        /* ── LIVERY: Need for Speed — "electric street": italic miring, neon ── */
+        [data-theme="nfs"]{
+            --clip-sm:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+            --clip-md:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%);
+            --clip-lg:polygon(18px 0,100% 0,calc(100% - 18px) 100%,0 100%);
+            --clip-tr:polygon(0 0,100% 0,calc(100% - 18px) 100%,0 100%);
+            --clip-tl:polygon(18px 0,100% 0,100% 100%,0 100%);
+            --f-display:'Saira';--ls-display:.5px;--sg-weight:600;--sg-italic:italic;
+            --logo-filter:drop-shadow(0 0 10px rgba(0,229,255,.55));
+        }
+        [data-theme="nfs"] #app{background-image:radial-gradient(ellipse at 50% 115%,rgba(0,229,255,.13),transparent 55%),repeating-linear-gradient(0deg,rgba(0,229,255,.018) 0 1px,transparent 1px 40px)}
+        [data-theme="nfs"] .header-stripe{background:linear-gradient(180deg,transparent 30%,var(--gold) 30% 70%,transparent 70%)}
+        [data-theme="nfs"] .app-header::after{height:2px;background:linear-gradient(90deg,transparent,var(--gold) 50%,transparent);box-shadow:0 0 14px rgba(0,229,255,.45)}
+        [data-theme="nfs"] .nav-btn::after{height:3px;background:var(--gold);box-shadow:0 0 10px rgba(0,229,255,.5)}
+        [data-theme="nfs"] .btn-gold{background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.5);color:var(--gold2)}
+        [data-theme="nfs"] .btn-fill-gold{color:#02181f;background:linear-gradient(135deg,var(--gold),var(--gold2));box-shadow:0 0 16px rgba(0,229,255,.25)}
+        [data-theme="nfs"] .dash-mode-btn.is-on{color:#02181f;background:var(--gold2)}
 
         .btn-sos .sos-lbl-short{display:none}
 
@@ -1124,3 +1279,65 @@
 .set-dot.on{background:var(--gold);box-shadow:0 0 8px rgba(var(--acc-rgb),.65);border-color:var(--gold2)}
 .set-row-danger small{color:var(--red2)}
 .set-row-danger .set-ico{color:var(--red2);background:rgba(var(--alr-rgb),.08);border-color:rgba(var(--alr-rgb),.3)}
+
+/* ── CRASH POPUP (themed, bukan fullscreen merah) ── */
+.crash-card{
+    background:linear-gradient(180deg,rgba(var(--alr-rgb),.16),rgba(var(--alr-rgb),.05)),var(--s1);
+    border:1px solid rgba(var(--alr-rgb),.55);
+    box-shadow:0 0 46px rgba(var(--alr-rgb),.35);
+    animation:pulseRed 1.5s infinite;
+}
+
+/* ── SPLASH SPEEDO PAGE (per livery, sekali per sesi) ── */
+#speedo-splash{
+    position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    background:radial-gradient(700px 300px at 50% 60%,rgba(var(--acc-rgb),.16),transparent 65%),var(--bg);
+    transition:opacity .6s ease,transform .7s ease;
+}
+#speedo-splash.hidden{display:none !important}
+#speedo-splash.is-done{opacity:0;transform:scale(1.06);pointer-events:none}
+#speedo-splash-logo{width:96px;height:96px;object-fit:contain;opacity:0;filter:var(--logo-filter,none);transition:opacity .5s}
+#speedo-splash-logo.is-shown{opacity:1;animation:logoBreath 2.2s ease-in-out infinite}
+.ss-tag{
+    font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--gold);
+    padding:6px 14px;background:rgba(var(--acc-rgb),.08);border:1px solid rgba(var(--acc-rgb),.35);clip-path:var(--clip-sm);
+}
+.ss-sweep{width:190px;height:6px;background:var(--border);overflow:hidden;clip-path:var(--clip-sm)}
+.ss-sweep i{display:block;height:100%;width:100%;transform-origin:left;background:linear-gradient(90deg,var(--gold),var(--gold2),var(--red));animation:ssSweep 1.5s cubic-bezier(.3,0,.4,1) both}
+@keyframes ssSweep{0%{transform:scaleX(0)}55%{transform:scaleX(1);transform-origin:left}56%{transform-origin:right}100%{transform:scaleX(0);transform-origin:right}}
+
+/* ── SPEEDING MODE ≥90 km/h ── */
+#speeding-mode{position:absolute;inset:0;z-index:45;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#speeding-mode.hidden{display:none}
+.sp-card{
+    position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:26px 44px;overflow:hidden;
+    background:linear-gradient(160deg,rgba(var(--alr-rgb),.22),rgba(0,0,0,.88) 55%),var(--s1);
+    border:2px solid rgba(var(--alr-rgb),.75);
+    box-shadow:0 0 60px rgba(var(--alr-rgb),.55),inset 0 0 30px rgba(var(--alr-rgb),.18);
+    animation:spIn .45s cubic-bezier(.2,1.5,.4,1) both;
+}
+.sp-stripes{position:absolute;inset:-30%;background:repeating-linear-gradient(-45deg,transparent 0 18px,rgba(var(--alr-rgb),.16) 18px 30px);animation:splashSweep 3.5s linear infinite}
+.sp-ico{position:relative;font-size:30px;color:var(--red2);text-shadow:0 0 22px rgba(var(--alr-rgb),.8);animation:spPulse .8s ease-in-out infinite}
+.sp-title{
+    position:relative;font-family:'Exo 2',sans-serif;font-weight:900;font-size:44px;letter-spacing:8px;line-height:1;
+    color:#fff;text-shadow:0 0 18px rgba(var(--alr-rgb),.9),0 0 46px rgba(var(--alr-rgb),.55);
+    animation:spPulse .8s ease-in-out infinite;
+}
+.sp-sub{position:relative;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;color:var(--red2)}
+@keyframes spIn{from{opacity:0;transform:scale(.5) rotate(-4deg)}to{opacity:1;transform:none}}
+@keyframes spPulse{50%{filter:brightness(1.6)}}
+
+/* ── SENSOR CHECK (ALL ON) ── */
+#sensor-check{position:absolute;inset:0;z-index:44;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#sensor-check.hidden{display:none}
+.sc-card{
+    display:flex;flex-direction:column;align-items:center;gap:9px;padding:16px 26px;
+    background:rgba(8,8,8,.85);border:1px solid rgba(var(--acc-rgb),.5);backdrop-filter:blur(3px);
+}
+.sc-ico{font-size:17px;color:var(--gold);animation:spinCW 1.2s linear infinite}
+.sc-lbl{font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;letter-spacing:4px;color:var(--gold)}
+.sc-bar{width:150px;height:5px;background:var(--border);overflow:hidden;clip-path:var(--clip-sm)}
+.sc-bar i{display:block;height:100%;width:100%;transform-origin:left;background:linear-gradient(90deg,var(--gold),var(--gold2),var(--red));animation:ssSweep 1.6s cubic-bezier(.3,0,.4,1) both}
+
+/* NAVI MINI: peta ambil alih seluruh kolom kiri (RPM ikut disembunyikan) */
+#panel-speed.navi-embed .landscape-only{display:none !important}

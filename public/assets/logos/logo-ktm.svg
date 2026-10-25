@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 100">
+  <g transform="skewX(-10)">
+    <text x="18" y="62" font-family="Arial Black,Arial" font-weight="900" font-size="52" fill="#ff6600" letter-spacing="2">KTM</text>
+    <text x="20" y="88" font-family="Arial" font-weight="700" font-size="22" fill="#f5f5f5" letter-spacing="10">DUKE</text>
+  </g>
+  <rect x="16" y="68" width="150" height="4" fill="#ff6600" transform="skewX(-10)"/>
+</svg>

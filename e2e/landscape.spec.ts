@@ -71,16 +71,16 @@ test('Landscape dasbor: speedo full-height, dash-bottom di kolom tengah, CAM+RST
   expect(rects.gfSvg.height).toBeGreaterThan(60);
 });
 
-test('Landscape NAVI: tombol MULAI terlihat dalam viewport', async ({ page }) => {
+test('Landscape NAVI MINI: tombol MULAI terlihat dalam viewport', async ({ page }) => {
   routeMocks(page);
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto('/');
   await expect(page.locator('#view-garage')).toBeVisible();
   await bootDone(page);
   await page.evaluate(() => (window as any).switchView('dashboard'));
-  await page.locator('#mode-navi').click();
-  await expect(page.locator('#navi-mode')).toBeVisible();
-  await expect(page.locator('#instrument-cluster')).toBeHidden();
+  await page.locator('#mode-navi-mini').click();
+  await expect(page.locator('#navi-mode.navi-embedded')).toBeVisible();
+  await expect(page.locator('#instrument-cluster')).toBeVisible();
   await page.waitForTimeout(600);
 
   await page.locator('#navi-q').fill('Monas');
@@ -88,8 +88,8 @@ test('Landscape NAVI: tombol MULAI terlihat dalam viewport', async ({ page }) =>
   await expect(page.locator('#navi-preview')).toContainText('4,0 km');
   await page.locator('#navi-map .leaflet-overlay-pane path').first().waitFor();
 
-  await expect(page.locator('#navi-actions')).toBeVisible();
   const mulai = page.locator('#navi-actions button', { hasText: 'MULAI' });
+  await mulai.scrollIntoViewIfNeeded();
   await expect(mulai).toBeVisible();
   const box = await mulai.boundingBox();
   expect(box).not.toBeNull();
@@ -106,7 +106,7 @@ test('BCR Settings: sembunyikan placeholder, semua tombol berfungsi', async ({ p
 
   await page.locator('#btn-settings').click();
   await expect(page.locator('#modal-settings')).toBeVisible();
-  await expect(page.locator('#settings-list .set-row')).toHaveCount(10);
+  await expect(page.locator('#settings-list .set-row')).toHaveCount(11);
 
   await page.locator('#set-dot-master').waitFor();
   await expect(page.locator('#set-dot-master')).not.toHaveClass(/on/);

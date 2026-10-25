@@ -3,6 +3,7 @@ import { dbAction } from './db';
 import { closeModal, openModal, showConfirm } from './modals';
 import { clearStripKey, deletePhotosByRide, renderStrip } from './ride-photos';
 import { appState } from './state';
+import { currentTheme, THEMES } from './themes';
 import { isGpsActive, isTelemetryActive, startSpeedometer, stopSpeedometer, stopTelemetry, toggleTelemetry } from './telemetry';
 import { showToast } from './toast';
 import type { ChecklistItem, LogEntry, Vehicle, VehicleType } from './types';
@@ -31,10 +32,18 @@ export async function toggleMasterSensors(): Promise<void> {
     await startSpeedometer();
     if (!isTelemetryActive()) await toggleTelemetry();
     if (!isAudioActive()) await toggleAudioRPM();
+    void import('./gauges').then(m => m.sensorCheckSweep()).catch(() => {});
     if (allSensorsOn()) showToast('Semua sensor aktif', 'gold2');
     else showToast('Sebagian sensor gagal — cek izin GPS/mic', 'warn');
   }
   updateMasterBtn();
+}
+
+export function toggleCrashSensor(): void {
+  const off = localStorage.getItem('bcr_crash') === 'off';
+  localStorage.setItem('bcr_crash', off ? 'on' : 'off');
+  showToast(off ? 'Sensor kecelakaan aktif' : 'Sensor kecelakaan dimatikan', off ? 'gold2' : 'muted');
+  setTimeout(refreshSettingsPanel, 120);
 }
 
 export function updateTypeUI(): void {
@@ -85,15 +94,34 @@ export function switchView(view: string): void {
 
   if (view === 'dashboard') {
     void startSpeedometer();
-    import('./three-scene')
-      .then(m => m.initThreeScene())
-      .catch(err => console.error('[3D]', err));
+    runSpeedoSplash();
   }
   if (view === 'touring') void loadRides();
   if (view === 'ride-detail') destroyRideMap();
   if (view === 'garage') void loadVehicles();
   if (view === 'checklist') void loadChecklist();
   if (view !== 'ride-detail') clearStripKey();
+}
+
+/* Splash khusus halaman speedo — sekali per sesi, per livery. */
+let speedoSplashDone = false;
+function runSpeedoSplash(): void {
+  if (speedoSplashDone) return;
+  speedoSplashDone = true;
+  const el = $opt('speedo-splash');
+  if (!el) return;
+  const def = THEMES.find(x => x.id === currentTheme()) ?? THEMES[0];
+  const img = $opt('speedo-splash-logo') as HTMLImageElement | null;
+  const tag = $opt('speedo-splash-tag');
+  if (img) {
+    img.onload = () => img.classList.add('is-shown');
+    img.onerror = () => { img.style.display = 'none'; };
+    img.src = def.logo;
+  }
+  if (tag) tag.textContent = def.tagline;
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('is-done'), 1500);
+  setTimeout(() => el.classList.add('hidden'), 2200);
 }
 
 export async function loadVehicles(): Promise<void> {
@@ -356,8 +384,8 @@ export function refreshSettingsPanel(): void {
   const rot = $opt('rot-lock-label')?.textContent ?? 'AUTO';
   const setRot = $opt('set-rot');
   if (setRot) setRot.textContent = rot === 'AUTO' ? 'Auto' : rot === 'PORT' ? 'Portrait terkunci' : 'Landscape terkunci';
-  const onCls = ['set-dot-master', 'set-dot-tel', 'set-dot-audio'];
-  const states = [allSensorsOn(), isTelemetryActive(), isAudioActive()];
+  const onCls = ['set-dot-master', 'set-dot-tel', 'set-dot-audio', 'set-dot-crash'];
+  const states = [allSensorsOn(), isTelemetryActive(), isAudioActive(), localStorage.getItem('bcr_crash') !== 'off'];
   onCls.forEach((id, i) => $opt(id)?.classList.toggle('on', states[i]));
   const trip = $opt('ls-trip')?.textContent ?? '0.0';
   const setTrip = $opt('set-trip');
@@ -580,9 +608,12 @@ export function initRecBtn(): void {
   updateRecBtn();
 }
 
-/* ── DASHBOARD MODE (SPEEDO / NAVI / NAVI MINI) ──────── */
-type DashMode = 'speedo' | 'navi' | 'navi-mini';
+/* ── DASHBOARD MODE (SPEEDO / BANKING / NAVI MINI) ────────
+   NAVI besar dimatikan — tombolnya dialihkan jadi mode BANKING
+   (menggantikan dial, persis pola navi-mini). */
+type DashMode = 'speedo' | 'banking' | 'navi-mini';
 let naviHome: HTMLElement | null = null;
+let bankHome: HTMLElement | null = null;
 
 /* ── LANDSCAPE RE-PARENTING ─────────────────────────── */
 type Home = { el: HTMLElement; parent: HTMLElement; next: Node | null };
@@ -600,8 +631,11 @@ function into(parent: HTMLElement, el: HTMLElement, before?: Node | null): void 
   parent.insertBefore(el, before ?? null);
 }
 
-function restoreAll(): void {
-  homes.forEach(h => h.parent.insertBefore(h.el, h.next));
+function restoreAll(skipEl: HTMLElement[] = []): void {
+  homes.forEach(h => {
+    if (skipEl.includes(h.el)) return;
+    h.parent.insertBefore(h.el, h.next);
+  });
 }
 
 export const isLandscapeLayout = (): boolean => {
@@ -622,10 +656,14 @@ export function relayoutDashboard(): void {
   const rst = $opt('btn-rst-max') as HTMLElement | null;
   const sos = $opt('ls-sos');
   if (!cluster || !gforce || !lean || !bottom || !lsRight || !lsMid) return;
+  const bankOn = ($opt('panel-speed') as HTMLElement | null)?.classList.contains('bank-embed') === true;
+  const movePanels = !bankOn; // panel dipinjam mode BANKING? jangan diacak relayout
 
   if (isLandscapeLayout()) {
-    into(lsMid, gforce);
-    into(lsMid, lean);
+    if (movePanels) {
+      into(lsMid, gforce);
+      into(lsMid, lean);
+    }
     into(lsRight, bottom);
     if (cam && rst && sos) {
       into(bottom, cam, sos);
@@ -635,7 +673,7 @@ export function relayoutDashboard(): void {
     cluster.classList.add('ls-split');
     lsRight.classList.remove('hidden');
   } else {
-    restoreAll();
+    restoreAll(bankOn ? [gforce, lean] : []);
     cluster.classList.remove('ls-split');
     lsRight.classList.add('hidden');
   }
@@ -654,38 +692,56 @@ window.addEventListener('orientationchange', () => setTimeout(relayoutDashboard,
 export function switchDashboardMode(mode: DashMode): void {
   const cluster = $id('instrument-cluster') as HTMLElement;
   const navi = $id('navi-mode');
-  const panelSpeed = $id('panel-speed');
+  const panelSpeed = $id('panel-speed') as HTMLElement | null;
+  const banking = ($opt('banking-mode') as HTMLElement | null);
+  const bankOn = panelSpeed?.classList.contains('bank-embed') === true;
   if (!cluster || !navi || !panelSpeed) return;
   if (!naviHome) naviHome = navi.parentElement;
+  if (banking && !bankHome) bankHome = banking.parentElement;
 
   $id('mode-speedo').classList.toggle('is-on', mode === 'speedo');
-  $id('mode-navi').classList.toggle('is-on', mode === 'navi');
+  $id('mode-navi').classList.toggle('is-on', mode === 'banking');
   $opt('mode-navi-mini')?.classList.toggle('is-on', mode === 'navi-mini');
+  cluster.style.display = '';
 
-  if (mode === 'navi-mini') {
-    cluster.style.display = '';
+  // Bersihkan embed lama — naikkan navi/panel kembali ke rumah dulu
+  if (bankOn) {
+    panelSpeed.classList.remove('bank-embed');
+    if (banking) banking.classList.remove('bank-embedded');
+  }
+  panelSpeed.classList.remove('navi-embed');
+  navi.classList.remove('navi-embedded');
+
+  if (mode === 'speedo') {
+    restoreAll(); // kembali dari verjaging yang semua pulang ke cluster
+    if (banking) {
+      bankHome?.appendChild(banking);
+      banking.classList.add('hidden');
+    }
+    naviHome?.appendChild(navi);
+    navi.classList.add('hidden');
+  } else if (mode === 'banking' && banking) {
+    naviHome?.appendChild(navi);
+    bankHome?.appendChild(banking);
+    navi.classList.add('hidden');
+    panelSpeed.classList.add('bank-embed');
+    banking.classList.remove('hidden');
+    banking.classList.add('bank-embedded');
+    panelSpeed.insertBefore(banking, $id('speedo-container'));
+    void import('./kit').then(k => k.kitTab('cuaca')); // auto-muat cuaca GPS saat slot dibuka
+  } else {
+    restoreAll(); // pulang semua, lalu embed navi
+    if (banking) bankHome?.appendChild(banking);
+    banking?.classList.add('hidden');
     panelSpeed.classList.add('navi-embed');
     navi.classList.add('navi-embedded');
     panelSpeed.insertBefore(navi, $id('speedo-container'));
-  } else {
-    panelSpeed.classList.remove('navi-embed');
-    navi.classList.remove('navi-embedded');
-    naviHome?.appendChild(navi);
-    cluster.style.display = mode === 'navi' ? 'none' : '';
-  }
-  navi.classList.toggle('hidden', mode === 'speedo');
-
-  if (mode === 'navi' && isLandscapeLayout() && naviHome) {
-    const bottom = $opt('dash-bottom') as HTMLElement | null;
-    if (bottom) into(naviHome, bottom);
-  } else {
-    relayoutDashboard();
-  }
-
-  if (mode !== 'speedo') {
     void import('./navi').then(m => {
       m.initNaviMap();
       m.invalidateNaviMap();
     });
   }
+  navi.classList.toggle('hidden', mode !== 'navi-mini');
+
+  relayoutDashboard();
 }

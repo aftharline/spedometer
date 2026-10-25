@@ -194,9 +194,9 @@ test('NAVI: cari tujuan, rute, mulai navigasi', async ({ page, context }) => {
   await expect(page.locator('#view-dashboard')).toBeVisible();
   await page.waitForTimeout(800);
 
-  await page.locator('#mode-navi').click();
-  await expect(page.locator('#navi-mode')).toBeVisible();
-  await expect(page.locator('#instrument-cluster')).toBeHidden();
+  await page.locator('#mode-navi-mini').click();
+  await expect(page.locator('#navi-mode.navi-embedded')).toBeVisible();
+  await expect(page.locator('#instrument-cluster')).toBeVisible();
 
   await page.locator('#navi-q').fill('Monas');
   await page.locator('.navi-result').first().click();
@@ -212,9 +212,13 @@ test('NAVI: cari tujuan, rute, mulai navigasi', async ({ page, context }) => {
   await expect(page.locator('#nb-dist')).not.toHaveText('—');
 
   // geser peta → lock lepas, chip pusatkan muncul; tap chip → lock balik
-  await page.mouse.move(200, 400);
+  const mapBox = await page.locator('#navi-map').boundingBox();
+  if (!mapBox) throw new Error('navi-map hilang');
+  const cx = mapBox.x + mapBox.width / 2;
+  const cy = mapBox.y + mapBox.height / 2;
+  await page.mouse.move(cx, cy);
   await page.mouse.down();
-  await page.mouse.move(120, 500, { steps: 4 });
+  await page.mouse.move(cx - 60, cy + 40, { steps: 4 });
   await page.mouse.up();
   await expect(page.locator('#navi-recenter')).toBeVisible();
   await page.locator('#navi-recenter').click();
@@ -320,7 +324,7 @@ test('NAVI lanjutan: rotasi, speed limit, junction card', async ({ page }, testI
   await page.reload();
   await page.locator('#nav-dashboard').click();
   await page.waitForTimeout(700);
-  await page.locator('#mode-navi').click();
+  await page.locator('#mode-navi-mini').click();
   await page.locator('.fav-chip').first().click();
   await expect(page.locator('#navi-preview')).toContainText('km');
   await page.locator('#navi-actions button', { hasText: 'MULAI' }).click();

@@ -1,4 +1,5 @@
 import { arcPath, polarXY } from './geo';
+import { speedAlerts } from './speed-alerts';
 import { updateRideState } from './state';
 import { showToast } from './toast';
 import { $opt } from './util';
@@ -98,6 +99,7 @@ function animateSpeedo(): void {
     valEl.textContent = String(Math.round(c));
     valEl.classList.toggle('is-hot', c >= 80); // blink + breath at highway pace
   }
+  if (!sweeping) speedAlerts(c); // bunyi 80/90 + getar staircase
 
   if (c > maxSpeed) {
     maxSpeed = c;
@@ -117,7 +119,50 @@ function animateSpeedo(): void {
 
 export function setSpeedoArc(kmh: number): void {
   targetDisplaySpeed = Math.max(0, kmh);
+  maybeSpeedingMode(targetDisplaySpeed);
   if (!speedAnimReq) animateSpeedo();
+}
+
+/* ── SPEEDING MODE ≥90 km/h — pop-up 3.5s, re-arm di bawah 85 ── */
+let speedingShown = false;
+let speedingTimer: ReturnType<typeof setTimeout> | null = null;
+let sweeping = false;
+
+function maybeSpeedingMode(c: number): void {
+  if (sweeping) return;
+  if (c < 85) { speedingShown = false; return; }
+  if (speedingShown || c < 90) return;
+  speedingShown = true;
+  const el = document.getElementById('speeding-mode');
+  if (!el) return;
+  el.classList.remove('hidden');
+  if (speedingTimer) clearTimeout(speedingTimer);
+  speedingTimer = setTimeout(() => el.classList.add('hidden'), 3500);
+}
+
+/* ── Cek sensor (ALL ON): jarum menyapu penuh lalu kembali ke 0 ── */
+export function sensorCheckSweep(): Promise<void> {
+  return new Promise(resolve => {
+    sweeping = true;
+    const dur = 1600;
+    const t0 = performance.now();
+    const step = (t: number): void => {
+      const p = Math.min(1, (t - t0) / dur);
+      const eased = p < 0.5 ? p * 2 : (1 - p) * 2; // naik ke MAX lalu turun
+      targetDisplaySpeed = eased * SG.MAX;
+      currentDisplaySpeed = targetDisplaySpeed;
+      animateSpeedo();
+      if (p < 1) requestAnimationFrame(step);
+      else {
+        targetDisplaySpeed = 0;
+        currentDisplaySpeed = 0;
+        animateSpeedo();
+        sweeping = false;
+        resolve();
+      }
+    };
+    requestAnimationFrame(step);
+  });
 }
 
 export function resetSpeedEngine(): void {

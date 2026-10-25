@@ -1,4 +1,4 @@
-import { storeDataUrl } from './ride-photos';
+import { currentRecKey, openPhotoModal, storeDataUrl } from './ride-photos';
 import { showToast } from './toast';
 import { $id, $opt } from './util';
 
@@ -54,6 +54,13 @@ export async function snapLivePhoto(): Promise<void> {
   c.height = v.videoHeight;
   c.getContext('2d')!.drawImage(v, 0, 0);
   const snap = c.toDataURL('image/jpeg', 0.72);
+  if (currentRecKey() === null) {
+    showToast('Nyalakan REC dulu agar foto tersimpan', 'warn');
+    return;
+  }
   const ok = await storeDataUrl(snap);
-  if (ok) showToast('Foto tersimpan', 'gold2');
+  if (ok) {
+    showToast('Foto tersimpan', 'gold2');
+    await openPhotoModal(currentRecKey() as number, 9999); // tampilkan langsung
+  }
 }

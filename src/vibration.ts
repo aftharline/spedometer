@@ -78,7 +78,7 @@ export function pushVibrationSample(ax: number, ay: number, az: number, t: numbe
   }
   const hz = durSec > 0.5 ? Math.min(30, crossings / (2 * durSec)) : 0;
 
-  const idx = Math.min(100, Math.round(rms <= 1 ? rms * 60 : 60 + (rms - 1) * 20));
+  const idx = Math.min(100, Math.round(rms <= 1 ? rms * 42 : 42 + (rms - 1) * 14));
   const band = bandFor(hz);
   const { note, level } = noteFor(idx, band);
 

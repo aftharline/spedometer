@@ -36,6 +36,11 @@ export interface RideState {
   gpsAcc: number | null;
   sensor: string;
   vib: number;
+  slope: number;
+  corners: number;
+  bankMax: number;
+  batt: number | null;
+  battPer10km: number | null;
 }
 
 export interface GpsPoint {
@@ -65,5 +70,7 @@ export interface Ride {
   maxKmh: number;
   gainM: number;
   vibMax?: number;
+  corners?: number;
+  bankMax?: number;
   points: RidePoint[];
 }

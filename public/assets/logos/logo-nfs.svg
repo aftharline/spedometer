@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 100">
+  <text x="14" y="52" font-family="Arial Black,Arial" font-weight="900" font-style="italic" font-size="30" fill="#ffffff" letter-spacing="1">NEED FOR</text>
+  <text x="14" y="86" font-family="Arial Black,Arial" font-weight="900" font-style="italic" font-size="30" fill="#00e5ff" letter-spacing="2">SPEED</text>
+  <path d="M150 62 L250 62 L236 74 L136 74 Z" fill="#00e5ff"/>
+</svg>

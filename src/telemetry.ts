@@ -21,9 +21,11 @@ import {
   updateCompassDisplays,
   updateSensorChip,
 } from './hud';
+import { LeanFilter } from './lean-filter';
+import { cornerPush, cornerReset } from './corners';
 import { appState, rideState, updateRideState } from './state';
 import { feedRidePoint } from './ride';
-import { feedNaviPoint } from './navi';
+import { feedNaviPoint, lapCheck } from './navi';
 import { showToast } from './toast';
 import type { GpsPoint } from './types';
 import { $id, $opt } from './util';
@@ -54,7 +56,8 @@ function processGpsPosition(pos: GeolocationPosition): void {
   $id('val-lat').textContent = point.lat.toFixed(4);
   $id('val-lng').textContent = point.lng.toFixed(4);
   const accTxt = `ACC:${Math.round(acc)}m`;
-  $id('gps-acc').textContent = accTxt;
+  const accTop = $opt('gps-acc');
+  if (accTop) accTop.textContent = accTxt;
   const gps2 = $opt('gps-acc-2');
   if (gps2) gps2.textContent = accTxt;
   const gpsAccLabs = $opt('labs-accuracy');
@@ -105,6 +108,7 @@ function processGpsPosition(pos: GeolocationPosition): void {
   const displayHeading = gpsFilteredSpeed > 5 ? lastHeading : (compassHeading ?? lastHeading);
   updateCompassDisplays(displayHeading);
   feedNaviPoint(point.lat, point.lng);
+  lapCheck(point.lat, point.lng);
   feedRidePoint({ lat: point.lat, lng: point.lng, t: now, alt: c.altitude, spd: gpsFilteredSpeed });
   updateRideState({
     speed: gpsFilteredSpeed,
@@ -209,8 +213,10 @@ export function cycleRotLock(): void {
   document.body.classList.remove('force-portrait', 'force-landscape');
   if (mode === 'portrait') document.body.classList.add('force-portrait');
   if (mode === 'landscape') document.body.classList.add('force-landscape');
-  leanBaseline = null;
+  leanFilter.reset();
+  leanFilter.setSavedZero(savedLeanZero);
   fusedLean = 0;
+  calPending = false;
   updateLeanGauge(0);
   void import('./ui').then(m => m.relayoutDashboard()).catch(() => {});
   const modeLabels = {
@@ -235,12 +241,53 @@ function getOrientAngle(): number {
 let telActive = false;
 let crashTimer: ReturnType<typeof setInterval> | null = null;
 let crashCount = 10;
-let leanBaseline: number | null = null;
-let lastOrientAt = 0;
 let fusedLean = 0;
 let filteredG = 1;
-let filteredGx = 0;
 let filteredGy = 0;
+let filteredGx = 0;
+
+/* ── LEAN — satu sumber kebenaran: vektor gravitasi terlow-pass via
+   LeanFilter (median + dead-zone + hysteresis + slew + gate getar).
+   Baseline persisten biar tidak kalibrasi ulang tiap jalan. */
+const leanFilter = new LeanFilter();
+const LEAN_BASE_KEY = 'bcr_lean_base';
+let savedLeanZero = parseFloat(localStorage.getItem(LEAN_BASE_KEY) || '0') || 0;
+let calPending = false;
+let lastMotionAt = 0;
+let stillSince = 0;
+let stillToasted = false;
+const persistLeanZero = (): void => {
+  try { localStorage.setItem(LEAN_BASE_KEY, savedLeanZero.toFixed(2)); } catch (_) {}
+};
+
+/* ── BATT METER — baterai ponsel saat sensor jalan: % + drain /10 km ── */
+let battTimer: ReturnType<typeof setInterval> | null = null;
+let battLvl0: number | null = null;
+let tripKm0 = 0;
+
+async function pollBattery(): Promise<void> {
+  try {
+    const b = await (navigator as any).getBattery?.();
+    if (!b) return;
+    if (battLvl0 === null) battLvl0 = b.level;
+    const drain = Math.max(0, (battLvl0 - b.level) * 100);
+    const km = (parseFloat(localStorage.getItem('bcr_trip') || '0') || 0) - tripKm0;
+    const per10 = km > 0.5 ? Math.round((drain / km) * 10) : null;
+    updateRideState({ batt: Math.round(b.level * 100), battPer10km: per10 });
+  } catch (_) { /* API tak tersedia — biarkan */ }
+}
+
+function startBattMeter(): void {
+  battLvl0 = null;
+  tripKm0 = parseFloat(localStorage.getItem('bcr_trip') || '0') || 0;
+  void pollBattery();
+  battTimer = setInterval(() => void pollBattery(), 30000);
+}
+
+function stopBattMeter(): void {
+  if (battTimer) clearInterval(battTimer);
+  battTimer = null;
+}
 
 /* ── CRASH GATE — impact alone ≠ crash (speedbump/pothole ring the same
    bell). Arm on a hard hit while moving, then confirm: a secondary hit,
@@ -253,10 +300,11 @@ interface CrashArm {
   lastSpeedAt: number;
   lowSpeed: number;
 }
-const CRASH_IMPACT_G = 2.6;
-const CRASH_MIN_SPEED_KMH = 8;
+const CRASH_IMPACT_G = 3.2;
+const CRASH_MIN_SPEED_KMH = 10;
 const CRASH_WINDOW_MS = 3200;
 const CRASH_REARM_MS = 25000;
+const crashEnabled = (): boolean => localStorage.getItem('bcr_crash') !== 'off';
 let crashArm: CrashArm | null = null;
 let crashCooldownUntil = 0;
 
@@ -267,10 +315,11 @@ function confirmCrash(): void {
 }
 
 function noteCrashImpact(medG: number): void {
+  if (!crashEnabled()) return;
   const now = Date.now();
 
   // Wall-level hit while riding fast needs no confirmation.
-  if (medG >= 5.5 && rideState.speed >= 20) { confirmCrash(); return; }
+  if (medG >= 7 && rideState.speed >= 25) { confirmCrash(); return; }
   if (crashTimer || now < crashCooldownUntil) return;
 
   const spd = rideState.speed;
@@ -284,13 +333,13 @@ function noteCrashImpact(medG: number): void {
   if (now - crashArm.at > CRASH_WINDOW_MS) { crashArm = null; return; } // lone bump, ride went on
 
   // 1 — secondary impact shortly after the first (bike → ground/rider)
-  if (medG >= 2.2 && now - crashArm.at >= 150 && now - crashArm.lastHitAt >= 120) confirmCrash();
+  if (medG >= 2.8 && now - crashArm.at >= 200 && now - crashArm.lastHitAt >= 120) confirmCrash();
 
   // 2 — shake keeps landing (slide / scrub)
   if (medG >= CRASH_IMPACT_G) {
     crashArm.hits = now - crashArm.lastHitAt >= 120 ? crashArm.hits + 1 : crashArm.hits;
     crashArm.lastHitAt = now;
-    if (crashArm.hits >= 4) confirmCrash();
+    if (crashArm.hits >= 5) confirmCrash();
   }
 
   // 3 — GPS speed collapses after the impact (skid stop)
@@ -319,34 +368,9 @@ export function calibrateLean(): void {
     showToast('Mulai telemetri dulu!', 'warn');
     return;
   }
-  leanBaseline = null;
-  showToast('Lean Angle Dikalibrasi (0°)', 'gold2');
-}
-
-function applyLeanAngle(rawAngle: number, source = 'IMU'): void {
-  if (!Number.isFinite(rawAngle)) return;
-  if (leanBaseline === null) leanBaseline = rawAngle;
-  const target = clampLean(rawAngle - leanBaseline);
-  const snapped = Math.abs(target) < 1.5 ? 0 : target;
-  const delta = Math.abs(snapped - fusedLean);
-  const alpha = delta > 20 ? 0.3 : delta > 10 ? 0.2 : 0.12;
-  fusedLean = smoothVal(fusedLean, snapped, alpha);
-  updateLeanGauge(fusedLean);
-  updateRideState({ lean: fusedLean, sensor: source });
-}
-
-function leanFromAcceleration(acc: DeviceMotionEventAcceleration): number | null {
-  const x = acc.x || 0;
-  const y = acc.y || 0;
-  const z = acc.z || 0;
-  const orientAngle = getOrientAngle();
-  if (orientAngle === 0 || orientAngle === 180) {
-    if (Math.abs(x) + Math.abs(z) < 0.25) return null;
-    return (Math.atan2(x, z) * 180) / Math.PI;
-  }
-  const sign = orientAngle === 270 ? -1 : 1;
-  if (Math.abs(y) + Math.abs(z) < 0.25) return null;
-  return (sign * Math.atan2(y, z) * 180) / Math.PI;
+  leanFilter.beginCalibrate(Date.now());
+  calPending = true;
+  showToast('Pangkal diukur 1,5 detik — jaga motor tegak', 'gold2');
 }
 
 function handleMotion(e: DeviceMotionEvent): void {
@@ -365,28 +389,57 @@ function handleMotion(e: DeviceMotionEvent): void {
   updateGForceMeter(filteredG, filteredGx, filteredGy);
   updateRideState({ g: filteredG, gx: filteredGx, gy: filteredGy });
   pushVibrationSample((acc.x || 0) / 9.81, (acc.y || 0) / 9.81, (acc.z || 0) / 9.81, Date.now());
-  if (Date.now() - lastOrientAt > 500) {
-    const motionLean = leanFromAcceleration(acc);
-    if (motionLean !== null) applyLeanAngle(motionLean, 'MOTION');
+
+  // ── Lean anti-getar: LP gravitasi (bukan accel mentah) → filter pipeline
+  const nowMs = Date.now();
+  const rawVec = { x: (acc.x || 0) / 9.81, y: (acc.y || 0) / 9.81, z: (acc.z || 0) / 9.81 };
+  const { tilt, shake } = leanFilter.feed(rawVec, getOrientAngle(), nowMs);
+  const dtSec = Math.min(Math.max((nowMs - lastMotionAt) / 1000, 0.008), 0.1);
+  lastMotionAt = nowMs;
+  fusedLean = leanFilter.push(tilt, dtSec, shake);
+  updateLeanGauge(fusedLean);
+
+  // SLOPE + CORNER TRACKER — sensor virtual menumpang sirkuit lean
+  const pitch = leanFilter.getPitchDeg(getOrientAngle());
+  const cst = cornerPush(fusedLean, rideState.speed, appState.currentLat, appState.currentLng, nowMs);
+  updateRideState({
+    lean: fusedLean,
+    slope: pitch !== null ? Math.round(pitch * 10) / 10 : 0,
+    corners: cst.count,
+    bankMax: Math.round(cst.maxLean * 10) / 10,
+    sensor: 'MOTION',
+  });
+
+  // Kalibrasi jendela selesai → simpan baseline
+  if (leanFilter.calibratedZero !== null && calPending) {
+    savedLeanZero = leanFilter.calibratedZero;
+    persistLeanZero();
+    calPending = false;
+    showToast('Lean kalibrasi selesai — nol tersimpan', 'gold2');
   }
+
+  // Auto-nol saat diam ≥5 detik (holder tergeser, motor parkir)
+  if (rideState.speed < 2 && !shake) {
+    if (stillSince === 0) stillSince = nowMs;
+    else if (nowMs - stillSince > 5000 && Math.abs(fusedLean) < 6) {
+      leanFilter.zeroNow();
+      savedLeanZero = leanFilter.zeroOffset;
+      persistLeanZero();
+      stillSince = nowMs;
+      if (!stillToasted) {
+        showToast('Motor diam — lean di-nol-kan ulang', 'muted');
+        stillToasted = true;
+      }
+    }
+  } else {
+    stillSince = 0;
+    stillToasted = false;
+  }
+
   noteCrashImpact(medG);
 }
 
 function handleOrient(e: DeviceOrientationEvent): void {
-  const orientAngle = getOrientAngle();
-  let leanRaw: number | null;
-  if (orientAngle === 0 || orientAngle === 180) {
-    if (e.gamma === null || e.gamma === undefined) return;
-    leanRaw = e.gamma;
-  } else {
-    if (e.beta === null || e.beta === undefined) return;
-    const sign = orientAngle === 270 ? -1 : 1;
-    leanRaw = sign * e.beta;
-  }
-  if (!Number.isFinite(leanRaw)) return;
-  lastOrientAt = Date.now();
-  applyLeanAngle(leanRaw, 'ORIENT');
-
   const oe = e as DeviceOrientationEvent & { webkitCompassHeading?: number };
   const raw = oe.webkitCompassHeading ?? (e.alpha != null && Number.isFinite(e.alpha) ? 360 - e.alpha : null);
   if (raw != null && Number.isFinite(raw)) {
@@ -410,9 +463,14 @@ async function requestSensorPermissions(): Promise<boolean> {
 function startTelemetry(): void {
   if (telActive) return;
   telActive = true;
-  leanBaseline = null;
-  lastOrientAt = 0;
+  leanFilter.reset();
+  leanFilter.setSavedZero(savedLeanZero);
   fusedLean = 0;
+  calPending = false;
+  stillSince = 0;
+  stillToasted = false;
+  cornerReset();
+  startBattMeter();
   filteredG = 1;
   filteredGx = 0;
   filteredGy = 0;
@@ -437,8 +495,12 @@ export function stopTelemetry(): void {
   updateTelemetryBtns(false);
   const strip = $opt('portrait-tele');
   if (strip) (strip as HTMLElement).style.display = 'none';
-  leanBaseline = null;
+  leanFilter.reset();
+  leanFilter.setSavedZero(savedLeanZero);
   fusedLean = 0;
+  calPending = false;
+  cornerReset();
+  stopBattMeter();
   filteredG = 1;
   filteredGx = 0;
   filteredGy = 0;
@@ -446,7 +508,7 @@ export function stopTelemetry(): void {
   updateLeanGauge(0);
   vibReset();
   crashArm = null;
-  updateRideState({ lean: 0, g: 1, gx: 0, gy: 0, vib: 0, sensor: 'IDLE' });
+  updateRideState({ lean: 0, g: 1, gx: 0, gy: 0, vib: 0, slope: 0, corners: 0, bankMax: 0, batt: null, battPer10km: null, sensor: 'IDLE' });
   updateSensorChip(geoWatchId !== null ? 'GPS' : 'IDLE', geoWatchId !== null ? 'good' : 'idle');
 }
 

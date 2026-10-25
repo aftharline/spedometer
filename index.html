@@ -13,7 +13,7 @@
     <meta name="apple-mobile-web-app-title" content="BCR RIDE">
     <link rel="apple-touch-icon" href="./assets/icon-192.png">
     <link rel="icon" href="./assets/icon-192.png" type="image/png">
-    <script>(function(){const s=localStorage.getItem('theme');const ok=['bcr','panigale','ninja','r1m','repsol','ecstar','apex','motogp','roadrace','fast','bcr-light'];document.documentElement.setAttribute('data-theme',s==='dark'||!s?'bcr':s==='light'?'bcr-light':ok.includes(s)?s:'bcr');})();</script>
+    <script>(function(){const s=localStorage.getItem('theme');const ok=['bcr','panigale','ninja','r1m','repsol','ecstar','apex','motogp','roadrace','fast','ktm','mandalika','nascar','nfs','bcr-light'];document.documentElement.setAttribute('data-theme',s==='dark'||!s?'bcr':s==='light'?'bcr-light':ok.includes(s)?s:'bcr');})();</script>
 </head>
 
 <body class="flex justify-center items-stretch">
@@ -104,6 +104,31 @@
                 <canvas id="ride-3d-canvas"></canvas>
             </div>
 
+            <!-- Splash khusus halaman speedo (per livery, sekali per sesi) -->
+            <div id="speedo-splash" class="hidden">
+                <img id="speedo-splash-logo" alt=""><span class="ss-tag" id="speedo-splash-tag"></span>
+                <div class="ss-sweep"><i></i></div>
+            </div>
+
+            <!-- Pop-up SPEEDING MODE ≥90 km/h -->
+            <div id="speeding-mode" class="hidden">
+                <div class="sp-card clip-md">
+                    <span class="sp-stripes"></span>
+                    <i class="fa-solid fa-gauge-high sp-ico"></i>
+                    <span class="sp-title">SPEEDING</span>
+                    <span class="sp-sub">MODE — TETAP TERKENDALI</span>
+                </div>
+            </div>
+
+            <!-- Animasi cek sensor (ALL ON): jarum menyapu penuh lalu kembali -->
+            <div id="sensor-check" class="hidden">
+                <div class="sc-card clip-sm">
+                    <i class="fa-solid fa-satellite-dish sc-ico"></i>
+                    <span class="sc-lbl">MEMINDAI SENSOR…</span>
+                    <div class="sc-bar"><i></i></div>
+                </div>
+            </div>
+
             <!-- GPS status bar -->
             <div id="dash-status" class="flex justify-between items-center flex-none">
                 <div class="flex items-center gap-2">
@@ -113,11 +138,10 @@
                 <div class="flex items-center gap-2 flex-wrap justify-end">
                     <div id="dash-mode" class="flex clip-sm">
                         <button id="mode-speedo" onclick="switchDashboardMode('speedo')" class="dash-mode-btn is-on">SPEEDO</button>
-                        <button id="mode-navi" onclick="switchDashboardMode('navi')" class="dash-mode-btn">NAVI</button>
+                            <button id="mode-navi" onclick="switchDashboardMode('banking')" class="dash-mode-btn">TOOL</button>
                         <button id="mode-navi-mini" onclick="switchDashboardMode('navi-mini')" class="dash-mode-btn">NAVI MINI</button>
                     </div>
                     <span class="sensor-chip" id="sensor-chip"><i class="fa-solid fa-satellite-dish text-[9px]"></i>IDLE</span>
-                    <span class="f-mono text-[11px]" id="gps-acc" style="color:var(--muted)">ACC: --</span>
                     <button id="btn-master" onclick="toggleMasterSensors()" aria-label="Aktifkan semua sensor">
                         <i class="fa-solid fa-power-off text-[10px]"></i><span>ALL ON</span>
                     </button>
@@ -379,6 +403,15 @@
 
             <!-- ── NAVI MODE (Google Maps style) ────────── -->
             <div id="navi-mode" class="hidden">
+                <!-- Sense chip mini — lean/corner/slope di atas peta (navi-mini) -->
+                <div id="sense-chip" class="sense-chip">
+                    <i class="fa-solid fa-motorcycle text-[9px]" style="color:var(--muted2)"></i>
+                    <span><b id="sc-lean">0°</b><small>LEAN</small></span>
+                    <span class="sc-sep"></span>
+                    <span><b id="sc-count">0</b><small>CORNER</small></span>
+                    <span class="sc-sep"></span>
+                    <span><b id="sc-slope">0.0°</b><small>SLOPE</small></span>
+                </div>
                 <div id="navi-search-wrap">
                     <div class="flex gap-2">
                         <input type="text" id="navi-q" placeholder="Cari tujuan…" class="inp clip-sm flex-1 text-sm" autocomplete="off" oninput="naviSearchInput()">
@@ -422,6 +455,12 @@
 
                 <div id="navi-next" class="hidden navi-next navi-card"></div>
 
+                <!-- LAP TIMER — garis start/finish GPS -->
+                <button id="btn-lap" onclick="lapSetLine()" aria-label="Pasang garis lap">
+                    <i class="fa-solid fa-stopwatch"></i><span>PASANG GARIS LAP</span>
+                </button>
+                <div id="lap-chip" class="hidden lap-chip" onclick="lapReset()" title="Tap untuk reset lap"></div>
+
                 <div id="navi-actions" class="hidden grid grid-cols-2 gap-2">
                     <button onclick="naviStart()" class="btn-fill-gold clip-sm py-3 text-xs flex items-center justify-center gap-2">
                         <i class="fa-solid fa-play text-[10px]"></i>MULAI
@@ -430,6 +469,74 @@
                         <i class="fa-brands fa-google text-[10px]"></i>GMAPS
                     </button>
                 </div>
+            </div>
+
+            <!-- ── MODE-3 SLOT: BCR TOOLKIT (CUACA · RUTE · BBM · BENGKEL) ── -->
+            <div id="banking-mode" class="hidden">
+                <div id="kit-tabs">
+                    <button class="kit-tab is-on" data-tab="cuaca" onclick="kitTab('cuaca')"><i class="fa-solid fa-cloud-sun"></i>CUACA</button>
+                    <button class="kit-tab" data-tab="planner" onclick="kitTab('planner')"><i class="fa-solid fa-route"></i>RUTE</button>
+                    <button class="kit-tab" data-tab="bbm" onclick="kitTab('bbm')"><i class="fa-solid fa-gas-pump"></i>BBM</button>
+                    <button class="kit-tab" data-tab="bengkel" onclick="kitTab('bengkel')"><i class="fa-solid fa-screwdriver-wrench"></i>BENGKEL</button>
+                </div>
+
+                <section id="kit-cuaca" class="kit-pane">
+                    <div class="kit-w-now">
+                        <i id="cw-icon" class="fa-solid fa-cloud-sun"></i>
+                        <div class="kit-w-main">
+                            <div class="f-mono gold-text" id="cw-temp" style="font-size:32px;line-height:1">—</div>
+                            <div class="cw-sub" id="cw-desc" style="color:var(--gold2)">—</div>
+                        </div>
+                        <div class="kit-w-side">
+                            <div class="cw-sub"><i class="fa-solid fa-wind"></i><span id="cw-wind">—</span></div>
+                            <div class="cw-sub"><i class="fa-solid fa-rotate"></i><span id="cw-upd">—</span></div>
+                        </div>
+                    </div>
+                    <div id="cw-warn" class="kit-warn hidden"></div>
+                    <div id="cw-hours" class="cw-hours"></div>
+                    <button onclick="kitLoadWeather()" class="btn-fill-gold clip-sm py-2 text-xs tracking-[2px]"><i class="fa-solid fa-rotate"></i>&nbsp;REFRESH GPS</button>
+                </section>
+
+                <section id="kit-planner" class="kit-pane hidden">
+                    <input id="kp-from" class="kit-inp" placeholder="Titik garasi (kosong = GPS saya)">
+                    <input id="kp-to" class="kit-inp" placeholder="Tujuan… (contoh: Puncak)">
+                    <button onclick="kitPlan()" class="btn-fill-gold clip-sm py-2 text-xs tracking-[2px]"><i class="fa-solid fa-route"></i>&nbsp;HITUNG RENCANA</button>
+                    <div id="kp-out" class="hidden">
+                        <div id="kp-stats" class="kp-stats"></div>
+                        <canvas id="kp-elev" width="640" height="150"></canvas>
+                        <div id="kp-dest" class="f-mono" style="font-size:11px;color:var(--muted2)"></div>
+                        <button onclick="kitUseRoute()" class="btn-gold clip-sm py-2 text-xs tracking-[2px]"><i class="fa-solid fa-diamond-turn-right"></i>&nbsp;PAKAI DI NAVI</button>
+                    </div>
+                </section>
+
+                <section id="kit-bbm" class="kit-pane hidden">
+                    <div id="kb-stats" class="kp-stats"></div>
+                    <div id="kb-list"></div>
+                    <div id="kb-form" class="flex flex-col gap-2">
+                        <div class="kit-add-row">
+                            <input id="kb-lit" class="kit-inp" type="number" step="0.1" min="0" placeholder="Liter (mis. 3.5)">
+                            <input id="kb-px" class="kit-inp" type="number" min="0" placeholder="Harga Rp">
+                            <button onclick="kitFuelAdd()" class="btn-fill-gold clip-sm px-4 text-xs"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                        <div class="f-mono" style="font-size:10px;color:var(--muted2)">Odo pakai trip counter. Riwayat km/l butuh 2 catatan berturut.</div>
+                    </div>
+                </section>
+
+                <section id="kit-bengkel" class="kit-pane hidden">
+                    <div id="kx-rows"></div>
+                    <div id="kx-form" class="flex flex-col gap-2">
+                        <div class="kit-add-row">
+                            <select id="kx-what" class="kit-inp">
+                                <option>oli mesin</option>
+                                <option>rantai</option>
+                                <option>oli kopling</option>
+                                <option>ban</option>
+                            </select>
+                            <button onclick="kitSvcAdd()" class="btn-fill-gold clip-sm px-4 text-xs"><i class="fa-solid fa-wrench"></i></button>
+                        </div>
+                        <div class="f-mono" style="font-size:10px;color:var(--muted2)">Odo pakai trip counter. Interval default: oli 2rb · kopling 4rb · rantai 6rb · ban 8rb km.</div>
+                    </div>
+                </section>
             </div>
 
             <!-- ── BOTTOM: STATS + SOS ──────────────────── -->
@@ -776,12 +883,27 @@
         </div>
     </div>
 
-    <div id="crash-modal" class="hidden absolute inset-0 z-[70] flex flex-col items-center justify-center text-center p-6 crash-modal-wrap" style="background:var(--red)">
-        <i class="fa-solid fa-car-burst text-7xl mb-6" style="color:rgba(0,0,0,.3)"></i>
-        <div class="f-bebas text-5xl text-black mb-2">CRASH DETECTED!</div>
-        <div class="f-exo font-bold text-sm uppercase tracking-widest" style="color:rgba(0,0,0,.6);margin-bottom:2rem">SOS otomatis dalam…</div>
-        <span id="crash-count" class="f-mono font-bold text-9xl text-black" style="margin-bottom:3rem">10</span>
-        <button onclick="cancelCrash()" class="w-full py-5 f-exo font-black text-lg tracking-[3px] uppercase clip-md" style="background:black;color:white">✓ SAYA AMAN — BATAL</button>
+    <!-- Kartu ringkasan ride (END RIDE) -->
+    <div id="modal-ridecard" class="hidden absolute inset-0 z-[65] flex flex-col items-center justify-center p-5 gap-3" style="background:rgba(0,0,0,.8)">
+        <canvas id="rc-canvas" width="1000" height="1200" class="clip-md" style="width:min(76vw,300px);height:auto;border:1px solid var(--border2);box-shadow:0 8px 40px rgba(0,0,0,.6)"></canvas>
+        <div class="grid grid-cols-2 gap-2 w-full" style="max-width:min(76vw,300px)">
+            <button onclick="shareRideCard()" class="btn-fill-gold clip-sm py-3 text-xs flex items-center justify-center gap-2">
+                <i class="fa-solid fa-share-nodes text-[10px]"></i>SHARE
+            </button>
+            <button onclick="closeModal('modal-ridecard')" class="btn-gold clip-sm py-3 text-xs flex items-center justify-center gap-2">
+                <i class="fa-solid fa-xmark text-[10px]"></i>TUTUP
+            </button>
+        </div>
+    </div>
+
+    <div id="crash-modal" class="hidden absolute inset-0 z-[70] flex items-center justify-center p-6" style="background:rgba(0,0,0,.72);backdrop-filter:blur(3px)">
+        <div class="crash-card w-full max-w-xs flex flex-col items-center text-center p-6 clip-md">
+            <i class="fa-solid fa-car-burst text-5xl mb-4 red-text"></i>
+            <div class="f-bebas text-4xl red-text mb-1">CRASH DETECTED!</div>
+            <div class="f-exo font-bold text-[11px] uppercase tracking-widest mb-4" style="color:var(--muted)">SOS otomatis dalam…</div>
+            <span id="crash-count" class="f-mono font-bold red-text" style="font-size:72px;line-height:1;margin-bottom:1.5rem">10</span>
+            <button onclick="cancelCrash()" class="btn-fill-gold w-full py-4 f-exo font-black text-base tracking-[3px] uppercase clip-sm">✓ SAYA AMAN — BATAL</button>
+        </div>
     </div>
 
     <!-- ── MODALS ────────────────────────────────────────── -->
@@ -798,6 +920,7 @@
                 <button onclick="toggleMasterSensors()" class="set-row"><i class="fa-solid fa-power-off set-ico"></i><span class="flex-1 text-left"><b>SEMUA SENSOR</b><small id="set-sensors">GPS + IMU + Audio</small></span><span class="set-dot" id="set-dot-master"></span></button>
                 <button onclick="toggleTelemetry()" class="set-row"><i class="fa-solid fa-microchip set-ico"></i><span class="flex-1 text-left"><b>TELEMETRI IMU</b><small>G-Force, lean, vibrasi</small></span><span class="set-dot" id="set-dot-tel"></span></button>
                 <button onclick="toggleAudioRPM()" class="set-row"><i class="fa-solid fa-wave-square set-ico"></i><span class="flex-1 text-left"><b>ACOUSTIC RPM</b><small>Deteksi putaran mesin via mic</small></span><span class="set-dot" id="set-dot-audio"></span></button>
+                <button onclick="toggleCrashSensor()" class="set-row"><i class="fa-solid fa-car-burst set-ico"></i><span class="flex-1 text-left"><b>SENSOR KECELAKAAN</b><small>Deteksi tabrakan + SOS otomatis</small></span><span class="set-dot" id="set-dot-crash"></span></button>
                 <button onclick="resetTrip()" class="set-row"><i class="fa-solid fa-route set-ico"></i><span class="flex-1 text-left"><b>TRIP COUNTER</b><small id="set-trip">0.0 km — saat perjalanan</small></span><i class="fa-solid fa-rotate-left set-chev"></i></button>
                 <button onclick="resetMaxSpeed()" class="set-row"><i class="fa-solid fa-gauge-high set-ico"></i><span class="flex-1 text-left"><b>MAX SPEED</b><small id="set-maxspd">0 km/h — kecepatan tertinggi</small></span><i class="fa-solid fa-rotate-left set-chev"></i></button>
                 <button onclick="installApp()" class="set-row"><i class="fa-solid fa-down-to-bracket set-ico"></i><span class="flex-1 text-left"><b>INSTALL APLIKASI</b><small>Tambahkan ke layar utama (PWA)</small></span><i class="fa-solid fa-chevron-right set-chev"></i></button>

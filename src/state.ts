@@ -13,10 +13,15 @@ export const rideState: RideState = {
   g: 1,
   gx: 0,
   gy: 0,
-  vib: 0,
   heading: 0,
   gpsAcc: null,
   sensor: 'IDLE',
+  vib: 0,
+  slope: 0,
+  corners: 0,
+  bankMax: 0,
+  batt: null,
+  battPer10km: null,
 };
 
 export function updateRideState(patch: Partial<RideState>): void {
